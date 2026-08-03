@@ -1,0 +1,78 @@
+<div class="page">
+
+  <h1 class="page-title">NFL Standings</h1>
+
+  <div class="filters">
+    <mat-button-toggle-group value="ALL" (change)="onConferenceChange($event.value)">
+      <mat-button-toggle value="ALL">Todas</mat-button-toggle>
+      <mat-button-toggle value="AFC">AFC</mat-button-toggle>
+      <mat-button-toggle value="NFC">NFC</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  @if (loading()) {
+    <app-loading-spinner />
+  }
+
+  @if (!loading()) {
+    <div class="conferences">
+
+      @for (conf of grouped(); track conf.conference) {
+        <div class="conference-block">
+
+          <h2 class="conference-title">{{ conf.conference }}</h2>
+
+          <div class="divisions">
+
+            @for (div of conf.divisions; track div.division) {
+              <div class="division-block">
+
+                <h3 class="division-title">{{ div.division }}</h3>
+
+                <div class="table-wrapper">
+                  <table class="standings-table">
+                    <thead>
+                      <tr>
+                        <th class="col-team">Equipo</th>
+                        <th class="col-stat">W</th>
+                        <th class="col-stat">L</th>
+                        <th class="col-stat">T</th>
+                        <th class="col-stat">PCT</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (team of div.teams; track team.id; let i = $index) {
+                        <tr [class.first-place]="i === 0">
+                          <td class="col-team">
+                            <div class="team-info">
+                              <img
+                                class="team-logo"
+                                [src]="team.logo"
+                                [alt]="team.name"
+                                loading="lazy" />
+                              <span class="team-name">{{ team.name }}</span>
+                              <span class="team-abbr">{{ team.abbreviation }}</span>
+                            </div>
+                          </td>
+                          <td class="col-stat">{{ team.wins }}</td>
+                          <td class="col-stat">{{ team.losses }}</td>
+                          <td class="col-stat">{{ team.ties }}</td>
+                          <td class="col-stat">{{ formatPct(team.percentage) }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            }
+
+          </div>
+
+        </div>
+      }
+
+    </div>
+  }
+
+</div>

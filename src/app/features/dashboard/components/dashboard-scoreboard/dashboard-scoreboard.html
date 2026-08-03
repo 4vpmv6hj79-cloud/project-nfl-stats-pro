@@ -1,0 +1,103 @@
+<section class="scoreboard">
+
+  <div class="scoreboard__header">
+    <h2 class="scoreboard__title">🏈 Marcadores</h2>
+    <div class="scoreboard__meta">
+      @if (loading()) {
+        <span class="scoreboard__updating">Cargando...</span>
+      } @else {
+        <span class="scoreboard__count">
+          {{ games().length }} partidos
+          @if (liveGames().length > 0) {
+            · <span class="live-dot"></span> {{ liveGames().length }} en vivo
+          }
+        </span>
+        @if (lastUpdated()) {
+          <span class="scoreboard__time">
+            Actualizado {{ formatTime(lastUpdated()) }}
+          </span>
+        }
+      }
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="scoreboard__skeleton">
+      @for (i of [1,2,3,4,5]; track i) {
+        <div class="skeleton-card"></div>
+      }
+    </div>
+  }
+
+  @if (!loading()) {
+
+    @if (liveGames().length > 0) {
+      <div class="group">
+        <span class="group__label group__label--live">
+          <span class="live-dot"></span> En vivo
+        </span>
+        <div class="games-strip">
+          @for (game of liveGames(); track game.id) {
+            <div class="game-card game-card--live">
+              <ng-container *ngTemplateOutlet="gameCard; context: { $implicit: game }" />
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (finalGames().length > 0) {
+      <div class="group">
+        <span class="group__label">Final</span>
+        <div class="games-strip">
+          @for (game of finalGames(); track game.id) {
+            <div class="game-card game-card--final">
+              <ng-container *ngTemplateOutlet="gameCard; context: { $implicit: game }" />
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (upcomingGames().length > 0) {
+      <div class="group">
+        <span class="group__label">Por jugar</span>
+        <div class="games-strip">
+          @for (game of upcomingGames(); track game.id) {
+            <div class="game-card game-card--upcoming">
+              <ng-container *ngTemplateOutlet="gameCard; context: { $implicit: game }" />
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (games().length === 0) {
+      <p class="scoreboard__empty">No hay partidos disponibles en este momento.</p>
+    }
+
+  }
+
+</section>
+
+<ng-template #gameCard let-game>
+
+  <div class="team" [class.team--winning]="isWinning(game.awayScore, game.homeScore)">
+    <img class="team__logo" [src]="game.awayLogo" [alt]="game.awayTeam" loading="lazy" />
+    <span class="team__name">{{ game.awayTeam }}</span>
+    <span class="team__score">{{ game.awayScore }}</span>
+  </div>
+
+  <div class="game__center">
+    <span class="game__status" [class.game__status--live]="isLive(game.status)">
+      {{ game.status }}
+    </span>
+  </div>
+
+  <div class="team" [class.team--winning]="isWinning(game.homeScore, game.awayScore)">
+    <img class="team__logo" [src]="game.homeLogo" [alt]="game.homeTeam" loading="lazy" />
+    <span class="team__name">{{ game.homeTeam }}</span>
+    <span class="team__score">{{ game.homeScore }}</span>
+  </div>
+
+</ng-template>

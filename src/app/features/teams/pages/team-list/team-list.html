@@ -1,0 +1,23 @@
+<div class="page">
+
+  <h1>NFL Teams</h1>
+
+  <app-search-bar (searchChange)="onSearch($event)" />
+
+  <app-conference-filter (conferenceChange)="onConferenceChange($event)" />
+
+  @if (loading()) {
+    <app-loading-spinner />
+  } @else {
+    @if (filteredTeams().length === 0) {
+      <h2>No se encontraron equipos</h2>
+    } @else {
+      <div class="grid">
+        @for (team of filteredTeams(); track team.id) {
+          <app-team-card [team]="team" />
+        }
+      </div>
+    }
+  }
+
+</div>

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Arizona Cardinals",
+    "city": "Phoenix",
+    "conference": "NFC",
+    "division": "West",
+    "abbreviation": "ARI",
+    "logo": "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png"
+  },
+  {
+    "id": 2,
+    "name": "Atlanta Falcons",
+    "city": "Atlanta",
+    "conference": "NFC",
+    "division": "South",
+    "abbreviation": "ATL",
+    "logo": "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png"
+  },
+  {
+    "id": 3,
+    "name": "Baltimore Ravens",
+    "city": "Baltimore",
+    "conference": "AFC",
+    "division": "North",
+    "abbreviation": "BAL",
+    "logo": "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png"
+  },
+  {
+    "id": 4,
+    "name": "Buffalo Bills",
+    "city": "Buffalo",
+    "conference": "AFC",
+    "division": "East",
+    "abbreviation": "BUF",
+    "logo": "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"
+  }
+]

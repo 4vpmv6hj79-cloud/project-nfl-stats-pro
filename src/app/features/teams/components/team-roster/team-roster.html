@@ -1,0 +1,99 @@
+<!-- Jugadores lesionados -->
+@if (injured().length > 0) {
+  <div class="injury-banner">
+    <span class="injury-banner__title">🚨 Lesiones / Bajas</span>
+    <div class="injury-list">
+      @for (p of injured(); track p.id) {
+        <div class="injury-item">
+          <span class="badge" [ngClass]="injuryClass(p.injuryStatus)">
+            {{ p.injuryStatus }}
+          </span>
+          <span class="injury-name">{{ p.fullName }}</span>
+          <span class="injury-pos">{{ p.positionAbbr }}</span>
+          @if (p.injuryDescription) {
+            <span class="injury-desc">— {{ p.injuryDescription }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!-- Filtro por posición -->
+<div class="position-filter">
+  <mat-button-toggle-group
+    [value]="positionFilter()"
+    (change)="onPositionChange($event.value)">
+    @for (pos of positions(); track pos) {
+      <mat-button-toggle [value]="pos">{{ pos }}</mat-button-toggle>
+    }
+  </mat-button-toggle-group>
+</div>
+
+<!-- Tabla de jugadores -->
+<div class="table-wrapper">
+  <table class="roster-table">
+    <thead>
+      <tr>
+        <th class="col-headshot"></th>
+        <th class="col-num">#</th>
+        <th class="col-name">Jugador</th>
+        <th class="col-pos">Pos</th>
+        <th class="col-stat">Edad</th>
+        <th class="col-stat">Altura</th>
+        <th class="col-stat">Peso</th>
+        <th class="col-college">Universidad</th>
+        <th class="col-status">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (player of filtered(); track player.id) {
+        <tr [class.row--injured]="player.injuryStatus && player.injuryStatus !== 'Active'">
+
+          <td class="col-headshot">
+            @if (player.headshot) {
+              <img
+                class="headshot"
+                [src]="player.headshot"
+                [alt]="player.fullName"
+                loading="lazy" />
+            } @else {
+              <div class="headshot headshot--placeholder">
+                {{ player.fullName.charAt(0) }}
+              </div>
+            }
+          </td>
+
+          <td class="col-num">{{ player.jersey }}</td>
+
+          <td class="col-name">{{ player.fullName }}</td>
+
+          <td class="col-pos">
+            <span class="pos-badge">{{ player.positionAbbr }}</span>
+          </td>
+
+          <td class="col-stat">{{ player.age || '—' }}</td>
+          <td class="col-stat">{{ player.height || '—' }}</td>
+          <td class="col-stat">{{ player.weight || '—' }}</td>
+          <td class="col-college">{{ player.college || '—' }}</td>
+
+          <td class="col-status">
+            @if (player.injuryStatus && player.injuryStatus !== 'Active') {
+              <span class="badge" [ngClass]="injuryClass(player.injuryStatus)"
+                    [title]="player.injuryDescription">
+                {{ player.injuryStatus }}
+              </span>
+            } @else {
+              <span class="status--active">Activo</span>
+            }
+          </td>
+
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (filtered().length === 0) {
+  <p class="empty">No hay jugadores para esta posición.</p>
+}

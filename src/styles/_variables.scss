@@ -1,0 +1,18 @@
+// ── Variables SCSS ────────────────────────────────────────
+// Importar en cualquier componente con: @use 'styles/variables' as v;
+
+$primary:        #2563EB;
+$secondary:      #7C3AED;
+$success:        #22C55E;
+$warning:        #F59E0B;
+$error:          #EF4444;
+$background:     #0F172A;
+$surface:        #1E293B;
+$toolbar:        #111827;
+$border:         #334155;
+$text:           #F8FAFC;
+$text-secondary: #94A3B8;
+
+// Superficies elevadas (derivadas de $surface)
+$surface-raised:  #243044;
+$surface-overlay: rgba(255, 255, 255, 0.05);

@@ -1,0 +1,67 @@
+.team-card {
+
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  transition: .3s;
+
+  cursor: pointer;
+
+}
+
+.team-card:hover{
+
+  transform: translateY(-6px);
+
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+
+}
+
+img{
+
+  width:150px;
+
+  height:150px;
+
+  object-fit:contain;
+
+  margin:24px auto 8px;
+
+}
+
+mat-card-content{
+
+  text-align:center;
+
+}
+
+h2{
+
+  margin:12px 0;
+
+  font-size:22px;
+
+  font-weight:700;
+
+}
+
+.info{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:8px;
+
+  margin-top:16px;
+
+}
+
+.info p{
+
+  margin:0;
+
+  color:#555;
+
+}

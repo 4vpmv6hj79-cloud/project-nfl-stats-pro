@@ -1,0 +1,142 @@
+// ── Banner de lesionados ──────────────────────────────────
+.injury-banner {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+
+  &__title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 10px;
+    color: #000;
+  }
+}
+
+.injury-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.injury-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.injury-name { font-weight: 600; color: #000; }
+.injury-pos  { color: #666; font-size: 0.78rem; }
+.injury-desc { color: #555; font-size: 0.78rem; }
+
+// ── Filtro de posición ────────────────────────────────────
+.position-filter {
+  margin-bottom: 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+// ── Tabla ─────────────────────────────────────────────────
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.roster-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th {
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--mat-sys-on-surface-variant, #666);
+    border-bottom: 2px solid var(--mat-sys-outline-variant, #ddd);
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant, #eee);
+    vertical-align: middle;
+  }
+
+  tbody tr:hover { background: var(--mat-sys-surface-container, #f9f9f9); }
+
+  tbody tr.row--injured td { background: #fff8f0; }
+}
+
+// ── Columnas ──────────────────────────────────────────────
+.col-headshot { width: 44px; padding: 6px 8px; }
+.col-num      { width: 40px; text-align: center; font-weight: 700; color: #888; }
+.col-name     { min-width: 160px; font-weight: 500; }
+.col-pos      { width: 60px; }
+.col-stat     { width: 64px; text-align: center; color: #555; }
+.col-college  { min-width: 120px; font-size: 0.8rem; color: #666; }
+.col-status   { width: 110px; }
+
+// ── Headshot ──────────────────────────────────────────────
+.headshot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  &--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mat-sys-primary, #1976d2);
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+}
+
+// ── Badge de posición ─────────────────────────────────────
+.pos-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--mat-sys-surface-container-high, #e8e8e8);
+  color: var(--mat-sys-on-surface, #333);
+}
+
+// ── Estado activo ─────────────────────────────────────────
+.status--active {
+  font-size: 0.78rem;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+// ── Badges de lesión ──────────────────────────────────────
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: default;
+
+  &--questionable { background: #fff9c4; color: #f57f17; }
+  &--doubtful     { background: #ffe0b2; color: #e65100; }
+  &--out          { background: #ffcdd2; color: #c62828; }
+  &--ir           { background: #ef9a9a; color: #b71c1c; }
+  &--pup          { background: #e1bee7; color: #6a1b9a; }
+  &--suspended    { background: #b0bec5; color: #263238; }
+}
+
+// ── Vacío ─────────────────────────────────────────────────
+.empty {
+  text-align: center;
+  padding: 32px 0;
+  color: #888;
+}

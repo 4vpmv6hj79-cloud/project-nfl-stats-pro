@@ -1,0 +1,80 @@
+<!-- Resumen de récord -->
+<div class="record-bar">
+  <span class="record-label">Récord:</span>
+  <span class="record-win">{{ record().w }}W</span>
+  <span class="record-sep">-</span>
+  <span class="record-loss">{{ record().l }}L</span>
+  @if (record().t > 0) {
+    <span class="record-sep">-</span>
+    <span class="record-tie">{{ record().t }}T</span>
+  }
+  <span class="record-played">({{ record().played }} de {{ record().total }} jugados)</span>
+</div>
+
+<!-- Filtro local / visitante -->
+<div class="filters">
+  <mat-button-toggle-group value="ALL" (change)="onFilterChange($event.value)">
+    <mat-button-toggle value="ALL">Todos</mat-button-toggle>
+    <mat-button-toggle value="home">Local 🏠</mat-button-toggle>
+    <mat-button-toggle value="away">Visitante ✈️</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
+<!-- Lista de partidos -->
+<div class="schedule-list">
+
+  @for (game of filtered(); track game.id) {
+
+    <div class="game-row" [class.game-row--playoff]="game.isPlayoff">
+
+      <!-- Semana -->
+      <div class="col-week">
+        <span class="week-label">{{ game.isPlayoff ? 'PO' : 'Sem ' + game.week }}</span>
+      </div>
+
+      <!-- Fecha -->
+      <div class="col-date">{{ formatDate(game.date) }}</div>
+
+      <!-- Local / Visitante -->
+      <div class="col-venue">
+        @if (game.homeAway === 'home') {
+          <span class="venue venue--home">LOCAL</span>
+        } @else {
+          <span class="venue venue--away">VISIT</span>
+        }
+      </div>
+
+      <!-- Rival -->
+      <div class="col-opponent">
+        <img
+          class="opp-logo"
+          [src]="game.opponentLogo"
+          [alt]="game.opponent"
+          loading="lazy" />
+        <span class="opp-name">{{ game.opponent }}</span>
+        <span class="opp-abbr">{{ game.opponentAbbr }}</span>
+      </div>
+
+      <!-- Resultado o fecha pendiente -->
+      <div class="col-result">
+        @if (game.result !== null) {
+          <span class="result-badge" [ngClass]="resultClass(game.result)">
+            {{ game.result }}
+          </span>
+          <span class="score">
+            {{ game.teamScore }} - {{ game.opponentScore }}
+          </span>
+        } @else {
+          <span class="pending">Por jugar</span>
+        }
+      </div>
+
+    </div>
+
+  }
+
+</div>
+
+@if (filtered().length === 0) {
+  <p class="empty">No hay partidos para mostrar.</p>
+}

@@ -1,0 +1,167 @@
+// ── Barra de récord ───────────────────────────────────────
+.record-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.record-label  { font-weight: 600; color: #555; }
+.record-win    { font-weight: 700; color: #2e7d32; font-size: 1.1rem; }
+.record-loss   { font-weight: 700; color: #c62828; font-size: 1.1rem; }
+.record-tie    { font-weight: 700; color: #f57f17; font-size: 1.1rem; }
+.record-sep    { color: #999; }
+.record-played { color: #888; font-size: 0.82rem; margin-left: 4px; }
+
+// ── Filtro ────────────────────────────────────────────────
+.filters {
+  margin-bottom: 20px;
+}
+
+// ── Lista ─────────────────────────────────────────────────
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+// ── Fila de partido ───────────────────────────────────────
+.game-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--mat-sys-surface-container, #f5f5f5);
+  transition: background 0.15s;
+
+  &:hover { background: var(--mat-sys-surface-container-high, #ebebeb); }
+
+  &--playoff {
+    background: linear-gradient(90deg, #fff8e1, #f5f5f5);
+    border-left: 3px solid #f9a825;
+  }
+}
+
+// ── Columnas ──────────────────────────────────────────────
+.col-week {
+  width: 52px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.week-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.col-date {
+  width: 110px;
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  color: #555;
+}
+
+.col-venue {
+  width: 56px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.col-opponent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.col-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+// ── Local / Visitante ─────────────────────────────────────
+.venue {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 4px;
+
+  &--home {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+
+  &--away {
+    background: #fce4ec;
+    color: #880e4f;
+  }
+}
+
+// ── Logo y nombre del rival ───────────────────────────────
+.opp-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.opp-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 500px) { display: none; }
+}
+
+.opp-abbr {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #666;
+
+  @media (min-width: 501px) { display: none; }
+}
+
+// ── Resultado ─────────────────────────────────────────────
+.result-badge {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 24px;
+
+  &.result--win  { background: #c8e6c9; color: #1b5e20; }
+  &.result--loss { background: #ffcdd2; color: #b71c1c; }
+  &.result--tie  { background: #fff9c4; color: #f57f17; }
+}
+
+.score {
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pending {
+  font-size: 0.78rem;
+  color: #999;
+  font-style: italic;
+}
+
+// ── Vacío ─────────────────────────────────────────────────
+.empty {
+  text-align: center;
+  padding: 32px 0;
+  color: #888;
+}

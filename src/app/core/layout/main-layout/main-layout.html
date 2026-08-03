@@ -1,0 +1,76 @@
+<mat-sidenav-container class="layout-container">
+
+  <mat-sidenav
+    #drawer
+    class="mobile-sidebar"
+    mode="over">
+
+    <div class="sidebar-logo">
+      🏈 NFL CENTER
+    </div>
+
+    <mat-nav-list>
+      @for (item of menuItems; track item.route) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive="active-mobile-link"
+          (click)="drawer.close()">
+
+          <mat-icon matListItemIcon>
+            {{ item.icon }}
+          </mat-icon>
+
+          <span matListItemTitle>
+            {{ item.title }}
+          </span>
+        </a>
+      }
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+
+    <mat-toolbar class="toolbar">
+
+      <button
+        class="mobile-menu-button"
+        mat-icon-button
+        type="button"
+        aria-label="Abrir navegación"
+        (click)="drawer.toggle()">
+
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <a
+        class="brand"
+        routerLink="/dashboard">
+        🏈 Centro NFL
+      </a>
+
+      <nav class="desktop-navigation">
+        @for (item of menuItems; track item.route) {
+          <a
+            mat-button
+            [routerLink]="item.route"
+            routerLinkActive="active-link">
+
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.title }}
+          </a>
+        }
+      </nav>
+
+      <span class="toolbar-spacer"></span>
+
+    </mat-toolbar>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

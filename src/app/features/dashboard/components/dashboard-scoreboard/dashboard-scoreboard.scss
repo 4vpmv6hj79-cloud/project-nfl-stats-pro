@@ -1,0 +1,180 @@
+.scoreboard {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 24px 0;
+  color: var(--color-text);
+}
+
+.scoreboard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.scoreboard__title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.scoreboard__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+  opacity: 0.75;
+}
+
+.scoreboard__count    { font-weight: 500; }
+.scoreboard__time     { font-style: italic; }
+.scoreboard__updating { font-style: italic; }
+
+.scoreboard__empty {
+  text-align: center;
+  padding: 32px 0;
+  opacity: 0.6;
+}
+
+// ── Punto live animado ────────────────────────────────────
+.live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-error);
+  margin-right: 4px;
+  animation: pulse 1.4s ease-in-out infinite;
+  vertical-align: middle;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1;   transform: scale(1);   }
+  50%       { opacity: 0.4; transform: scale(1.3); }
+}
+
+// ── Grupos ────────────────────────────────────────────────
+.group {
+  margin-bottom: 20px;
+  &:last-child { margin-bottom: 0; }
+}
+
+.group__label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+  margin-bottom: 10px;
+
+  &--live { opacity: 1; color: var(--color-error); }
+}
+
+// ── Tira con scroll horizontal ────────────────────────────
+.games-strip {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+
+  &::-webkit-scrollbar       { height: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+}
+
+// ── Tarjeta de partido ────────────────────────────────────
+.game-card {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  width: 220px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.2s, transform 0.15s;
+
+  &:hover {
+    background: rgba(255,255,255,0.14);
+    transform: translateY(-2px);
+  }
+
+  &--live {
+    border-color: rgba(239,68,68,0.5);
+    background: rgba(239,68,68,0.1);
+  }
+
+  &--final  { opacity: 0.85; }
+
+  &--upcoming {
+    border-style: dashed;
+    border-color: rgba(255,255,255,0.2);
+  }
+}
+
+// ── Equipo ────────────────────────────────────────────────
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  opacity: 0.65;
+  transition: opacity 0.2s;
+
+  &--winning {
+    opacity: 1;
+    .team__score { color: var(--color-text); font-weight: 800; }
+  }
+}
+
+.team__logo  { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
+.team__name  { flex: 1; font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.team__score { font-size: 1.4rem; font-weight: 700; min-width: 32px; text-align: right; color: rgba(255,255,255,0.8); }
+
+// ── Status central ────────────────────────────────────────
+.game__center  { text-align: center; }
+.game__status  {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  &--live { color: var(--color-error); }
+}
+
+// ── Skeleton ──────────────────────────────────────────────
+.scoreboard__skeleton {
+  display: flex;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.skeleton-card {
+  flex-shrink: 0;
+  width: 220px;
+  height: 120px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.06) 25%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(255,255,255,0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

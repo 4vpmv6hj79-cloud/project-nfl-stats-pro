@@ -1,0 +1,72 @@
+.page {
+  padding: 32px;
+}
+
+.page-title {
+  margin-bottom: 24px;
+  color: var(--color-text);
+}
+
+.filters {
+  margin-bottom: 32px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.game-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 20px 16px;
+  transition: box-shadow 0.2s ease, border-color 0.2s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+  }
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+
+  &.winner {
+    opacity: 1;
+    .team-score { color: var(--color-primary); }
+  }
+}
+
+.team-logo  { width: 52px; height: 52px; object-fit: contain; }
+.team-name  { font-size: 0.75rem; font-weight: 600; text-align: center; line-height: 1.2; color: var(--color-text); }
+.team-score { font-size: 2rem; font-weight: 700; line-height: 1; color: var(--color-text); }
+
+.game-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.game-vs     { font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); letter-spacing: 0.08em; }
+.game-status { font-size: 0.7rem; color: var(--color-primary); font-weight: 500; text-align: center; max-width: 72px; }

@@ -1,0 +1,16 @@
+<mat-form-field appearance="outline" class="search">
+
+    <mat-label>
+        Buscar equipo
+    </mat-label>
+
+    <input
+        matInput
+        [ngModel]="search"
+        (ngModelChange)="onSearch($event)">
+
+    <mat-icon matSuffix>
+        search
+    </mat-icon>
+
+</mat-form-field>

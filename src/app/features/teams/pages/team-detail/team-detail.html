@@ -1,0 +1,97 @@
+@if (loading()) {
+  <div class="loading-wrap">
+    <app-loading-spinner />
+  </div>
+}
+
+@if (!loading() && team()) {
+
+  <div class="team-header" [style.background]="team()!.color">
+    <img
+      class="team-logo"
+      [src]="team()!.logo"
+      [alt]="team()!.name" />
+    <div class="team-meta">
+      <h1>{{ team()!.name }}</h1>
+      <p class="team-city">{{ team()!.city }}</p>
+      <div class="team-tags">
+        <span class="tag">{{ team()!.conference }}</span>
+        <span class="tag">{{ team()!.division }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-grid">
+
+      <div class="info-item">
+        <mat-icon>emoji_events</mat-icon>
+        <div>
+          <span class="info-label">Récord</span>
+          <span class="info-value">{{ team()!.record }}</span>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <mat-icon>stadium</mat-icon>
+        <div>
+          <span class="info-label">Estadio</span>
+          <span class="info-value">{{ team()!.stadium }}</span>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <mat-icon>sports_football</mat-icon>
+        <div>
+          <span class="info-label">Conferencia</span>
+          <span class="info-value">{{ team()!.conference }}</span>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <mat-icon>explore</mat-icon>
+        <div>
+          <span class="info-label">División</span>
+          <span class="info-value">{{ team()!.division }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="tabs-wrap">
+    <mat-tab-group animationDuration="200ms" mat-stretch-tabs="false">
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">groups</mat-icon>
+          Roster
+          <span class="tab-count">{{ players().length }}</span>
+        </ng-template>
+        <div class="tab-content">
+          <app-team-roster [players]="players()" />
+        </div>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">calendar_month</mat-icon>
+          Calendario
+          <span class="tab-count">{{ schedule().length }}</span>
+        </ng-template>
+        <div class="tab-content">
+          <app-team-schedule [games]="schedule()" />
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+
+  <div class="back-btn">
+    <button mat-stroked-button routerLink="/teams">
+      <mat-icon>arrow_back</mat-icon>
+      Volver a equipos
+    </button>
+  </div>
+
+}

@@ -1,0 +1,134 @@
+.layout-container {
+  min-height: 100vh;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  min-height: 64px;
+  background: #013369;
+  color: white;
+  padding-inline: 24px;
+}
+
+.brand {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.desktop-navigation {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 32px;
+
+  a {
+    color: white;
+  }
+}
+
+.active-link {
+  background: rgb(255 255 255 / 16%);
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.mobile-menu-button {
+  display: none;
+}
+
+.mobile-sidebar {
+  width: 270px;
+}
+
+.sidebar-logo {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-inline: 24px;
+  background: #013369;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.active-mobile-link {
+  background: rgb(1 51 105 / 12%);
+  color: #013369;
+}
+
+.content {
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .toolbar {
+    padding-inline: 12px;
+  }
+
+  .desktop-navigation {
+    display: none;
+  }
+
+  .mobile-menu-button {
+    display: inline-flex;
+  }
+
+  .content {
+    padding: 16px;
+  }
+}
+
+// ── Footer ────────────────────────────────────────────────
+.footer {
+  background: var(--color-toolbar);
+  color: var(--color-text-secondary);
+  padding: 16px 24px;
+  font-size: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.footer__inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer__app {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.footer__divider {
+  opacity: 0.3;
+}
+
+.footer__attribution {
+  flex: 1;
+  min-width: 200px;
+  line-height: 1.5;
+}
+
+.footer__link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover { color: var(--color-text); }
+}
+
+.footer__copy {
+  white-space: nowrap;
+  opacity: 0.6;
+}

@@ -1,1 +1,52 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+// ── Paleta de colores ─────────────────────────────────────
+:root {
+  --color-primary:        #2563EB;
+  --color-secondary:      #7C3AED;
+  --color-success:        #22C55E;
+  --color-warning:        #F59E0B;
+  --color-error:          #EF4444;
+  --color-background:     #0F172A;
+  --color-surface:        #1E293B;
+  --color-toolbar:        #111827;
+  --color-border:         #334155;
+  --color-text:           #F8FAFC;
+  --color-text-secondary: #94A3B8;
+}
+
+// ── Tema Angular Material (modo oscuro) ───────────────────
+html {
+
+  background-color: var(--color-background);
+  color: var(--color-text);
+
+  @include mat.theme((
+    color: (
+      primary:   mat.$blue-palette,
+      tertiary:  mat.$violet-palette,
+      theme-type: dark,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+
+  body {
+    margin: 0;
+    font-family: Roboto, Arial, sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+
+}
+
+// ── Snackbars ─────────────────────────────────────────────
+.success-snackbar {
+  --mdc-snackbar-container-color: var(--color-success);
+  --mdc-snackbar-supporting-text-color: #fff;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: var(--color-error);
+  --mdc-snackbar-supporting-text-color: #fff;
+}
