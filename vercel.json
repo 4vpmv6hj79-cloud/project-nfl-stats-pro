@@ -5,12 +5,9 @@
   "outputDirectory": "dist/nfl-stats-pro",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://site.api.espn.com/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/server/server.mjs"
     }
   ]
 }
+
