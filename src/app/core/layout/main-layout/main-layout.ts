@@ -36,10 +36,11 @@ export class MainLayout {
   readonly year = new Date().getFullYear();
 
   readonly menuItems = [
-    { title: 'Inicio',    icon: 'dashboard',    route: '/dashboard'   },
-    { title: 'Equipos',      icon: 'shield',       route: '/teams'       },
-    { title: 'Marcadores',   icon: 'sports_score', route: '/scores'      },
-    { title: 'Conferencias', icon: 'hub',          route: '/conferences' },
+    { title: 'Inicio',       icon: 'dashboard',      route: '/dashboard'   },
+    { title: 'Equipos',      icon: 'shield',         route: '/teams'       },
+    { title: 'Marcadores',   icon: 'sports_score',   route: '/scores'      },
+    { title: 'Playoffs',     icon: 'account_tree',   route: '/playoffs'    },
+    { title: 'Conferencias', icon: 'hub',             route: '/conferences' },
   ];
 
 }

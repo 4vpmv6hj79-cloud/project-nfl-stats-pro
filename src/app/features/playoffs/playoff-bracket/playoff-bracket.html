@@ -1,0 +1,196 @@
+<div class="page">
+
+  <div class="page-header">
+    <h1 class="page-title">🏆 Postemporada NFL</h1>
+    <p class="page-subtitle">Proyección basada en el récord actual de la temporada regular</p>
+  </div>
+
+  <div class="view-toggle">
+    <mat-button-toggle-group [value]="view()" (change)="onViewChange($event.value)">
+      <mat-button-toggle value="bracket">🗺 Bracket</mat-button-toggle>
+      <mat-button-toggle value="seeds">📋 Seeds</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  @if (loading()) {
+    <app-loading-spinner />
+  }
+
+  @if (!loading() && bracket()) {
+
+    <!-- ── VISTA BRACKET ── -->
+    @if (view() === 'bracket') {
+      <div class="bracket-wrap">
+
+        <!-- AFC -->
+        <div class="conference-bracket">
+          <h2 class="conf-title afc">AFC</h2>
+
+          <div class="rounds">
+
+            <!-- Wild Card AFC -->
+            <div class="round">
+              <span class="round-label">Wild Card</span>
+              @for (m of bracket()!.afc.wildCard; track m.id) {
+                <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: m }" />
+              }
+              <div class="bye-card">
+                <span class="bye-label">BYE</span>
+                <ng-container *ngTemplateOutlet="teamChip; context: { $implicit: bracket()!.afc.seeds[0] }" />
+              </div>
+            </div>
+
+            <!-- Divisional AFC -->
+            <div class="round">
+              <span class="round-label">Divisional</span>
+              @for (m of bracket()!.afc.divisional; track m.id) {
+                <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: m }" />
+              }
+            </div>
+
+            <!-- Championship AFC -->
+            <div class="round round--center">
+              <span class="round-label">Campeonato AFC</span>
+              <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: bracket()!.afc.championship }" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Super Bowl -->
+        <div class="superbowl-col">
+          <div class="superbowl-card">
+            <div class="superbowl-trophy">🏆</div>
+            <h3 class="superbowl-title">Super Bowl</h3>
+            <div class="superbowl-matchup">
+              <ng-container *ngTemplateOutlet="teamChip; context: { $implicit: bracket()!.afc.championship.home }" />
+              <span class="vs">VS</span>
+              <ng-container *ngTemplateOutlet="teamChip; context: { $implicit: bracket()!.nfc.championship.home }" />
+            </div>
+          </div>
+        </div>
+
+        <!-- NFC -->
+        <div class="conference-bracket">
+          <h2 class="conf-title nfc">NFC</h2>
+
+          <div class="rounds">
+
+            <!-- Wild Card NFC -->
+            <div class="round">
+              <span class="round-label">Wild Card</span>
+              @for (m of bracket()!.nfc.wildCard; track m.id) {
+                <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: m }" />
+              }
+              <div class="bye-card">
+                <span class="bye-label">BYE</span>
+                <ng-container *ngTemplateOutlet="teamChip; context: { $implicit: bracket()!.nfc.seeds[0] }" />
+              </div>
+            </div>
+
+            <!-- Divisional NFC -->
+            <div class="round">
+              <span class="round-label">Divisional</span>
+              @for (m of bracket()!.nfc.divisional; track m.id) {
+                <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: m }" />
+              }
+            </div>
+
+            <!-- Championship NFC -->
+            <div class="round round--center">
+              <span class="round-label">Campeonato NFC</span>
+              <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: bracket()!.nfc.championship }" />
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    }
+
+    <!-- ── VISTA SEEDS ── -->
+    @if (view() === 'seeds') {
+      <div class="seeds-wrap">
+
+        @for (conf of [bracket()!.afc, bracket()!.nfc]; track conf.conference) {
+          <div class="seeds-conference">
+
+            <h2 class="conf-title" [class.afc]="conf.conference === 'AFC'" [class.nfc]="conf.conference === 'NFC'">
+              {{ conf.conference }}
+            </h2>
+
+            <div class="seeds-list">
+              @for (team of conf.seeds; track team.id) {
+                <div class="seed-row" [class.seed-row--bye]="team.seed <= 2" [class.seed-row--division]="team.isDivisionWinner">
+
+                  <span class="seed-num">#{{ team.seed }}</span>
+
+                  <img class="seed-logo" [src]="team.logo" [alt]="team.name" loading="lazy" />
+
+                  <div class="seed-info">
+                    <span class="seed-name">{{ team.name }}</span>
+                    <span class="seed-record">{{ record(team) }}</span>
+                  </div>
+
+                  <div class="seed-badges">
+                    @if (team.isDivisionWinner) {
+                      <span class="badge badge--div">DIV</span>
+                    } @else {
+                      <span class="badge badge--wc">WC</span>
+                    }
+                    @if (team.seed <= 2) {
+                      <span class="badge badge--bye">BYE</span>
+                    }
+                  </div>
+
+                  <a class="seed-link" [routerLink]="['/teams', team.id]">Ver equipo →</a>
+
+                </div>
+              }
+            </div>
+
+          </div>
+        }
+
+      </div>
+    }
+
+  }
+
+</div>
+
+<!-- ── Templates reutilizables ── -->
+
+<ng-template #matchupCard let-m>
+  <div class="matchup-card">
+    <ng-container *ngTemplateOutlet="teamSlot; context: { $implicit: m.home, seed: m.home?.seed }" />
+    <span class="matchup-vs">VS</span>
+    <ng-container *ngTemplateOutlet="teamSlot; context: { $implicit: m.away, seed: m.away?.seed }" />
+  </div>
+</ng-template>
+
+<ng-template #teamSlot let-team let-seed="seed">
+  @if (team) {
+    <div class="team-slot">
+      <span class="slot-seed">#{{ seed }}</span>
+      <img class="slot-logo" [src]="team.logo" [alt]="team.name" loading="lazy" />
+      <span class="slot-abbr">{{ team.abbreviation }}</span>
+      <span class="slot-record">{{ record(team) }}</span>
+    </div>
+  } @else {
+    <div class="team-slot team-slot--tbd">
+      <span class="slot-abbr">TBD</span>
+    </div>
+  }
+</ng-template>
+
+<ng-template #teamChip let-team>
+  @if (team) {
+    <div class="team-chip">
+      <img class="chip-logo" [src]="team.logo" [alt]="team.name" loading="lazy" />
+      <span class="chip-abbr">{{ team.abbreviation }}</span>
+    </div>
+  } @else {
+    <div class="team-chip team-chip--tbd">TBD</div>
+  }
+</ng-template>

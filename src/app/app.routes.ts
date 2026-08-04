@@ -54,6 +54,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/conferences/pages/conference-list/conference-list')
             .then(m => m.ConferenceListComponent)
+      },
+
+      {
+        path: 'playoffs',
+        loadComponent: () =>
+          import('./features/playoffs/playoff-bracket/playoff-bracket')
+            .then(m => m.PlayoffBracketComponent)
       }
 
     ]
