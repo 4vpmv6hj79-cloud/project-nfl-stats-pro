@@ -4,6 +4,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://site.api.espn.com/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
     }
   ]
 }
