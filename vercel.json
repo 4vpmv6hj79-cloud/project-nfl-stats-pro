@@ -1,13 +1,18 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist/nfl-stats-pro",
+  "functions": {
+    "server/server.mjs": {
+      "runtime": "@vercel/node@5",
+      "memory": 512,
+      "maxDuration": 10
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/server/server.mjs"
     }
   ]
-}
-
+} 
