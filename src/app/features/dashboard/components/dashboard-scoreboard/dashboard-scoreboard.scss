@@ -4,6 +4,8 @@
   padding: 24px;
   margin: 24px 0;
   color: var(--color-text);
+
+  @media (max-width: 600px) { padding: 16px 14px; margin: 16px 0; border-radius: 12px; }
 }
 
 .scoreboard__header {
@@ -13,11 +15,13 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
+
+  @media (max-width: 600px) { margin-bottom: 14px; }
 }
 
 .scoreboard__title {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: clamp(1rem, 3.5vw, 1.3rem);
   font-weight: 700;
 }
 
@@ -27,6 +31,8 @@
   gap: 12px;
   font-size: 0.82rem;
   opacity: 0.75;
+
+  @media (max-width: 480px) { font-size: 0.72rem; gap: 8px; }
 }
 
 .scoreboard__count    { font-weight: 500; }
@@ -39,7 +45,6 @@
   opacity: 0.6;
 }
 
-// ── Punto live animado ────────────────────────────────────
 .live-dot {
   display: inline-block;
   width: 8px;
@@ -56,7 +61,6 @@
   50%       { opacity: 0.4; transform: scale(1.3); }
 }
 
-// ── Grupos ────────────────────────────────────────────────
 .group {
   margin-bottom: 20px;
   &:last-child { margin-bottom: 0; }
@@ -74,29 +78,30 @@
   &--live { opacity: 1; color: var(--color-error); }
 }
 
-// ── Tira con scroll horizontal ────────────────────────────
 .games-strip {
   display: flex;
   gap: 12px;
   overflow-x: auto;
   padding-bottom: 6px;
   scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.2) transparent;
 
   &::-webkit-scrollbar       { height: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+
+  @media (max-width: 600px) { gap: 10px; }
 }
 
-// ── Tarjeta de partido ────────────────────────────────────
 .game-card {
   flex-shrink: 0;
   scroll-snap-align: start;
-  width: 220px;
+  width: 200px;
   background: rgba(255,255,255,0.08);
   border-radius: 12px;
-  padding: 16px 12px;
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -108,20 +113,13 @@
     transform: translateY(-2px);
   }
 
-  &--live {
-    border-color: rgba(239,68,68,0.5);
-    background: rgba(239,68,68,0.1);
-  }
+  &--live    { border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.1); }
+  &--final   { opacity: 0.85; }
+  &--upcoming { border-style: dashed; border-color: rgba(255,255,255,0.2); }
 
-  &--final  { opacity: 0.85; }
-
-  &--upcoming {
-    border-style: dashed;
-    border-color: rgba(255,255,255,0.2);
-  }
+  @media (max-width: 600px) { width: 170px; padding: 12px 10px; }
 }
 
-// ── Equipo ────────────────────────────────────────────────
 .team {
   display: flex;
   align-items: center;
@@ -136,14 +134,13 @@
   }
 }
 
-.team__logo  { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
-.team__name  { flex: 1; font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.team__score { font-size: 1.4rem; font-weight: 700; min-width: 32px; text-align: right; color: rgba(255,255,255,0.8); }
+.team__logo  { width: 30px; height: 30px; object-fit: contain; flex-shrink: 0; }
+.team__name  { flex: 1; font-size: 0.78rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.team__score { font-size: 1.3rem; font-weight: 700; min-width: 28px; text-align: right; color: rgba(255,255,255,0.8); }
 
-// ── Status central ────────────────────────────────────────
 .game__center  { text-align: center; }
 .game__status  {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: rgba(255,255,255,0.55);
   text-transform: uppercase;
@@ -152,7 +149,6 @@
   &--live { color: var(--color-error); }
 }
 
-// ── Skeleton ──────────────────────────────────────────────
 .scoreboard__skeleton {
   display: flex;
   gap: 12px;
@@ -161,8 +157,8 @@
 
 .skeleton-card {
   flex-shrink: 0;
-  width: 220px;
-  height: 120px;
+  width: 200px;
+  height: 110px;
   border-radius: 12px;
   background: linear-gradient(
     90deg,
@@ -172,6 +168,8 @@
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
+
+  @media (max-width: 600px) { width: 170px; height: 100px; }
 }
 
 @keyframes shimmer {

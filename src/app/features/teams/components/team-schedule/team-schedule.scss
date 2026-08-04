@@ -1,10 +1,13 @@
-// ── Barra de récord ───────────────────────────────────────
+// ── Récord ────────────────────────────────────────────────
 .record-bar {
   display: flex;
   align-items: center;
   gap: 6px;
   margin-bottom: 20px;
   font-size: 0.95rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) { font-size: 0.82rem; margin-bottom: 14px; }
 }
 
 .record-label  { font-weight: 600; color: #555; }
@@ -17,6 +20,8 @@
 // ── Filtro ────────────────────────────────────────────────
 .filters {
   margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 // ── Lista ─────────────────────────────────────────────────
@@ -26,11 +31,11 @@
   gap: 6px;
 }
 
-// ── Fila de partido ───────────────────────────────────────
+// ── Fila ─────────────────────────────────────────────────
 .game-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 10px 14px;
   border-radius: 8px;
   background: var(--mat-sys-surface-container, #f5f5f5);
@@ -43,13 +48,17 @@
     background: linear-gradient(90deg, #fff8e1, #f5f5f5);
     border-left: 3px solid #f9a825;
   }
+
+  @media (max-width: 600px) { padding: 8px 10px; gap: 8px; }
 }
 
 // ── Columnas ──────────────────────────────────────────────
 .col-week {
-  width: 52px;
+  width: 48px;
   flex-shrink: 0;
   text-align: center;
+
+  @media (max-width: 400px) { width: 36px; }
 }
 
 .week-label {
@@ -59,17 +68,23 @@
   color: #888;
 }
 
+// Fecha: ocultar en móvil pequeño para ganar espacio
 .col-date {
-  width: 110px;
+  width: 100px;
   flex-shrink: 0;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: #555;
+
+  @media (max-width: 600px) { width: 80px; font-size: 0.72rem; }
+  @media (max-width: 420px) { display: none; }
 }
 
 .col-venue {
-  width: 56px;
+  width: 52px;
   flex-shrink: 0;
   text-align: center;
+
+  @media (max-width: 360px) { display: none; }
 }
 
 .col-opponent {
@@ -83,10 +98,12 @@
 .col-result {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
   min-width: 90px;
   justify-content: flex-end;
+
+  @media (max-width: 480px) { min-width: 70px; gap: 4px; }
 }
 
 // ── Local / Visitante ─────────────────────────────────────
@@ -97,28 +114,23 @@
   padding: 2px 5px;
   border-radius: 4px;
 
-  &--home {
-    background: #e3f2fd;
-    color: #1565c0;
-  }
-
-  &--away {
-    background: #fce4ec;
-    color: #880e4f;
-  }
+  &--home { background: #e3f2fd; color: #1565c0; }
+  &--away { background: #fce4ec; color: #880e4f; }
 }
 
-// ── Logo y nombre del rival ───────────────────────────────
+// ── Rival ─────────────────────────────────────────────────
 .opp-logo {
   width: 28px;
   height: 28px;
   object-fit: contain;
   flex-shrink: 0;
+
+  @media (max-width: 480px) { width: 22px; height: 22px; }
 }
 
 .opp-name {
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -137,13 +149,13 @@
 // ── Resultado ─────────────────────────────────────────────
 .result-badge {
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-align: center;
-  line-height: 24px;
+  line-height: 22px;
 
   &.result--win  { background: #c8e6c9; color: #1b5e20; }
   &.result--loss { background: #ffcdd2; color: #b71c1c; }
@@ -151,15 +163,18 @@
 }
 
 .score {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
   white-space: nowrap;
+
+  @media (max-width: 480px) { font-size: 0.78rem; }
 }
 
 .pending {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: #999;
   font-style: italic;
+  white-space: nowrap;
 }
 
 // ── Vacío ─────────────────────────────────────────────────

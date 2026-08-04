@@ -1,11 +1,16 @@
 .page {
   padding: 24px;
+
+  @media (max-width: 900px) { padding: 16px; }
+  @media (max-width: 600px) { padding: 12px 10px; }
 }
 
 .section-title {
   margin: 32px 0 12px;
   font-size: 1.1rem;
   font-weight: 700;
+
+  @media (max-width: 600px) { margin: 20px 0 8px; font-size: 1rem; }
 }
 
 .coming-soon {

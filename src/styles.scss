@@ -1,5 +1,12 @@
 @use '@angular/material' as mat;
 
+// ── Box sizing global ─────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 // ── Paleta de colores ─────────────────────────────────────
 :root {
   --color-primary:        #2563EB;
@@ -17,7 +24,6 @@
 
 // ── Tema Angular Material (modo oscuro) ───────────────────
 html {
-
   background-color: var(--color-background);
   color: var(--color-text);
 
@@ -36,8 +42,9 @@ html {
     font-family: Roboto, Arial, sans-serif;
     background-color: var(--color-background);
     color: var(--color-text);
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
   }
-
 }
 
 // ── Snackbars ─────────────────────────────────────────────

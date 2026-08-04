@@ -13,6 +13,8 @@
     margin-bottom: 10px;
     color: #000;
   }
+
+  @media (max-width: 600px) { padding: 10px 12px; margin-bottom: 16px; }
 }
 
 .injury-list {
@@ -26,6 +28,8 @@
   align-items: center;
   gap: 8px;
   font-size: 0.85rem;
+
+  @media (max-width: 480px) { font-size: 0.78rem; gap: 6px; }
 }
 
 .injury-name { font-weight: 600; color: #000; }
@@ -37,11 +41,15 @@
   margin-bottom: 20px;
   overflow-x: auto;
   white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+
+  @media (max-width: 600px) { margin-bottom: 14px; }
 }
 
 // ── Tabla ─────────────────────────────────────────────────
 .table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .roster-table {
@@ -68,18 +76,33 @@
   }
 
   tbody tr:hover { background: var(--mat-sys-surface-container, #f9f9f9); }
-
   tbody tr.row--injured td { background: #fff8f0; }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    th, td { padding: 8px 8px; }
+  }
 }
 
-// ── Columnas ──────────────────────────────────────────────
+// ── Columnas — ocultar las menos críticas en móvil ────────
 .col-headshot { width: 44px; padding: 6px 8px; }
 .col-num      { width: 40px; text-align: center; font-weight: 700; color: #888; }
-.col-name     { min-width: 160px; font-weight: 500; }
+.col-name     { min-width: 140px; font-weight: 500; }
 .col-pos      { width: 60px; }
 .col-stat     { width: 64px; text-align: center; color: #555; }
-.col-college  { min-width: 120px; font-size: 0.8rem; color: #666; }
+.col-college  {
+  min-width: 120px;
+  font-size: 0.8rem;
+  color: #666;
+  // Ocultar en móvil — no es info crítica
+  @media (max-width: 600px) { display: none; }
+}
 .col-status   { width: 110px; }
+
+// Ocultar stats (altura, peso) en móvil pequeño
+@media (max-width: 480px) {
+  .col-stat { display: none; }
+}
 
 // ── Headshot ──────────────────────────────────────────────
 .headshot {
@@ -97,6 +120,8 @@
     font-weight: 700;
     font-size: 0.9rem;
   }
+
+  @media (max-width: 480px) { width: 30px; height: 30px; }
 }
 
 // ── Badge de posición ─────────────────────────────────────

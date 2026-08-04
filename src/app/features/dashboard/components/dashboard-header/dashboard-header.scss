@@ -2,22 +2,22 @@
   margin-bottom: 32px;
 
   h1 {
-    font-size: 2.2rem;
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
     margin-bottom: 8px;
     color: var(--color-text);
   }
 
   p {
     color: var(--color-text-secondary);
-    font-size: 1rem;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
   }
+
+  @media (max-width: 600px) { margin-bottom: 20px; }
 }
 
 .last-update {
   color: var(--color-text-secondary);
   font-size: 0.85rem;
 
-  strong {
-    color: var(--color-text);
-  }
+  strong { color: var(--color-text); }
 }
