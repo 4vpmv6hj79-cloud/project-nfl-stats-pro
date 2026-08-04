@@ -7,8 +7,8 @@
 
   <div class="view-toggle">
     <mat-button-toggle-group [value]="view()" (change)="onViewChange($event.value)">
-      <mat-button-toggle value="bracket">🗺 Bracket</mat-button-toggle>
-      <mat-button-toggle value="seeds">📋 Seeds</mat-button-toggle>
+      <mat-button-toggle value="bracket">🗺 Mapa</mat-button-toggle>
+      <mat-button-toggle value="seeds">📋 Clasificados</mat-button-toggle>
     </mat-button-toggle-group>
   </div>
 
@@ -18,17 +18,15 @@
 
   @if (!loading() && bracket()) {
 
-    <!-- ── VISTA BRACKET ── -->
+    <!-- ── VISTA MAPA ── -->
     @if (view() === 'bracket') {
       <div class="bracket-wrap">
 
-        <!-- AFC -->
+        <!-- AFC: Wild Card → Divisional → Campeonato (izquierda a derecha) -->
         <div class="conference-bracket">
           <h2 class="conf-title afc">AFC</h2>
+          <div class="rounds rounds--ltr">
 
-          <div class="rounds">
-
-            <!-- Wild Card AFC -->
             <div class="round">
               <span class="round-label">Wild Card</span>
               @for (m of bracket()!.afc.wildCard; track m.id) {
@@ -40,7 +38,6 @@
               </div>
             </div>
 
-            <!-- Divisional AFC -->
             <div class="round">
               <span class="round-label">Divisional</span>
               @for (m of bracket()!.afc.divisional; track m.id) {
@@ -48,7 +45,6 @@
               }
             </div>
 
-            <!-- Championship AFC -->
             <div class="round round--center">
               <span class="round-label">Campeonato AFC</span>
               <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: bracket()!.afc.championship }" />
@@ -57,7 +53,7 @@
           </div>
         </div>
 
-        <!-- Super Bowl -->
+        <!-- Super Bowl (centro) -->
         <div class="superbowl-col">
           <div class="superbowl-card">
             <div class="superbowl-trophy">🏆</div>
@@ -70,13 +66,23 @@
           </div>
         </div>
 
-        <!-- NFC -->
+        <!-- NFC: Campeonato → Divisional → Wild Card (derecha a izquierda, espejado) -->
         <div class="conference-bracket">
           <h2 class="conf-title nfc">NFC</h2>
+          <div class="rounds rounds--rtl">
 
-          <div class="rounds">
+            <div class="round round--center">
+              <span class="round-label">Campeonato NFC</span>
+              <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: bracket()!.nfc.championship }" />
+            </div>
 
-            <!-- Wild Card NFC -->
+            <div class="round">
+              <span class="round-label">Divisional</span>
+              @for (m of bracket()!.nfc.divisional; track m.id) {
+                <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: m }" />
+              }
+            </div>
+
             <div class="round">
               <span class="round-label">Wild Card</span>
               @for (m of bracket()!.nfc.wildCard; track m.id) {
@@ -88,27 +94,13 @@
               </div>
             </div>
 
-            <!-- Divisional NFC -->
-            <div class="round">
-              <span class="round-label">Divisional</span>
-              @for (m of bracket()!.nfc.divisional; track m.id) {
-                <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: m }" />
-              }
-            </div>
-
-            <!-- Championship NFC -->
-            <div class="round round--center">
-              <span class="round-label">Campeonato NFC</span>
-              <ng-container *ngTemplateOutlet="matchupCard; context: { $implicit: bracket()!.nfc.championship }" />
-            </div>
-
           </div>
         </div>
 
       </div>
     }
 
-    <!-- ── VISTA SEEDS ── -->
+    <!-- ── VISTA CLASIFICADOS ── -->
     @if (view() === 'seeds') {
       <div class="seeds-wrap">
 
@@ -121,7 +113,9 @@
 
             <div class="seeds-list">
               @for (team of conf.seeds; track team.id) {
-                <div class="seed-row" [class.seed-row--bye]="team.seed <= 2" [class.seed-row--division]="team.isDivisionWinner">
+                <div class="seed-row"
+                  [class.seed-row--bye]="team.seed <= 2"
+                  [class.seed-row--division]="team.isDivisionWinner">
 
                   <span class="seed-num">#{{ team.seed }}</span>
 
@@ -174,7 +168,7 @@
     <div class="team-slot">
       <span class="slot-seed">#{{ seed }}</span>
       <img class="slot-logo" [src]="team.logo" [alt]="team.name" loading="lazy" />
-      <span class="slot-abbr">{{ team.abbreviation }}</span>
+      <span class="slot-name">{{ team.name }}</span>
       <span class="slot-record">{{ record(team) }}</span>
     </div>
   } @else {
@@ -188,7 +182,7 @@
   @if (team) {
     <div class="team-chip">
       <img class="chip-logo" [src]="team.logo" [alt]="team.name" loading="lazy" />
-      <span class="chip-abbr">{{ team.abbreviation }}</span>
+      <span class="chip-name">{{ team.name }}</span>
     </div>
   } @else {
     <div class="team-chip team-chip--tbd">TBD</div>

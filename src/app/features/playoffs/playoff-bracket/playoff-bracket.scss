@@ -1,4 +1,4 @@
-// ── Page layout ──────────────────────────────────────────
+// ── Page ─────────────────────────────────────────────────
 .page {
   padding: 24px 16px;
   max-width: 1400px;
@@ -28,7 +28,7 @@
   margin-bottom: 32px;
 }
 
-// ── Bracket layout ────────────────────────────────────────
+// ── Bracket: 3 columnas AFC | SuperBowl | NFC ─────────────
 .bracket-wrap {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -52,21 +52,24 @@
   border-radius: 8px;
   margin: 0 0 8px;
 
-  &.afc {
-    background: #e3f2fd;
-    color: #1565c0;
-  }
-
-  &.nfc {
-    background: #fce4ec;
-    color: #880e4f;
-  }
+  &.afc { background: #e3f2fd; color: #1565c0; }
+  &.nfc { background: #fce4ec; color: #880e4f; }
 }
 
-.rounds {
+// AFC: Wild Card → Divisional → Campeonato (izquierda a derecha)
+.rounds--ltr {
   display: flex;
+  flex-direction: row;
   gap: 12px;
-  align-items: flex-start;
+  align-items: stretch;
+}
+
+// NFC: Campeonato → Divisional → Wild Card (espejado, derecha a izquierda)
+.rounds--rtl {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: stretch;
 }
 
 .round {
@@ -74,10 +77,10 @@
   flex-direction: column;
   gap: 10px;
   flex: 1;
+  min-width: 170px;
 
   &--center {
     justify-content: center;
-    align-self: center;
   }
 }
 
@@ -89,6 +92,7 @@
   letter-spacing: 0.05em;
   text-align: center;
   margin-bottom: 4px;
+  white-space: nowrap;
 }
 
 // ── Matchup card ──────────────────────────────────────────
@@ -99,7 +103,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 160px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
@@ -127,7 +130,7 @@
 }
 
 .slot-seed {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: #aaa;
   width: 18px;
@@ -141,6 +144,15 @@
   flex-shrink: 0;
 }
 
+.slot-name {
+  font-weight: 600;
+  font-size: 0.78rem;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .slot-abbr {
   font-weight: 700;
   font-size: 0.8rem;
@@ -148,7 +160,7 @@
 }
 
 .slot-record {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: #888;
   flex-shrink: 0;
 }
@@ -158,12 +170,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: linear-gradient(135deg, #fff8e1, #fffde7);
   border: 1.5px dashed #f9a825;
   border-radius: 10px;
   padding: 10px;
-  min-width: 160px;
 }
 
 .bye-label {
@@ -178,8 +189,8 @@
 .team-chip {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
+  gap: 8px;
+  padding: 6px 12px;
   background: white;
   border-radius: 20px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
@@ -192,14 +203,16 @@
 }
 
 .chip-logo {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
-.chip-abbr {
+.chip-name {
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
+  white-space: nowrap;
 }
 
 // ── Super Bowl ────────────────────────────────────────────
@@ -218,7 +231,7 @@
   border: 2px solid #f9a825;
   border-radius: 16px;
   padding: 20px 16px;
-  min-width: 140px;
+  min-width: 160px;
   box-shadow: 0 4px 16px rgba(249, 168, 37, 0.25);
 }
 
@@ -240,7 +253,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  width: 100%;
 }
 
 .vs {
@@ -255,9 +269,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
 
-  @media (max-width: 700px) {
-    grid-template-columns: 1fr;
-  }
+  @media (max-width: 700px) { grid-template-columns: 1fr; }
 }
 
 .seeds-conference {
@@ -288,9 +300,7 @@
     background: linear-gradient(90deg, #fff8e1 0%, var(--mat-sys-surface-container, #f5f5f5) 40%);
   }
 
-  &--division {
-    font-weight: 600;
-  }
+  &--division { font-weight: 600; }
 }
 
 .seed-num {
@@ -342,9 +352,9 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 
-  &--div  { background: #e3f2fd; color: #1565c0; }
-  &--wc   { background: #fce4ec; color: #880e4f; }
-  &--bye  { background: #fff8e1; color: #f57f17; }
+  &--div { background: #e3f2fd; color: #1565c0; }
+  &--wc  { background: #fce4ec; color: #880e4f; }
+  &--bye { background: #fff8e1; color: #f57f17; }
 }
 
 .seed-link {
@@ -356,14 +366,14 @@
   &:hover { text-decoration: underline; }
 }
 
-// ── Responsive bracket ────────────────────────────────────
+// ── Responsive ────────────────────────────────────────────
 @media (max-width: 900px) {
   .bracket-wrap {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
   }
 
-  .rounds {
+  .rounds--ltr,
+  .rounds--rtl {
     overflow-x: auto;
     padding-bottom: 8px;
   }
