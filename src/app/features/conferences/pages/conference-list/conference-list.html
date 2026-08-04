@@ -1,43 +1,31 @@
-<h1 class="title">
-  Conferencias
-</h1>
+<h1 class="title">Conferencias NFL</h1>
 
 <div class="conferences">
 
-@for(conference of conferences$ | async; track conference.id) {
+  @for (conference of conferences$ | async; track conference.id) {
 
-<section class="conference-card">
+    <section class="conference-card">
 
-    <h2>
-        {{ conference.id }}
-    </h2>
+      <p class="conference-id">{{ conference.id }}</p>
+      <p class="conference-name">{{ conference.name }}</p>
 
-    <p class="conference-name">
-        {{ conference.name }}
-    </p>
+      <div class="divisions">
 
-    <div class="divisions">
-
-    @for(division of conference.divisions; track division.id) {
-
-        <div class="division-card">
-
-            <h3>
-                {{ division.name }}
-            </h3>
+        @for (division of conference.divisions; track division.id) {
+          <div class="division-card">
+            <h3>{{ division.name }}</h3>
             <ul>
-            @for(team of division.teams; track team) {
-                <li>
-                    {{ team }}
-                </li>
-            }
+              @for (team of division.teams; track team) {
+                <li>{{ team }}</li>
+              }
             </ul>
-        </div>
-    }
-    </div>
+          </div>
+        }
 
-</section>
+      </div>
 
-}
+    </section>
+
+  }
 
 </div>

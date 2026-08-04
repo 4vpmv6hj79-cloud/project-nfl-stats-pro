@@ -8,7 +8,11 @@
 .page-title {
   margin-bottom: 24px;
   color: var(--color-text);
-  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .filters {
@@ -96,6 +100,7 @@
 .team-score {
   font-size: 2rem;
   font-weight: 700;
+  font-family: var(--font-display);
   line-height: 1;
   color: var(--color-text);
 

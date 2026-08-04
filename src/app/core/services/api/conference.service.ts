@@ -30,17 +30,33 @@ export class ConferenceService {
             ? 'American Football Conference'
             : 'National Football Conference',
 
-          divisions: Object.values(
-            groups[conferenceName].reduce((acc: Record<string, Team[]>, team: Team) => {
-              if (!acc[team.division]) acc[team.division] = [];
-              acc[team.division].push(team);
-              return acc;
-            }, {})
-          ).map((divTeams: Team[], index) => ({
-            id:    String(index),
-            name:  divTeams[0].division,
-            teams: divTeams.map(t => t.name),
-          })),
+          divisions: (() => {
+            const divMap = groups[conferenceName].reduce(
+              (acc: Record<string, Team[]>, team: Team) => {
+                if (!acc[team.division]) acc[team.division] = [];
+                acc[team.division].push(team);
+                return acc;
+              }, {}
+            );
+
+            // Orden fijo: Norte → Sur → Este → Oeste
+            const ORDER = ['Norte', 'Sur', 'Este', 'Oeste',
+                           'North','South','East','West'];
+
+            return Object.entries(divMap)
+              .sort(([a], [b]) => {
+                const dirA = a.split(' ').pop() ?? a;
+                const dirB = b.split(' ').pop() ?? b;
+                return ORDER.indexOf(dirA) - ORDER.indexOf(dirB);
+              })
+              .map(([, divTeams], index) => ({
+                id:    String(index),
+                name:  divTeams[0].division,
+                teams: divTeams
+                  .sort((x, y) => x.name.localeCompare(y.name))
+                  .map(t => t.name),
+              }));
+          })(),
 
         }));
 

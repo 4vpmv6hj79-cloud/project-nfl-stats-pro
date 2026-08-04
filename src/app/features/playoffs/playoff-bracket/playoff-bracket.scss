@@ -15,8 +15,11 @@
 }
 
 .page-title {
-  font-size: clamp(1.3rem, 4vw, 1.8rem);
-  font-weight: 700;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   margin: 0 0 6px;
 }
 
@@ -57,12 +60,15 @@
 }
 
 .conf-title {
-  font-size: clamp(1.1rem, 3vw, 1.3rem);
+  font-size: clamp(1.4rem, 4vw, 1.6rem);
+  font-family: var(--font-display);
   font-weight: 800;
   text-align: center;
   padding: 6px 16px;
   border-radius: 8px;
   margin: 0 0 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 
   &.afc { background: #e3f2fd; color: #1565c0; }
   &.nfc { background: #fce4ec; color: #880e4f; }
