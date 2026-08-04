@@ -1,18 +1,19 @@
 {
-  "version": 2,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/nfl-stats-pro",
-  "functions": {
-    "server/server.mjs": {
-      "runtime": "@vercel/node@5",
-      "memory": 512,
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/server/server.mjs"
+      "source": "/api/:path*",
+      "destination": "https://site.api.espn.com/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/api"
     }
-  ]
-} 
+  ],
+  "functions": {
+    "api/index.mjs": {
+      "includeFiles": "dist/nfl-stats-pro/**"
+    }
+  }
+}
