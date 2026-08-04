@@ -2,12 +2,10 @@ import { Routes } from '@angular/router';
 import { MainLayout } from './core/layout/main-layout/main-layout';
 
 export const routes: Routes = [
-
   {
     path: '',
     component: MainLayout,
     children: [
-
       {
         path: '',
         redirectTo: 'dashboard',
@@ -61,9 +59,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/playoffs/playoff-bracket/playoff-bracket')
             .then(m => m.PlayoffBracketComponent)
-      }
+      },
 
+      // Siempre debe ser la última ruta
+      {
+        path: '**',
+        redirectTo: 'dashboard'
+      }
     ]
   }
-
 ];

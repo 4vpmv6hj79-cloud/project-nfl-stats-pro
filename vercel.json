@@ -7,7 +7,7 @@
     },
     {
       "source": "/:path*",
-      "destination": "/dashboard.html"
+      "destination": "/index.html"
     }
   ]
 }
