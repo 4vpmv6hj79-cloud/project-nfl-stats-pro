@@ -399,3 +399,304 @@
 
   @media (max-width: 480px) { display: none; }
 }
+
+// ── Selector de ronda para dispositivos móviles ──────────
+
+.round-stage-toggle {
+  display: none;
+}
+
+// ── Estilo general de las conferencias ───────────────────
+
+.conference-bracket {
+  position: relative;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+
+  &::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    content: '';
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// ── AFC: rojo oficial de conferencia ─────────────────────
+
+.conference-bracket--afc {
+  background:
+    linear-gradient(
+      145deg,
+      rgb(213 10 10 / 8%),
+      rgb(255 255 255 / 65%)
+    );
+  border-color: rgb(213 10 10 / 25%);
+  box-shadow: 0 10px 30px rgb(213 10 10 / 10%);
+
+  &::before {
+    background:
+      linear-gradient(90deg, #8f0000, #d50a0a, #ff5252);
+  }
+
+  .conf-title.afc {
+    color: #ffffff;
+    background:
+      linear-gradient(135deg, #8f0000, #d50a0a);
+    box-shadow: 0 6px 16px rgb(213 10 10 / 22%);
+  }
+
+  .round-label {
+    color: #9b0000;
+    background: rgb(213 10 10 / 9%);
+    border: 1px solid rgb(213 10 10 / 18%);
+  }
+
+  .matchup-card {
+    border-left: 4px solid #d50a0a;
+  }
+}
+
+// ── NFC: azul oficial de conferencia ─────────────────────
+
+.conference-bracket--nfc {
+  background:
+    linear-gradient(
+      145deg,
+      rgb(1 51 105 / 8%),
+      rgb(255 255 255 / 65%)
+    );
+  border-color: rgb(1 51 105 / 25%);
+  box-shadow: 0 10px 30px rgb(1 51 105 / 10%);
+
+  &::before {
+    background:
+      linear-gradient(90deg, #001b3a, #013369, #1976d2);
+  }
+
+  .conf-title.nfc {
+    color: #ffffff;
+    background:
+      linear-gradient(135deg, #001b3a, #013369);
+    box-shadow: 0 6px 16px rgb(1 51 105 / 24%);
+  }
+
+  .round-label {
+    color: #013369;
+    background: rgb(1 51 105 / 9%);
+    border: 1px solid rgb(1 51 105 / 18%);
+  }
+
+  .matchup-card {
+    border-left: 4px solid #013369;
+  }
+}
+
+// ── Etiquetas de ronda ────────────────────────────────────
+
+.round-label {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+// ── Tarjetas de enfrentamientos ───────────────────────────
+
+.matchup-card {
+  border: 1px solid rgb(15 23 42 / 7%);
+  box-shadow:
+    0 4px 12px rgb(15 23 42 / 7%),
+    0 1px 3px rgb(15 23 42 / 8%);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 22px rgb(15 23 42 / 12%),
+      0 2px 5px rgb(15 23 42 / 8%);
+  }
+}
+
+.team-slot {
+  border: 1px solid rgb(15 23 42 / 6%);
+}
+
+// ── Super Bowl LXI: turquesa, naranja y plata ─────────────
+
+.superbowl-card {
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgb(244 110 47 / 50%),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 5% 90%,
+      rgb(24 181 178 / 32%),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #052d3a 0%,
+      #086b73 52%,
+      #063440 100%
+    );
+  border: 2px solid #c9d2d9;
+  box-shadow:
+    0 14px 34px rgb(0 92 103 / 28%),
+    0 0 0 4px rgb(240 108 48 / 10%);
+
+  &::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 5px;
+    content: '';
+    background:
+      linear-gradient(
+        90deg,
+        #18b5b2,
+        #c9d2d9,
+        #f46e2f
+      );
+  }
+
+  &::after {
+    position: absolute;
+    right: -45px;
+    bottom: -55px;
+    width: 140px;
+    height: 140px;
+    content: '';
+    border: 18px solid rgb(255 255 255 / 7%);
+    border-radius: 50%;
+  }
+}
+
+.superbowl-trophy {
+  position: relative;
+  z-index: 1;
+  font-size: 2.4rem;
+  filter:
+    drop-shadow(0 4px 8px rgb(0 0 0 / 35%));
+}
+
+.superbowl-title {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+  font-size: 1rem;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 30%);
+}
+
+.superbowl-matchup {
+  position: relative;
+  z-index: 1;
+}
+
+.superbowl-card .team-chip {
+  color: #052d3a;
+  background: rgb(255 255 255 / 92%);
+  border: 1px solid rgb(255 255 255 / 45%);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 18%);
+}
+
+.superbowl-card .vs {
+  color: #ffe0d2;
+}
+
+// ── Presentación progresiva en móvil ──────────────────────
+
+@media (max-width: 700px) {
+  .round-stage-toggle {
+    display: flex;
+    margin-bottom: 16px;
+    padding-bottom: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    mat-button-toggle-group {
+      display: flex;
+      min-width: 480px;
+    }
+
+    mat-button-toggle {
+      flex: 1;
+      min-width: 110px;
+    }
+  }
+
+  .bracket-wrap {
+    gap: 16px;
+  }
+
+  .conference-bracket {
+    padding: 12px;
+  }
+
+  .rounds--ltr,
+  .rounds--rtl {
+    display: block;
+    overflow: visible;
+  }
+
+  // En móvil se ocultan todas las rondas menos la seleccionada.
+  .round:not(.round--active) {
+    display: none;
+  }
+
+  .round.round--active {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    animation: round-enter 220ms ease-out;
+  }
+
+  .conference-bracket--mobile-hidden,
+  .superbowl-col--mobile-hidden {
+    display: none;
+  }
+
+  .superbowl-card {
+    width: 100%;
+    max-width: none;
+    padding: 22px 14px;
+    flex-direction: column;
+    box-sizing: border-box;
+    animation: round-enter 220ms ease-out;
+  }
+
+  .superbowl-matchup {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+@keyframes round-enter {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

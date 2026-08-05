@@ -13,6 +13,12 @@ import {
   ConferenceBracket,
 } from '../../../shared/models/domain/playoff.model';
 
+type MobilePlayoffRound =
+  | 'wild-card'
+  | 'divisional'
+  | 'championship'
+  | 'super-bowl';
+
 @Component({
   selector: 'app-playoff-bracket',
   standalone: true,
@@ -29,6 +35,8 @@ export class PlayoffBracketComponent implements OnInit {
 
   private playoffService = inject(PlayoffService);
   private notification   = inject(NotificationService);
+
+  readonly mobileRound = signal<MobilePlayoffRound>('wild-card');
 
   bracket  = signal<PlayoffBracket | null>(null);
   loading  = signal(true);
@@ -59,5 +67,9 @@ export class PlayoffBracketComponent implements OnInit {
 
   seeds(conf: ConferenceBracket): PlayoffTeam[] {
     return conf.seeds;
+  }
+
+  onMobileRoundChange(round: MobilePlayoffRound): void {
+  this.mobileRound.set(round);
   }
 }
