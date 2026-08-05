@@ -1,23 +1,23 @@
-import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
 
-import { ConferenceService } from '../../../../core/services/api/conference.service';
-
+import { ConferenceService } from
+  '../../../../core/services/api/conference.service';
 
 @Component({
-  selector:'app-conference-list',
-  standalone:true,
-  imports:[
-    AsyncPipe
+  selector: 'app-conference-list',
+  standalone: true,
+  imports: [
+    AsyncPipe,
   ],
-  templateUrl:'./conference-list.html',
-  styleUrl:'./conference-list.scss'
+  templateUrl: './conference-list.html',
+  styleUrl: './conference-list.scss',
 })
 export class ConferenceListComponent {
 
-  private conferenceService = inject(ConferenceService);
+  private readonly conferenceService =
+    inject(ConferenceService);
 
-  conferences$ = this.conferenceService.getConferences();
-
-
+  readonly conferences$ =
+    this.conferenceService.getConferences();
 }

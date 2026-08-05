@@ -3,140 +3,453 @@
   color: #172033;
 }
 
-.title {
-  margin: 0 0 2rem;
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  font-family: var(--font-display);
+.conference-page {
+  max-width: 1400px;
+  padding: 24px 16px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 16px 10px;
+  }
+}
+
+.conference-page__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.conference-page__eyebrow {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  padding: 6px 12px;
+  margin-bottom: 10px;
+  color: #526174;
+  font-size: 0.72rem;
   font-weight: 800;
-  color: #013369;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.12em;
+  background: #eef3f8;
+  border: 1px solid #dce4ed;
+  border-radius: 999px;
+}
+
+.title {
+  margin: 0 0 10px;
+  color: #013369;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.045em;
+
+  background:
+    linear-gradient(
+      90deg,
+      #d50a0a 0%,
+      #d50a0a 38%,
+      #713654 50%,
+      #013369 62%,
+      #013369 100%
+    );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.conference-page__description {
+  max-width: 650px;
+  margin: 0;
+  color: #64748b;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  line-height: 1.6;
+}
+
+.conference-page__legend {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.legend-item {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  padding: 6px 12px;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border: 1px solid #dce4ed;
+  border-radius: 999px;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.legend-item--afc .legend-dot {
+  background: #d50a0a;
+  box-shadow: 0 0 0 4px rgb(213 10 10 / 12%);
+}
+
+.legend-item--nfc .legend-dot {
+  background: #013369;
+  box-shadow: 0 0 0 4px rgb(1 51 105 / 12%);
 }
 
 .conferences {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 28px;
 }
 
-// ── Tarjeta de conferencia ────────────────────────────────
 .conference-card {
-  padding: 1.75rem 1.75rem 1.75rem 2rem;
-  border: 1px solid #d8e1ec;
-  border-left: 15px solid #013369;   // grosor solicitado
-  border-radius: 16px;
-  background: #eef3f8;
-  color: #172033;
-  box-shadow: 0 8px 24px rgb(15 23 42 / 8%);
+  position: relative;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 20px;
 
-  @media (max-width: 600px) {
-    padding: 1.25rem 1rem 1.25rem 1.25rem;
-    border-left-width: 10px;
+  &::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 6px;
+    content: '';
+  }
+
+  &::after {
+    position: absolute;
+    top: -70px;
+    right: -70px;
+    width: 210px;
+    height: 210px;
+    content: '';
+    border: 32px solid rgb(255 255 255 / 28%);
+    border-radius: 50%;
+    pointer-events: none;
   }
 }
 
-.conference-card:nth-child(even) {
-  border-left-color: #d50a0a;
+.conference-card--afc {
+  background:
+    linear-gradient(
+      145deg,
+      rgb(213 10 10 / 10%),
+      #f8fafc 52%
+    );
+  border-color: rgb(213 10 10 / 25%);
+  box-shadow: 0 14px 34px rgb(213 10 10 / 11%);
 
-  .conference-id { color: #d50a0a; }
-  .division-card h3 { color: #d50a0a; }
-  .division-card h3::after { background: #d50a0a; }
+  &::before {
+    background:
+      linear-gradient(90deg, #850000, #d50a0a, #ff5252);
+  }
+
+  .conference-emblem {
+    background:
+      linear-gradient(135deg, #850000, #d50a0a);
+  }
+
+  .conference-card__kicker,
+  .division-heading__label {
+    color: #a40000;
+  }
+
+  .division-number,
+  .team-indicator {
+    background: #d50a0a;
+  }
+
+  .division-card {
+    border-top: 3px solid #d50a0a;
+  }
+
+  .team-item:hover {
+    background: rgb(213 10 10 / 7%);
+  }
 }
 
-.conference-id {
-  margin: 0 0 0.2rem;
-  font-size: clamp(2rem, 6vw, 3rem);
+.conference-card--nfc {
+  background:
+    linear-gradient(
+      145deg,
+      rgb(1 51 105 / 10%),
+      #f8fafc 52%
+    );
+  border-color: rgb(1 51 105 / 25%);
+  box-shadow: 0 14px 34px rgb(1 51 105 / 11%);
+
+  &::before {
+    background:
+      linear-gradient(90deg, #001a37, #013369, #1976d2);
+  }
+
+  .conference-emblem {
+    background:
+      linear-gradient(135deg, #001a37, #013369);
+  }
+
+  .conference-card__kicker,
+  .division-heading__label {
+    color: #013369;
+  }
+
+  .division-number,
+  .team-indicator {
+    background: #013369;
+  }
+
+  .division-card {
+    border-top: 3px solid #013369;
+  }
+
+  .team-item:hover {
+    background: rgb(1 51 105 / 7%);
+  }
+}
+
+.conference-card__header {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.conference-emblem {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  color: #ffffff;
   font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 900;
+  place-items: center;
+  border-radius: 18px;
+}
+
+.conference-card__kicker {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 0.68rem;
   font-weight: 800;
-  color: #013369;
-  line-height: 1;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
 }
 
 .conference-name {
-  margin: 0 0 1.75rem;
-  color: #526174;
-  font-size: clamp(0.85rem, 2vw, 1rem);
-  font-weight: 500;
-
-  @media (max-width: 600px) { margin-bottom: 1.25rem; }
-}
-
-// ── Grid de divisiones: 4 columnas (N/S/E/O) ─────────────
-.divisions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-
-  @media (max-width: 1100px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-}
-
-// ── Tarjeta de división ───────────────────────────────────
-.division-card {
-  padding: 1.25rem;
-  border: 1px solid #dce4ed;
-  border-radius: 12px;
-  background: #ffffff;
+  margin: 0;
   color: #172033;
-  box-shadow: 0 4px 14px rgb(15 23 42 / 6%);
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  font-weight: 800;
+}
+
+.conference-card__count {
+  padding: 7px 12px;
+  color: #526174;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgb(255 255 255 / 72%);
+  border: 1px solid rgb(148 163 184 / 25%);
+  border-radius: 999px;
+}
+
+.divisions {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.division-card {
+  padding: 16px;
+  background: rgb(255 255 255 / 90%);
+  border: 1px solid #dce4ed;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgb(15 23 42 / 7%);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 24px rgb(15 23 42 / 14%);
+    box-shadow: 0 12px 26px rgb(15 23 42 / 13%);
+  }
+}
+
+.division-card__header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.division-number {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  place-items: center;
+  border-radius: 9px;
+}
+
+.division-heading__label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.division-heading h3 {
+  margin: 0;
+  color: #172033;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.division-team-count {
+  grid-column: 1 / -1;
+  color: #718096;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.team-item {
+  display: grid;
+  grid-template-columns: 22px 7px 1fr;
+  gap: 8px;
+  align-items: center;
+  min-height: 38px;
+  padding: 6px 9px;
+  background: #f6f8fb;
+  border-radius: 8px;
+  transition:
+    background 150ms ease,
+    transform 150ms ease;
+
+  &:hover {
+    transform: translateX(2px);
+  }
+}
+
+.team-position {
+  color: #94a3b8;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.team-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.team-name {
+  overflow: hidden;
+  color: #28384d;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conference-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.conference-skeleton {
+  min-height: 310px;
+  background:
+    linear-gradient(
+      90deg,
+      #eef2f6 25%,
+      #f8fafc 50%,
+      #eef2f6 75%
+    );
+  background-size: 200% 100%;
+  border-radius: 20px;
+  animation: conference-shimmer 1.4s infinite;
+}
+
+@media (max-width: 1100px) {
+  .divisions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .conference-page {
+    padding: 16px 10px;
   }
 
-  h3 {
-    margin: 0 0 1rem;
-    padding-bottom: 0.75rem;
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #013369;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    position: relative;
-
-    // Línea decorativa que toma el color de la conferencia
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: #013369;
-      border-radius: 2px;
-    }
+  .conference-page__header {
+    margin-bottom: 22px;
   }
 
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  .conference-card {
+    padding: 15px;
+    border-radius: 16px;
   }
 
-  li {
-    margin-bottom: 0.45rem;
-    padding: 0.6rem 0.75rem;
-    border-radius: 8px;
-    background: #f6f8fb;
-    color: #28384d;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: background 0.15s;
-
-    &:last-child { margin-bottom: 0; }
-    &:hover { background: #e8eef5; }
+  .conference-card__header {
+    grid-template-columns: auto 1fr;
+    gap: 12px;
   }
 
-  @media (max-width: 600px) { padding: 1rem; }
+  .conference-emblem {
+    width: 58px;
+    height: 58px;
+    font-size: 1rem;
+    border-radius: 14px;
+  }
+
+  .conference-card__count {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .divisions {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@keyframes conference-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
 }

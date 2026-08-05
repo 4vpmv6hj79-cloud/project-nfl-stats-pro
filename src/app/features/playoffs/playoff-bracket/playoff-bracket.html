@@ -1,6 +1,6 @@
 <div class="page">
 
-  <div class="page-header">
+  <header class="page-header">
     <h1 class="page-title">
       🏆 Postemporada NFL
     </h1>
@@ -8,12 +8,12 @@
     <p class="page-subtitle">
       Proyección basada en el récord actual de la temporada regular
     </p>
-  </div>
+  </header>
 
-  <!-- Selector principal de vista -->
   <div class="view-toggle">
     <mat-button-toggle-group
       [value]="view()"
+      [hideSingleSelectionIndicator]="true"
       (change)="onViewChange($event.value)"
       aria-label="Seleccionar vista de postemporada">
 
@@ -28,23 +28,20 @@
     </mat-button-toggle-group>
   </div>
 
-  <!-- Estado de carga -->
   @if (loading()) {
     <app-loading-spinner />
   }
 
   @if (!loading() && bracket()) {
 
-    <!-- ==================================================
-         VISTA DEL MAPA DE PLAYOFFS
-    =================================================== -->
-
+    <!-- Vista del mapa -->
     @if (view() === 'bracket') {
 
-      <!-- Selector de ronda para dispositivos móviles -->
+      <!-- Selector móvil de rondas -->
       <div class="round-stage-toggle">
         <mat-button-toggle-group
           [value]="mobileRound()"
+          [hideSingleSelectionIndicator]="true"
           (change)="onMobileRoundChange($event.value)"
           aria-label="Seleccionar ronda de postemporada">
 
@@ -69,12 +66,8 @@
 
       <div class="bracket-wrap">
 
-        <!-- ================================================
-             AFC
-             Wild Card → Divisional → Campeonato
-        ================================================= -->
-
-        <div
+        <!-- AFC -->
+        <section
           class="conference-bracket conference-bracket--afc"
           [class.conference-bracket--mobile-hidden]="
             mobileRound() === 'super-bowl'
@@ -175,13 +168,10 @@
             </div>
 
           </div>
-        </div>
+        </section>
 
-        <!-- ================================================
-             SUPER BOWL
-        ================================================= -->
-
-        <div
+        <!-- Super Bowl -->
+        <section
           class="superbowl-col"
           [class.superbowl-col--mobile-hidden]="
             mobileRound() !== 'super-bowl'
@@ -195,13 +185,12 @@
               🏆
             </div>
 
-            <h3 class="superbowl-title">
+            <h2 class="superbowl-title">
               Super Bowl LXI
-            </h3>
+            </h2>
 
             <div class="superbowl-matchup">
 
-              <!-- Representante AFC -->
               <ng-container
                 *ngTemplateOutlet="
                   teamChip;
@@ -215,7 +204,6 @@
                 VS
               </span>
 
-              <!-- Representante NFC -->
               <ng-container
                 *ngTemplateOutlet="
                   teamChip;
@@ -228,14 +216,10 @@
             </div>
 
           </div>
-        </div>
+        </section>
 
-        <!-- ================================================
-             NFC
-             Campeonato ← Divisional ← Wild Card
-        ================================================= -->
-
-        <div
+        <!-- NFC -->
+        <section
           class="conference-bracket conference-bracket--nfc"
           [class.conference-bracket--mobile-hidden]="
             mobileRound() === 'super-bowl'
@@ -336,15 +320,12 @@
             </div>
 
           </div>
-        </div>
+        </section>
 
       </div>
     }
 
-    <!-- ==================================================
-         VISTA DE CLASIFICADOS
-    =================================================== -->
-
+    <!-- Vista de clasificados -->
     @if (view() === 'seeds') {
       <div class="seeds-wrap">
 
@@ -355,7 +336,14 @@
           ];
           track conference.conference
         ) {
-          <div class="seeds-conference">
+          <section
+            class="seeds-conference"
+            [class.seeds-conference--afc]="
+              conference.conference === 'AFC'
+            "
+            [class.seeds-conference--nfc]="
+              conference.conference === 'NFC'
+            ">
 
             <h2
               class="conf-title"
@@ -376,7 +364,7 @@
                 team of conference.seeds;
                 track team.id
               ) {
-                <div
+                <article
                   class="seed-row"
                   [class.seed-row--bye]="
                     team.seed <= 2
@@ -435,12 +423,12 @@
 
                   </a>
 
-                </div>
+                </article>
               }
 
             </div>
 
-          </div>
+          </section>
         }
 
       </div>
@@ -449,10 +437,6 @@
   }
 
 </div>
-
-<!-- ======================================================
-     TEMPLATES REUTILIZABLES
-======================================================= -->
 
 <!-- Tarjeta de enfrentamiento -->
 <ng-template
@@ -487,7 +471,7 @@
 
 </ng-template>
 
-<!-- Equipo dentro de un enfrentamiento -->
+<!-- Equipo de un enfrentamiento -->
 <ng-template
   #teamSlot
   let-team
@@ -525,7 +509,7 @@
 
 </ng-template>
 
-<!-- Equipo usado en Super Bowl y BYE -->
+<!-- Equipo de Super Bowl y BYE -->
 <ng-template
   #teamChip
   let-team>

@@ -1,31 +1,161 @@
-<h1 class="title">Conferencias NFL</h1>
+<section class="conference-page">
 
-<div class="conferences">
+  <header class="conference-page__header">
 
-  @for (conference of conferences$ | async; track conference.id) {
+    <div class="conference-page__eyebrow">
+      <span aria-hidden="true">🏈</span>
+      Estructura de la liga
+    </div>
 
-    <section class="conference-card">
+    <h1 class="title">
+      Conferencias NFL
+    </h1>
 
-      <p class="conference-id">{{ conference.id }}</p>
-      <p class="conference-name">{{ conference.name }}</p>
+    <p class="conference-page__description">
+      Explora las conferencias, sus divisiones y los equipos
+      que conforman la NFL.
+    </p>
 
-      <div class="divisions">
+    <div
+      class="conference-page__legend"
+      aria-label="Colores de las conferencias">
 
-        @for (division of conference.divisions; track division.id) {
-          <div class="division-card">
-            <h3>{{ division.name }}</h3>
-            <ul>
-              @for (team of division.teams; track team) {
-                <li>{{ team }}</li>
-              }
-            </ul>
+      <span class="legend-item legend-item--afc">
+        <span class="legend-dot"></span>
+        AFC
+      </span>
+
+      <span class="legend-item legend-item--nfc">
+        <span class="legend-dot"></span>
+        NFC
+      </span>
+
+    </div>
+
+  </header>
+
+  @if (conferences$ | async; as conferences) {
+
+    <div class="conferences">
+
+      @for (
+        conference of conferences;
+        track conference.id;
+        let conferenceIndex = $index
+      ) {
+        <article
+          class="conference-card"
+          [class.conference-card--afc]="
+            conference.id === 'AFC'
+          "
+          [class.conference-card--nfc]="
+            conference.id === 'NFC'
+          ">
+
+          <header class="conference-card__header">
+
+            <div class="conference-emblem">
+              {{ conference.id }}
+            </div>
+
+            <div class="conference-card__heading">
+
+              <span class="conference-card__kicker">
+                Conferencia {{ conferenceIndex + 1 }}
+              </span>
+
+              <h2 class="conference-name">
+                {{ conference.name }}
+              </h2>
+
+            </div>
+
+            <span class="conference-card__count">
+              {{ conference.divisions.length }}
+              divisiones
+            </span>
+
+          </header>
+
+          <div class="divisions">
+
+            @for (
+              division of conference.divisions;
+              track division.id;
+              let divisionIndex = $index
+            ) {
+              <section class="division-card">
+
+                <header class="division-card__header">
+
+                  <span class="division-number">
+                    {{ divisionIndex + 1 }}
+                  </span>
+
+                  <div class="division-heading">
+
+                    <span class="division-heading__label">
+                      División
+                    </span>
+
+                    <h3>
+                      {{ division.name }}
+                    </h3>
+
+                  </div>
+
+                  <span class="division-team-count">
+                    {{ division.teams.length }} equipos
+                  </span>
+
+                </header>
+
+                <ul class="team-list">
+
+                  @for (
+                    team of division.teams;
+                    track team;
+                    let teamIndex = $index
+                  ) {
+                    <li class="team-item">
+
+                      <span class="team-position">
+                        {{ teamIndex + 1 }}
+                      </span>
+
+                      <span class="team-indicator"></span>
+
+                      <span class="team-name">
+                        {{ team }}
+                      </span>
+
+                    </li>
+                  }
+
+                </ul>
+
+              </section>
+            }
+
           </div>
-        }
 
-      </div>
+        </article>
+      }
 
-    </section>
+    </div>
+
+  } @else {
+
+    <div
+      class="conference-loading"
+      aria-label="Cargando conferencias">
+
+      @for (item of [1, 2]; track item) {
+        <div class="conference-skeleton"></div>
+      }
+
+    </div>
 
   }
 
-</div>
+</section>

@@ -1,4 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -6,11 +12,11 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PlayoffService } from '../../../core/services/api/playoff.service';
 import { NotificationService } from '../../../core/services/api/notification.service';
 import { LoadingSpinnerComponent } from '../../../shared/feedback/loading-spinner/loading-spinner';
+
 import {
-  PlayoffBracket,
-  PlayoffMatchup,
-  PlayoffTeam,
   ConferenceBracket,
+  PlayoffBracket,
+  PlayoffTeam,
 } from '../../../shared/models/domain/playoff.model';
 
 type MobilePlayoffRound =
@@ -33,43 +39,59 @@ type MobilePlayoffRound =
 })
 export class PlayoffBracketComponent implements OnInit {
 
-  private playoffService = inject(PlayoffService);
-  private notification   = inject(NotificationService);
+  private readonly playoffService =
+    inject(PlayoffService);
 
-  readonly mobileRound = signal<MobilePlayoffRound>('wild-card');
+  private readonly notification =
+    inject(NotificationService);
 
-  bracket  = signal<PlayoffBracket | null>(null);
-  loading  = signal(true);
-  view     = signal<'bracket' | 'seeds'>('bracket');
+  readonly bracket =
+    signal<PlayoffBracket | null>(null);
+
+  readonly loading = signal(true);
+
+  readonly view =
+    signal<'bracket' | 'seeds'>('bracket');
+
+  readonly mobileRound =
+    signal<MobilePlayoffRound>('wild-card');
 
   ngOnInit(): void {
     this.playoffService.getBracket().subscribe({
-      next: b => {
-        this.bracket.set(b);
+      next: bracket => {
+        this.bracket.set(bracket);
         this.loading.set(false);
       },
+
       error: () => {
         this.loading.set(false);
-        this.notification.error('No fue posible cargar los playoffs.');
+
+        this.notification.error(
+          'No fue posible cargar los playoffs.'
+        );
       },
     });
   }
 
-  onViewChange(v: 'bracket' | 'seeds'): void {
-    this.view.set(v);
+  onViewChange(view: 'bracket' | 'seeds'): void {
+    this.view.set(view);
   }
 
-  record(t: PlayoffTeam): string {
-    return t.ties > 0
-      ? `${t.wins}-${t.losses}-${t.ties}`
-      : `${t.wins}-${t.losses}`;
+  onMobileRoundChange(
+    round: MobilePlayoffRound
+  ): void {
+    this.mobileRound.set(round);
   }
 
-  seeds(conf: ConferenceBracket): PlayoffTeam[] {
-    return conf.seeds;
+  record(team: PlayoffTeam): string {
+    return team.ties > 0
+      ? `${team.wins}-${team.losses}-${team.ties}`
+      : `${team.wins}-${team.losses}`;
   }
 
-  onMobileRoundChange(round: MobilePlayoffRound): void {
-  this.mobileRound.set(round);
+  seeds(
+    conference: ConferenceBracket
+  ): PlayoffTeam[] {
+    return conference.seeds;
   }
 }
