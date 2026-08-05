@@ -10,3 +10,18 @@ export interface NewsArticle {
   teamAbbr: string;
 
 }
+export interface NewsCategory {
+  type?: string;
+  uid?: string;
+  teamId?: string;
+  description?: string;
+}
+
+export interface NewsItem {
+  id: string;
+  headline: string;
+  description: string;
+  image?: string;
+  link?: string;
+  categories?: NewsCategory[];
+}

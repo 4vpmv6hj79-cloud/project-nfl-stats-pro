@@ -1,9 +1,9 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { NFLService } from '../../../../core/services/api/nfl.service';
 import { NotificationService } from '../../../../core/services/api/notification.service';
-import { NewsArticle } from '../../../../shared/models/domain/news-article.model';
+import { NewsArticle, NewsCategory, NewsItem } from '../../../../shared/models/domain/news-article.model';
 
 @Component({
   selector: 'app-dashboard-news',
@@ -21,6 +21,8 @@ export class DashboardNewsComponent implements OnInit {
 
   articles = signal<NewsArticle[]>([]);
   loading  = signal(true);
+  news = signal<NewsItem[]>([]);
+  selectedTeamId = signal<string>('all');
 
   ngOnInit(): void {
 
@@ -53,5 +55,23 @@ export class DashboardNewsComponent implements OnInit {
   openArticle(url: string): void {
     if (url) window.open(url, '_blank', 'noopener,noreferrer');
   }
+
+  filteredNews = computed<NewsItem[]>(() => {
+  const teamId = this.selectedTeamId();
+
+  if (teamId === 'all') {
+    return this.news();
+  }
+
+  return this.news().filter((article: NewsItem) =>
+    article.categories?.some((category: NewsCategory) =>
+      category.type === 'team' &&
+      (
+        String(category.teamId) === teamId ||
+        category.uid?.includes(`~t:${teamId}`)
+      )
+    ) ?? false
+  );
+});
 
 }
