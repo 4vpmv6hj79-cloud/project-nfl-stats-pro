@@ -1,8 +1,13 @@
 .page {
   padding: 32px;
 
-  @media (max-width: 900px) { padding: 16px; }
-  @media (max-width: 600px) { padding: 12px 10px; }
+  @media (max-width: 900px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 600px) {
+    padding: 12px 10px;
+  }
 }
 
 .page-title {
@@ -16,17 +21,59 @@
 }
 
 .filters {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   overflow-x: auto;
 
-  @media (max-width: 600px) { margin-bottom: 20px; }
+  @media (max-width: 600px) {
+    margin-bottom: 16px;
+  }
+}
+
+.season-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px;
+  color: var(--color-text);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 12px;
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #d97706;
+    font-size: 0.95rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+}
+
+.season-notice__icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  color: #ffffff;
+  background: #d97706;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 800;
+  font-style: normal;
 }
 
 .empty-state {
-  text-align: center;
   padding: 48px 0;
   color: var(--color-text-secondary);
   font-size: 1rem;
+  text-align: center;
 }
 
 .games-grid {
@@ -47,35 +94,89 @@
 
 .game-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 20px 16px;
-  transition: box-shadow 0.2s ease, border-color 0.2s;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 
   &:hover {
     border-color: var(--color-primary);
-    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
   }
 
-  @media (max-width: 600px) { padding: 14px 12px; gap: 8px; }
+  @media (max-width: 600px) {
+    gap: 12px;
+    padding: 14px 12px;
+  }
+}
+
+.game-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.season-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 8px;
+  color: var(--color-primary);
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.season-badge--preseason {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.record-label {
+  color: var(--color-text-secondary);
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.game-matchup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+
+  @media (max-width: 600px) {
+    gap: 8px;
+  }
 }
 
 .team {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  flex: 1;
-  opacity: 0.6;
-  transition: opacity 0.2s;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 
   &.winner {
     opacity: 1;
-    .team-score { color: var(--color-primary); }
+
+    .team-score {
+      color: var(--color-primary);
+    }
   }
 }
 
@@ -84,36 +185,61 @@
   height: 52px;
   object-fit: contain;
 
-  @media (max-width: 600px) { width: 38px; height: 38px; }
+  @media (max-width: 600px) {
+    width: 38px;
+    height: 38px;
+  }
 }
 
 .team-name {
+  color: var(--color-text);
   font-size: 0.75rem;
   font-weight: 600;
-  text-align: center;
   line-height: 1.2;
-  color: var(--color-text);
+  text-align: center;
 
-  @media (max-width: 480px) { font-size: 0.65rem; }
+  @media (max-width: 480px) {
+    font-size: 0.65rem;
+  }
+}
+
+.team-record {
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
 .team-score {
-  font-size: 2rem;
-  font-weight: 700;
-  font-family: var(--font-display);
-  line-height: 1;
   color: var(--color-text);
+  font-size: 2rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
 
-  @media (max-width: 600px) { font-size: 1.5rem; }
+  @media (max-width: 600px) {
+    font-size: 1.5rem;
+  }
 }
 
 .game-center {
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  flex-shrink: 0;
 }
 
-.game-vs     { font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); letter-spacing: 0.08em; }
-.game-status { font-size: 0.7rem; color: var(--color-primary); font-weight: 500; text-align: center; max-width: 72px; }
+.game-vs {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.game-status {
+  max-width: 72px;
+  color: var(--color-primary);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-align: center;
+}

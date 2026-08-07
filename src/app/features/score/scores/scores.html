@@ -1,53 +1,133 @@
-<div class="page">
-
+<section class="page">
   <h1 class="page-title">Marcadores</h1>
 
   <div class="filters">
-    <mat-button-toggle-group value="all" (change)="onFilterChange($event.value)">
-      <mat-button-toggle value="all">Todos</mat-button-toggle>
-      <mat-button-toggle value="live">En vivo</mat-button-toggle>
-      <mat-button-toggle value="final">Finalizados</mat-button-toggle>
-      <mat-button-toggle value="upcoming">Por jugar</mat-button-toggle>
+    <mat-button-toggle-group
+      [value]="filter()"
+      (change)="onFilterChange($event.value)"
+      aria-label="Filtrar partidos por estado"
+    >
+      <mat-button-toggle value="all">
+        Todos
+      </mat-button-toggle>
+
+      <mat-button-toggle value="live">
+        En vivo
+      </mat-button-toggle>
+
+      <mat-button-toggle value="final">
+        Finalizados
+      </mat-button-toggle>
+
+      <mat-button-toggle value="upcoming">
+        Próximos
+      </mat-button-toggle>
     </mat-button-toggle-group>
   </div>
 
+  @if (hasPreseasonGames()) {
+    <aside class="season-notice" role="note">
+      <span class="season-notice__icon" aria-hidden="true">i</span>
+
+      <div>
+        <strong>Partidos de pretemporada</strong>
+
+        <p>
+          Estos resultados no afectan el récord de la temporada regular.
+          Los récords mostrados corresponden únicamente a la pretemporada.
+        </p>
+      </div>
+    </aside>
+  }
+
   @if (loading()) {
     <app-loading-spinner />
-  }
-
-  @if (!loading() && filtered().length === 0) {
-    <div class="empty-state">
-      <p>No hay juegos para mostrar.</p>
-    </div>
-  }
-
-  @if (!loading() && filtered().length > 0) {
+  } @else if (filtered().length === 0) {
+    <p class="empty-state">
+      No hay juegos para mostrar.
+    </p>
+  } @else {
     <div class="games-grid">
-
       @for (game of filtered(); track game.id) {
-        <div class="game-card">
+        <article class="game-card">
+          <header class="game-meta">
+            <span
+              class="season-badge"
+              [class.season-badge--preseason]="
+                game.seasonType === 'preseason'
+              "
+            >
+              {{ seasonLabel(game) }}
 
-          <div class="team" [class.winner]="isAwayWinning(game)">
-            <img class="team-logo" [src]="game.awayLogo" [alt]="game.awayTeam" loading="lazy" />
-            <span class="team-name">{{ game.awayTeam }}</span>
-            <span class="team-score">{{ game.awayScore }}</span>
+              @if (game.week > 0) {
+                · Semana {{ game.week }}
+              }
+            </span>
+
+            <span class="record-label">
+              {{ recordLabel(game) }}
+            </span>
+          </header>
+
+          <div class="game-matchup">
+            <div
+              class="team"
+              [class.winner]="isAwayWinning(game)"
+            >
+              <img
+                class="team-logo"
+                [src]="game.awayLogo"
+                [alt]="game.awayTeam"
+                loading="lazy"
+              />
+
+              <span class="team-name">
+                {{ game.awayTeam }}
+              </span>
+
+              <span class="team-record">
+                {{ game.awayRecord }}
+              </span>
+
+              <span class="team-score">
+                {{ game.awayScore }}
+              </span>
+            </div>
+
+            <div class="game-center">
+              <span class="game-vs">VS</span>
+
+              <span class="game-status">
+                {{ game.status }}
+              </span>
+            </div>
+
+            <div
+              class="team"
+              [class.winner]="isHomeWinning(game)"
+            >
+              <img
+                class="team-logo"
+                [src]="game.homeLogo"
+                [alt]="game.homeTeam"
+                loading="lazy"
+              />
+
+              <span class="team-name">
+                {{ game.homeTeam }}
+              </span>
+
+              <span class="team-record">
+                {{ game.homeRecord }}
+              </span>
+
+              <span class="team-score">
+                {{ game.homeScore }}
+              </span>
+            </div>
           </div>
-
-          <div class="game-center">
-            <span class="game-vs">VS</span>
-            <span class="game-status">{{ game.status }}</span>
-          </div>
-
-          <div class="team" [class.winner]="isHomeWinning(game)">
-            <img class="team-logo" [src]="game.homeLogo" [alt]="game.homeTeam" loading="lazy" />
-            <span class="team-name">{{ game.homeTeam }}</span>
-            <span class="team-score">{{ game.homeScore }}</span>
-          </div>
-
-        </div>
+        </article>
       }
-
     </div>
   }
-
-</div>
+</section>

@@ -61,9 +61,14 @@
               }
             ],
             "outputHashing": "all"
+          },
+          "development": {
+            "optimization": false,
+            "extractLicenses": false,
+            "sourceMap": true
           }
         },
-          "defaultConfiguration": "production"
+        "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
