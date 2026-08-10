@@ -11,6 +11,10 @@ import { interval, Subscription, startWith, switchMap } from 'rxjs';
 
 import { ScoreService } from '../../../../core/services/api/score.service';
 import { Game } from '../../../../shared/models/domain/game.model';
+import {
+  formatMexicoGameDateTime,
+  formatMexicoTime,
+} from '../../../../shared/utils/mexico-date-time.util';
 
 const REFRESH_MS = 30_000;
 
@@ -66,13 +70,27 @@ export class DashboardScoreboardComponent implements OnInit, OnDestroy {
   }
 
   isLive(status: string): boolean {
-    const s = status.toLowerCase();
+    const normalizedStatus = status
+      .trim()
+      .toLowerCase();
+
+    const isScheduledTime =
+      normalizedStatus.includes(' am') ||
+      normalizedStatus.includes(' pm') ||
+      normalizedStatus.includes('a.m.') ||
+      normalizedStatus.includes('p.m.');
+
+    if (isScheduledTime) {
+      return false;
+    }
+
     return (
-      /^\d+[a-z]+$/.test(s.replace(/\s/g, '')) ||
-      s.includes('half') ||
-      s.includes('ot')   ||
-      s.includes('q')    ||
-      /^\d+:\d+/.test(s)
+      normalizedStatus.includes('half') ||
+      normalizedStatus.includes('ot') ||
+      /\bq[1-4]\b/.test(normalizedStatus) ||
+      /^\d{1,2}:\d{2}\s*-\s*(1st|2nd|3rd|4th)/.test(
+        normalizedStatus
+      )
     );
   }
 
@@ -80,9 +98,12 @@ export class DashboardScoreboardComponent implements OnInit, OnDestroy {
     return status.toLowerCase().includes('final');
   }
 
-  formatTime(iso: Date | null): string {
-    if (!iso) return '';
-    return iso.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+  formatTime(date: Date | null): string {
+    return formatMexicoTime(date);
+  }
+
+  formatGameStart(startTime: string): string {
+    return formatMexicoGameDateTime(startTime);
   }
 
   isWinning(scoreA: number, scoreB: number): boolean {

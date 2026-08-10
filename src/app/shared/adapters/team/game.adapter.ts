@@ -56,6 +56,7 @@ export class GameAdapter {
         awayScore: Number(away.score ?? 0),
         homeRecord: GameAdapter.record(home),
         awayRecord: GameAdapter.record(away),
+        startTime: event.date ?? competition.date ?? '',
         status: competition.status.type.shortDetail,
         seasonType: GameAdapter.seasonType(
           event.season?.type ?? responseSeasonType,

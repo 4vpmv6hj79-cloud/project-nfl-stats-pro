@@ -89,8 +89,18 @@
   </div>
 
   <div class="game__center">
-    <span class="game__status" [class.game__status--live]="isLive(game.status)">
-      {{ game.status }}
+    <span
+      class="game__status"
+      [class.game__status--live]="isLive(game.status)"
+    >
+      @if (isLive(game.status) || isFinal(game.status)) {
+        {{ game.status }}
+      } @else {
+        {{
+          formatGameStart(game.startTime) ||
+            game.status
+        }}
+      }
     </span>
   </div>
 

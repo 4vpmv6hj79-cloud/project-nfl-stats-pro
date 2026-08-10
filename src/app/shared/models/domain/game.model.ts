@@ -15,6 +15,7 @@ export interface Game {
   awayScore: number;
   homeRecord: string;
   awayRecord: string;
+  startTime: string;
   status: string;
   seasonType: NflSeasonType;
   week: number;

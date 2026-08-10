@@ -13,6 +13,9 @@ import { NotificationService } from '../../../core/services/api/notification.ser
 import { ScoreService } from '../../../core/services/api/score.service';
 import { LoadingSpinnerComponent } from '../../../shared/feedback/loading-spinner/loading-spinner';
 import { Game } from '../../../shared/models/domain/game.model';
+import {
+  formatMexicoGameDateTime,
+  } from '../../../shared/utils/mexico-date-time.util';
 
 type GameStatusFilter = 'all' | 'live' | 'final' | 'upcoming';
 
@@ -49,25 +52,18 @@ export class Scores implements OnInit {
     }
 
     return games.filter((game) => {
-      const status = game.status.toLowerCase();
-
       if (filter === 'live') {
-        return (
-          status.includes('q') ||
-          status.includes('half') ||
-          status.includes('ot')
-        );
+        return this.isLiveStatus(game.status);
       }
 
       if (filter === 'final') {
-        return status.includes('final');
+        return this.isFinalStatus(game.status);
       }
 
       if (filter === 'upcoming') {
         return (
-          status.includes('am') ||
-          status.includes('pm') ||
-          status.includes(':')
+          !this.isLiveStatus(game.status) &&
+          !this.isFinalStatus(game.status)
         );
       }
 
@@ -92,6 +88,52 @@ export class Scores implements OnInit {
 
   onFilterChange(value: GameStatusFilter): void {
     this.filter.set(value);
+  }
+
+  private isLiveStatus(status: string): boolean {
+  const normalizedStatus = status
+    .trim()
+    .toLowerCase();
+
+  const isScheduledTime =
+    normalizedStatus.includes(' am') ||
+    normalizedStatus.includes(' pm') ||
+    normalizedStatus.includes('a.m.') ||
+    normalizedStatus.includes('p.m.');
+
+  if (isScheduledTime) {
+    return false;
+  }
+
+    return (
+      normalizedStatus.includes('half') ||
+      normalizedStatus.includes('ot') ||
+      /\bq[1-4]\b/.test(normalizedStatus) ||
+      /^\d{1,2}:\d{2}\s*-\s*(1st|2nd|3rd|4th)/.test(
+        normalizedStatus
+      )
+    );
+  }
+
+  private isFinalStatus(status: string): boolean {
+    return status
+      .trim()
+      .toLowerCase()
+      .includes('final');
+  }
+
+  displayGameStatus(game: Game): string {
+    if (
+      this.isLiveStatus(game.status) ||
+      this.isFinalStatus(game.status)
+    ) {
+      return game.status;
+    }
+
+    return (
+      formatMexicoGameDateTime(game.startTime) ||
+      game.status
+    );
   }
 
   seasonLabel(game: Game): string {
