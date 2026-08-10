@@ -53,18 +53,15 @@ export class Scores implements OnInit {
 
     return games.filter((game) => {
       if (filter === 'live') {
-        return this.isLiveStatus(game.status);
+        return game.statusState === 'in';
       }
 
       if (filter === 'final') {
-        return this.isFinalStatus(game.status);
+        return game.statusState === 'post';
       }
 
       if (filter === 'upcoming') {
-        return (
-          !this.isLiveStatus(game.status) &&
-          !this.isFinalStatus(game.status)
-        );
+        return game.statusState === 'pre';
       }
 
       return true;
@@ -90,42 +87,10 @@ export class Scores implements OnInit {
     this.filter.set(value);
   }
 
-  private isLiveStatus(status: string): boolean {
-  const normalizedStatus = status
-    .trim()
-    .toLowerCase();
-
-  const isScheduledTime =
-    normalizedStatus.includes(' am') ||
-    normalizedStatus.includes(' pm') ||
-    normalizedStatus.includes('a.m.') ||
-    normalizedStatus.includes('p.m.');
-
-  if (isScheduledTime) {
-    return false;
-  }
-
-    return (
-      normalizedStatus.includes('half') ||
-      normalizedStatus.includes('ot') ||
-      /\bq[1-4]\b/.test(normalizedStatus) ||
-      /^\d{1,2}:\d{2}\s*-\s*(1st|2nd|3rd|4th)/.test(
-        normalizedStatus
-      )
-    );
-  }
-
-  private isFinalStatus(status: string): boolean {
-    return status
-      .trim()
-      .toLowerCase()
-      .includes('final');
-  }
-
   displayGameStatus(game: Game): string {
     if (
-      this.isLiveStatus(game.status) ||
-      this.isFinalStatus(game.status)
+      game.statusState === 'in' ||
+      game.statusState === 'post'
     ) {
       return game.status;
     }

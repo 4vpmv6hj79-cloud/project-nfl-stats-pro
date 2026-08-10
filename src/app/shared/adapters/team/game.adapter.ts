@@ -1,5 +1,6 @@
 import {
   Game,
+  GameStatusState,
   NflSeasonType,
 } from '../../models/domain/game.model';
 
@@ -8,30 +9,55 @@ export class GameAdapter {
     return team.logos?.[0]?.href ?? team.logo ?? '';
   }
 
-  private static record(competitor: any): string {
-    const overallRecord = competitor.records?.find(
-      (record: any) =>
-        record.name === 'overall' || record.type === 'total',
-    );
+    private static record(competitor: any): string {
+      const overallRecord = competitor.records?.find(
+        (record: any) =>
+          record.name === 'overall' || record.type === 'total',
+      );
 
-    return overallRecord?.summary ?? '0-0';
-  }
-
-  private static seasonType(
-    type: number | undefined,
-  ): NflSeasonType {
-    switch (type) {
-      case 1:
-        return 'preseason';
-      case 2:
-        return 'regular';
-      case 3:
-        return 'postseason';
-      case 4:
-        return 'offseason';
-      default:
-        return 'unknown';
+      return overallRecord?.summary ?? '0-0';
     }
+
+    private static seasonType(
+      type: number | undefined,
+    ): NflSeasonType {
+      switch (type) {
+        case 1:
+          return 'preseason';
+        case 2:
+          return 'regular';
+        case 3:
+          return 'postseason';
+        case 4:
+          return 'offseason';
+        default:
+          return 'unknown';
+      }
+    }
+    private static statusState(competition: any,): GameStatusState {
+    const state = competition?.status?.type?.state;
+
+    if (
+      state === 'pre' ||
+      state === 'in' ||
+      state === 'post'
+    ) {
+      return state;
+    }
+
+    if (competition?.status?.type?.completed === true) {
+      return 'post';
+    }
+
+    const detail = String(
+      competition?.status?.type?.shortDetail ?? '',
+    ).toLowerCase();
+
+    if (detail.includes('final')) {
+      return 'post';
+    }
+
+    return 'unknown';
   }
 
   static adapt(response: any): Game[] {
@@ -58,6 +84,7 @@ export class GameAdapter {
         awayRecord: GameAdapter.record(away),
         startTime: event.date ?? competition.date ?? '',
         status: competition.status.type.shortDetail,
+        statusState: GameAdapter.statusState(competition),
         seasonType: GameAdapter.seasonType(
           event.season?.type ?? responseSeasonType,
         ),

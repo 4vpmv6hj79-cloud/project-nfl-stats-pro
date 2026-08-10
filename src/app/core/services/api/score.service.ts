@@ -20,18 +20,23 @@ export class ScoreService {
       .pipe(map((response) => GameAdapter.adapt(response)));
   }
 
-  getScoreboardWindow(days = 28): Observable<Game[]> {
+  getScoreboardWindow(
+    pastDays = 7,
+    futureDays = 28,
+  ): Observable<Game[]> {
     const startDate = new Date();
 
     startDate.setUTCHours(0, 0, 0, 0);
-    startDate.setUTCDate(startDate.getUTCDate() - 1);
+    startDate.setUTCDate(
+      startDate.getUTCDate() - pastDays,
+    );
 
     const endDate = new Date();
 
     endDate.setUTCHours(0, 0, 0, 0);
-    endDate.setUTCDate(endDate.getUTCDate() + days);
-
-    endDate.setUTCDate(endDate.getUTCDate() + days);
+    endDate.setUTCDate(
+      endDate.getUTCDate() + futureDays,
+    );
 
     const dateRange = [
       this.formatDate(startDate),
@@ -44,7 +49,9 @@ export class ScoreService {
 
     return this.http
       .get<unknown>(this.endpoint, { params })
-      .pipe(map((response) => GameAdapter.adapt(response)));
+      .pipe(
+        map((response) => GameAdapter.adapt(response)),
+      );
   }
 
   private formatDate(date: Date): string {

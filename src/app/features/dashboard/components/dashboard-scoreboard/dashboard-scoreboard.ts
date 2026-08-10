@@ -1,13 +1,18 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
   OnDestroy,
+  OnInit,
+  computed,
   inject,
   signal,
-  computed,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { interval, Subscription, startWith, switchMap } from 'rxjs';
+import {
+  Subscription,
+  interval,
+  startWith,
+  switchMap,
+} from 'rxjs';
 
 import { ScoreService } from '../../../../core/services/api/score.service';
 import { Game } from '../../../../shared/models/domain/game.model';
@@ -17,6 +22,8 @@ import {
 } from '../../../../shared/utils/mexico-date-time.util';
 
 const REFRESH_MS = 30_000;
+const UPCOMING_WINDOW_MS = 24 * 60 * 60 * 1000;
+const DASHBOARD_GAME_LIMIT = 5;
 
 @Component({
   selector: 'app-dashboard-scoreboard',
@@ -25,33 +32,84 @@ const REFRESH_MS = 30_000;
   templateUrl: './dashboard-scoreboard.html',
   styleUrl: './dashboard-scoreboard.scss',
 })
-export class DashboardScoreboardComponent implements OnInit, OnDestroy {
+export class DashboardScoreboardComponent
+  implements OnInit, OnDestroy
+{
+  private readonly scoreService = inject(ScoreService);
 
-  private scoreService = inject(ScoreService);
-
-  games       = signal<Game[]>([]);
-  loading     = signal(true);
-  lastUpdated = signal<Date | null>(null);
+  readonly games = signal<Game[]>([]);
+  readonly loading = signal(true);
+  readonly lastUpdated = signal<Date | null>(null);
 
   private sub!: Subscription;
 
-  liveGames = computed(() =>
-    this.games().filter(g => this.isLive(g.status))
+  readonly liveGames = computed(() =>
+    this.games().filter(
+      (game) => game.statusState === 'in',
+    ),
   );
 
-  finalGames = computed(() =>
-    this.games().filter(g => this.isFinal(g.status))
+  readonly finalGames = computed(() =>
+    this.games()
+      .filter((game) => game.statusState === 'post')
+      .sort(
+        (first, second) =>
+          this.gameTimestamp(second) -
+          this.gameTimestamp(first),
+      ),
   );
 
-  upcomingGames = computed(() =>
-    this.games().filter(g => !this.isLive(g.status) && !this.isFinal(g.status))
+  readonly upcomingGames = computed(() =>
+    this.games()
+      .filter((game) => game.statusState === 'pre')
+      .sort(
+        (first, second) =>
+          this.gameTimestamp(first) -
+          this.gameTimestamp(second),
+      ),
+  );
+
+  readonly upcomingGamesToDisplay = computed(() => {
+    const now = Date.now();
+
+    return this.upcomingGames()
+      .filter((game) => {
+        const timeUntilStart =
+          this.gameTimestamp(game) - now;
+
+        return (
+          timeUntilStart >= 0 &&
+          timeUntilStart <= UPCOMING_WINDOW_MS
+        );
+      })
+      .slice(0, DASHBOARD_GAME_LIMIT);
+  });
+
+  readonly finalGamesToDisplay = computed(() => {
+    if (this.upcomingGamesToDisplay().length > 0) {
+      return [];
+    }
+
+    return this.finalGames().slice(
+      0,
+      DASHBOARD_GAME_LIMIT,
+    );
+  });
+
+  readonly hasVisibleGames = computed(
+    () =>
+      this.liveGames().length > 0 ||
+      this.finalGamesToDisplay().length > 0 ||
+      this.upcomingGamesToDisplay().length > 0,
   );
 
   ngOnInit(): void {
     this.sub = interval(REFRESH_MS)
       .pipe(
         startWith(0),
-        switchMap(() => this.scoreService.getScoreboard())
+        switchMap(() =>
+          this.scoreService.getScoreboardWindow(7, 7),
+        ),
       )
       .subscribe({
         next: (games: Game[]) => {
@@ -69,33 +127,12 @@ export class DashboardScoreboardComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  isLive(status: string): boolean {
-    const normalizedStatus = status
-      .trim()
-      .toLowerCase();
-
-    const isScheduledTime =
-      normalizedStatus.includes(' am') ||
-      normalizedStatus.includes(' pm') ||
-      normalizedStatus.includes('a.m.') ||
-      normalizedStatus.includes('p.m.');
-
-    if (isScheduledTime) {
-      return false;
-    }
-
-    return (
-      normalizedStatus.includes('half') ||
-      normalizedStatus.includes('ot') ||
-      /\bq[1-4]\b/.test(normalizedStatus) ||
-      /^\d{1,2}:\d{2}\s*-\s*(1st|2nd|3rd|4th)/.test(
-        normalizedStatus
-      )
-    );
+  isLive(game: Game): boolean {
+    return game.statusState === 'in';
   }
 
-  isFinal(status: string): boolean {
-    return status.toLowerCase().includes('final');
+  isFinal(game: Game): boolean {
+    return game.statusState === 'post';
   }
 
   formatTime(date: Date | null): string {
@@ -106,8 +143,18 @@ export class DashboardScoreboardComponent implements OnInit, OnDestroy {
     return formatMexicoGameDateTime(startTime);
   }
 
-  isWinning(scoreA: number, scoreB: number): boolean {
+  isWinning(
+    scoreA: number,
+    scoreB: number,
+  ): boolean {
     return scoreA > scoreB;
   }
 
+  private gameTimestamp(game: Game): number {
+    const timestamp = Date.parse(game.startTime);
+
+    return Number.isNaN(timestamp)
+      ? 0
+      : timestamp;
+  }
 }

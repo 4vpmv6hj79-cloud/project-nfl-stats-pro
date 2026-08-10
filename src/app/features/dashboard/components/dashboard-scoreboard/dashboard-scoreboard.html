@@ -46,34 +46,58 @@
       </div>
     }
 
-    @if (finalGames().length > 0) {
-      <div class="group">
-        <span class="group__label">Final</span>
-        <div class="games-strip">
-          @for (game of finalGames(); track game.id) {
-            <div class="game-card game-card--final">
-              <ng-container *ngTemplateOutlet="gameCard; context: { $implicit: game }" />
-            </div>
-          }
-        </div>
-      </div>
-    }
+  @if (finalGamesToDisplay().length > 0) {
+    <div class="group">
+      <span class="group__label">
+        Resultados recientes
+      </span>
 
-    @if (upcomingGames().length > 0) {
-      <div class="group">
-        <span class="group__label">Por jugar</span>
-        <div class="games-strip">
-          @for (game of upcomingGames(); track game.id) {
-            <div class="game-card game-card--upcoming">
-              <ng-container *ngTemplateOutlet="gameCard; context: { $implicit: game }" />
-            </div>
-          }
-        </div>
+      <div class="games-strip">
+        @for (
+          game of finalGamesToDisplay();
+          track game.id
+        ) {
+          <div class="game-card game-card--final">
+            <ng-container
+              *ngTemplateOutlet="
+                gameCard;
+                context: { $implicit: game }
+              "
+            />
+          </div>
+        }
       </div>
-    }
+    </div>
+  }
 
-    @if (games().length === 0) {
-      <p class="scoreboard__empty">No hay partidos disponibles en este momento.</p>
+  @if (upcomingGamesToDisplay().length > 0) {
+    <div class="group">
+      <span class="group__label">
+        Próximos partidos
+      </span>
+
+      <div class="games-strip">
+        @for (
+          game of upcomingGamesToDisplay();
+          track game.id
+        ) {
+          <div class="game-card game-card--upcoming">
+            <ng-container
+              *ngTemplateOutlet="
+                gameCard;
+                context: { $implicit: game }
+              "
+            />
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+    @if (!hasVisibleGames()) {
+      <p class="scoreboard__empty">
+        No hay partidos recientes o próximos para mostrar.
+      </p>
     }
 
   }
@@ -91,9 +115,9 @@
   <div class="game__center">
     <span
       class="game__status"
-      [class.game__status--live]="isLive(game.status)"
+      [class.game__status--live]="isLive(game)"
     >
-      @if (isLive(game.status) || isFinal(game.status)) {
+      @if (isLive(game) || isFinal(game)) {
         {{ game.status }}
       } @else {
         {{
