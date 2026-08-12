@@ -1,20 +1,29 @@
 <section class="scoreboard">
-
   <div class="scoreboard__header">
-    <h2 class="scoreboard__title">🏈 Marcadores</h2>
+    <h2 class="scoreboard__title">
+      🏈 Marcadores
+    </h2>
+
     <div class="scoreboard__meta">
       @if (loading()) {
-        <span class="scoreboard__updating">Cargando...</span>
+        <span class="scoreboard__updating">
+          Cargando...
+        </span>
       } @else {
         <span class="scoreboard__count">
           {{ games().length }} partidos
+
           @if (liveGames().length > 0) {
-            · <span class="live-dot"></span> {{ liveGames().length }} en vivo
+            ·
+            <span class="live-dot"></span>
+            {{ liveGames().length }} en vivo
           }
         </span>
+
         @if (lastUpdated()) {
           <span class="scoreboard__time">
-            Actualizado {{ formatTime(lastUpdated()) }}
+            Actualizado
+            {{ formatTime(lastUpdated()) }}
           </span>
         }
       }
@@ -22,94 +31,159 @@
   </div>
 
   @if (loading()) {
-    <div class="scoreboard__skeleton">
-      @for (i of [1,2,3,4,5]; track i) {
-        <div class="skeleton-card"></div>
+    <div
+      class="scoreboard__skeleton"
+      aria-label="Cargando marcadores"
+      aria-live="polite"
+    >
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div
+          class="skeleton-card"
+          aria-hidden="true"
+        ></div>
       }
     </div>
   }
 
   @if (!loading()) {
-
     @if (liveGames().length > 0) {
       <div class="group">
-        <span class="group__label group__label--live">
-          <span class="live-dot"></span> En vivo
+        <span
+          class="group__label group__label--live"
+        >
+          <span class="live-dot"></span>
+          En vivo
         </span>
-        <div class="games-strip">
-          @for (game of liveGames(); track game.id) {
-            <div class="game-card game-card--live">
-              <ng-container *ngTemplateOutlet="gameCard; context: { $implicit: game }" />
+
+        <div
+          class="games-strip"
+          role="region"
+          tabindex="0"
+          aria-label="Partidos en vivo"
+        >
+          @for (
+            game of liveGames();
+            track game.id
+          ) {
+            <div
+              class="game-card game-card--live"
+            >
+              <ng-container
+                *ngTemplateOutlet="
+                  gameCard;
+                  context: {
+                    $implicit: game
+                  }
+                "
+              />
             </div>
           }
         </div>
       </div>
     }
 
-  @if (finalGamesToDisplay().length > 0) {
-    <div class="group">
-      <span class="group__label">
-        Resultados recientes
-      </span>
+    @if (finalGamesToDisplay().length > 0) {
+      <div class="group">
+        <span class="group__label">
+          Resultados recientes
+        </span>
 
-      <div class="games-strip">
-        @for (
-          game of finalGamesToDisplay();
-          track game.id
-        ) {
-          <div class="game-card game-card--final">
-            <ng-container
-              *ngTemplateOutlet="
-                gameCard;
-                context: { $implicit: game }
-              "
-            />
-          </div>
-        }
+        <div
+          class="games-strip"
+          role="region"
+          tabindex="0"
+          aria-label="Resultados recientes"
+        >
+          @for (
+            game of finalGamesToDisplay();
+            track game.id
+          ) {
+            <div
+              class="game-card game-card--final"
+            >
+              <ng-container
+                *ngTemplateOutlet="
+                  gameCard;
+                  context: {
+                    $implicit: game
+                  }
+                "
+              />
+            </div>
+          }
+        </div>
       </div>
-    </div>
-  }
+    }
 
-  @if (upcomingGamesToDisplay().length > 0) {
-    <div class="group">
-      <span class="group__label">
-        Próximos partidos
-      </span>
+    @if (upcomingGamesToDisplay().length > 0) {
+      <div class="group">
+        <span class="group__label">
+          Próximos partidos
+        </span>
 
-      <div class="games-strip">
-        @for (
-          game of upcomingGamesToDisplay();
-          track game.id
-        ) {
-          <div class="game-card game-card--upcoming">
-            <ng-container
-              *ngTemplateOutlet="
-                gameCard;
-                context: { $implicit: game }
-              "
-            />
-          </div>
-        }
+        <div
+          class="games-strip"
+          role="region"
+          tabindex="0"
+          aria-label="Próximos partidos"
+        >
+          @for (
+            game of upcomingGamesToDisplay();
+            track game.id
+          ) {
+            <div
+              class="game-card game-card--upcoming"
+            >
+              <ng-container
+                *ngTemplateOutlet="
+                  gameCard;
+                  context: {
+                    $implicit: game
+                  }
+                "
+              />
+            </div>
+          }
+        </div>
       </div>
-    </div>
-  }
+    }
 
     @if (!hasVisibleGames()) {
       <p class="scoreboard__empty">
-        No hay partidos recientes o próximos para mostrar.
+        No hay partidos recientes o próximos para
+        mostrar.
       </p>
     }
-
   }
-
 </section>
 
 <ng-template #gameCard let-game>
+  <div
+    class="team"
+    [class.team--winning]="
+      isWinning(
+        game.awayScore,
+        game.homeScore
+      )
+    "
+  >
+    <img
+      class="team__logo"
+      [src]="game.awayLogo"
+      [alt]="game.awayTeam"
+      loading="lazy"
+    />
 
-  <div class="team" [class.team--winning]="isWinning(game.awayScore, game.homeScore)">
-    <img class="team__logo" [src]="game.awayLogo" [alt]="game.awayTeam" loading="lazy" />
-    <span class="team__name">{{ game.awayTeam }}</span>
-    <span class="team__score">{{ game.awayScore }}</span>
+    <span
+      class="team__name"
+      [title]="game.awayTeam"
+    >
+      {{ game.awayTeam }}
+    </span>
+
+    <span class="team__score">
+      {{ game.awayScore }}
+    </span>
   </div>
 
   <div class="game__center">
@@ -128,10 +202,31 @@
     </span>
   </div>
 
-  <div class="team" [class.team--winning]="isWinning(game.homeScore, game.awayScore)">
-    <img class="team__logo" [src]="game.homeLogo" [alt]="game.homeTeam" loading="lazy" />
-    <span class="team__name">{{ game.homeTeam }}</span>
-    <span class="team__score">{{ game.homeScore }}</span>
-  </div>
+  <div
+    class="team"
+    [class.team--winning]="
+      isWinning(
+        game.homeScore,
+        game.awayScore
+      )
+    "
+  >
+    <img
+      class="team__logo"
+      [src]="game.homeLogo"
+      [alt]="game.homeTeam"
+      loading="lazy"
+    />
 
+    <span
+      class="team__name"
+      [title]="game.homeTeam"
+    >
+      {{ game.homeTeam }}
+    </span>
+
+    <span class="team__score">
+      {{ game.homeScore }}
+    </span>
+  </div>
 </ng-template>

@@ -17,13 +17,14 @@ import {
 import { ScoreService } from '../../../../core/services/api/score.service';
 import { Game } from '../../../../shared/models/domain/game.model';
 import {
+  differenceInMexicoCalendarDays,
   formatMexicoGameDateTime,
   formatMexicoTime,
 } from '../../../../shared/utils/mexico-date-time.util';
 
 const REFRESH_MS = 30_000;
-const UPCOMING_WINDOW_MS = 24 * 60 * 60 * 1000;
-const DASHBOARD_GAME_LIMIT = 5;
+const UPCOMING_GAME_LIMIT = 16;
+const FINAL_GAME_LIMIT = 5;
 
 @Component({
   selector: 'app-dashboard-scoreboard',
@@ -70,19 +71,23 @@ export class DashboardScoreboardComponent
   );
 
   readonly upcomingGamesToDisplay = computed(() => {
-    const now = Date.now();
+    const now = new Date();
 
     return this.upcomingGames()
       .filter((game) => {
-        const timeUntilStart =
-          this.gameTimestamp(game) - now;
+        const calendarDaysUntilStart =
+          differenceInMexicoCalendarDays(
+            game.startTime,
+            now,
+          );
 
         return (
-          timeUntilStart >= 0 &&
-          timeUntilStart <= UPCOMING_WINDOW_MS
+          calendarDaysUntilStart !== null &&
+          calendarDaysUntilStart >= 0 &&
+          calendarDaysUntilStart <= 1
         );
       })
-      .slice(0, DASHBOARD_GAME_LIMIT);
+      .slice(0, UPCOMING_GAME_LIMIT);
   });
 
   readonly finalGamesToDisplay = computed(() => {
@@ -92,7 +97,7 @@ export class DashboardScoreboardComponent
 
     return this.finalGames().slice(
       0,
-      DASHBOARD_GAME_LIMIT,
+      FINAL_GAME_LIMIT,
     );
   });
 
