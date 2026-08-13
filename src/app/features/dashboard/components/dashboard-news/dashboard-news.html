@@ -46,7 +46,7 @@
 
         <mat-select
           [value]="selectedTeamId()"
-          (selectionChange)="selectTeam($event.value)">
+          (selectionChange)="selectTeam($any($event).value)">
 
           <mat-option value="all">
             Todos los equipos

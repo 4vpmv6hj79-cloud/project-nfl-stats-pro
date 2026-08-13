@@ -2,8 +2,9 @@
 
   <mat-sidenav
     #drawer
-    class="mobile-sidebar"
-    mode="over">
+    class="sidebar"
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="!isMobile()">
 
     <div class="sidebar-logo">
       🏈 NFL CENTER
@@ -14,8 +15,8 @@
         <a
           mat-list-item
           [routerLink]="item.route"
-          routerLinkActive="active-mobile-link"
-          (click)="drawer.close()">
+          routerLinkActive="active-sidebar-link"
+          (click)="closeSidenavIfMobile(drawer)">
 
           <mat-icon matListItemIcon>
             {{ item.icon }}
@@ -49,19 +50,6 @@
         routerLink="/dashboard">
         🏈 Centro NFL
       </a>
-
-      <nav class="desktop-navigation">
-        @for (item of menuItems; track item.route) {
-          <a
-            mat-button
-            [routerLink]="item.route"
-            routerLinkActive="active-link">
-
-            <mat-icon>{{ item.icon }}</mat-icon>
-            {{ item.title }}
-          </a>
-        }
-      </nav>
 
       <span class="toolbar-spacer"></span>
 
