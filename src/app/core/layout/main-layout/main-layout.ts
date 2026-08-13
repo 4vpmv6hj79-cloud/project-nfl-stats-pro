@@ -1,14 +1,13 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-main-layout',
@@ -26,12 +25,13 @@ import { MatDrawer } from '@angular/material/sidenav';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
 })
-export class MainLayout implements OnInit, OnDestroy {
+export class MainLayout {
 
   private readonly breakpointObserver = inject(BreakpointObserver);
-  private breakpointSub!: Subscription;
 
-  readonly isMobile = signal(false);
+  readonly isMobile$ = this.breakpointObserver
+    .observe([Breakpoints.Handset, Breakpoints.TabletPortrait])
+    .pipe(map((state: BreakpointState) => state.matches));
 
   readonly year = new Date().getFullYear();
 
@@ -43,21 +43,4 @@ export class MainLayout implements OnInit, OnDestroy {
     { title: 'Conferencias', icon: 'hub',             route: '/conferences' },
   ];
 
-  ngOnInit(): void {
-    this.breakpointSub = this.breakpointObserver
-      .observe([Breakpoints.Handset, Breakpoints.TabletPortrait])
-      .subscribe((state: BreakpointState) => {
-        this.isMobile.set(state.matches);
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.breakpointSub?.unsubscribe();
-  }
-
-  closeSidenavIfMobile(drawer: MatDrawer): void {
-    if (this.isMobile()) {
-      drawer.close();
-    }
-  }
 }
