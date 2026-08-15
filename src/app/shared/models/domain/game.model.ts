@@ -23,23 +23,15 @@ export interface Game {
   awayRecord: string;
   startTime: string;
   status: string;
-  seasonType: NflSeasonType;
-  week: number;
-}
-
-export interface Game {
-  id: string;
-  homeTeam: string;
-  awayTeam: string;
-  homeLogo: string;
-  awayLogo: string;
-  homeScore: number;
-  awayScore: number;
-  homeRecord: string;
-  awayRecord: string;
-  startTime: string;
-  status: string;
   statusState: GameStatusState;
   seasonType: NflSeasonType;
   week: number;
+
+  // Situación en vivo (solo disponible para juegos en curso)
+  possession?: 'home' | 'away';
+  down?: number;
+  distance?: number;
+  yardLine?: number;
+  downDistanceText?: string;
+  isRedZone?: boolean;
 }

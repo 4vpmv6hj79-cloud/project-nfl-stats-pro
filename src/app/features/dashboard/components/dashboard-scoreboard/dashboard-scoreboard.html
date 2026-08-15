@@ -166,6 +166,9 @@
         game.homeScore
       )
     "
+    [class.team--has-possession]="
+      isLive(game) && game.possession === 'away'
+    "
   >
     <img
       class="team__logo"
@@ -179,6 +182,14 @@
       [title]="game.awayTeam"
     >
       {{ game.awayTeam }}
+
+      @if (isLive(game) && game.possession === 'away') {
+        <span
+          class="possession-indicator"
+          aria-label="Tiene posesión del balón">
+          🏈
+        </span>
+      }
     </span>
 
     <span class="team__score">
@@ -200,6 +211,14 @@
         }}
       }
     </span>
+
+    @if (isLive(game) && game.downDistanceText) {
+      <span
+        class="game__situation"
+        [class.game__situation--redzone]="game.isRedZone">
+        {{ game.downDistanceText }}
+      </span>
+    }
   </div>
 
   <div
@@ -209,6 +228,9 @@
         game.homeScore,
         game.awayScore
       )
+    "
+    [class.team--has-possession]="
+      isLive(game) && game.possession === 'home'
     "
   >
     <img
@@ -223,6 +245,14 @@
       [title]="game.homeTeam"
     >
       {{ game.homeTeam }}
+
+      @if (isLive(game) && game.possession === 'home') {
+        <span
+          class="possession-indicator"
+          aria-label="Tiene posesión del balón">
+          🏈
+        </span>
+      }
     </span>
 
     <span class="team__score">

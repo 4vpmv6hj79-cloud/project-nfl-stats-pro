@@ -244,6 +244,39 @@
   text-align: center;
 }
 
+.game-situation {
+  max-width: 110px;
+  margin-top: 2px;
+  color: var(--color-text-secondary);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+
+  &--redzone {
+    color: #f97316;
+    font-weight: 700;
+  }
+}
+
+.team--has-possession {
+  opacity: 1;
+}
+
+.possession-indicator {
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 0.6rem;
+  vertical-align: middle;
+  animation: pulse-possession 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-possession {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 // Contraste accesible para todos los equipos
 .game-card {
   --score-accent: #60a5fa;

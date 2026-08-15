@@ -73,6 +73,9 @@
             <div
               class="team"
               [class.winner]="isAwayWinning(game)"
+              [class.team--has-possession]="
+                game.statusState === 'in' && game.possession === 'away'
+              "
             >
               <img
                 class="team-logo"
@@ -83,6 +86,14 @@
 
               <span class="team-name">
                 {{ game.awayTeam }}
+
+                @if (game.statusState === 'in' && game.possession === 'away') {
+                  <span
+                    class="possession-indicator"
+                    aria-label="Tiene posesión del balón">
+                    🏈
+                  </span>
+                }
               </span>
 
               <span class="team-record">
@@ -100,11 +111,22 @@
               <span class="game-status">
                 {{ displayGameStatus(game) }}
               </span>
+
+              @if (game.statusState === 'in' && game.downDistanceText) {
+                <span
+                  class="game-situation"
+                  [class.game-situation--redzone]="game.isRedZone">
+                  {{ game.downDistanceText }}
+                </span>
+              }
             </div>
 
             <div
               class="team"
               [class.winner]="isHomeWinning(game)"
+              [class.team--has-possession]="
+                game.statusState === 'in' && game.possession === 'home'
+              "
             >
               <img
                 class="team-logo"
@@ -115,6 +137,14 @@
 
               <span class="team-name">
                 {{ game.homeTeam }}
+
+                @if (game.statusState === 'in' && game.possession === 'home') {
+                  <span
+                    class="possession-indicator"
+                    aria-label="Tiene posesión del balón">
+                    🏈
+                  </span>
+                }
               </span>
 
               <span class="team-record">

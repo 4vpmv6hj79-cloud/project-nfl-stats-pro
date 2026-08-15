@@ -60,6 +60,31 @@ export class GameAdapter {
     return 'unknown';
   }
 
+  private static possession(
+    situation: any,
+    home: any,
+    away: any,
+  ): 'home' | 'away' | undefined {
+    const possTeamId = situation?.possession;
+
+    if (!possTeamId) {
+      return undefined;
+    }
+
+    const homeId = String(home?.team?.id ?? home?.id ?? '');
+    const awayId = String(away?.team?.id ?? away?.id ?? '');
+
+    if (String(possTeamId) === homeId) {
+      return 'home';
+    }
+
+    if (String(possTeamId) === awayId) {
+      return 'away';
+    }
+
+    return undefined;
+  }
+
   static adapt(response: any): Game[] {
     const responseSeasonType = response?.season?.type;
 
@@ -71,6 +96,8 @@ export class GameAdapter {
       const away = competition.competitors.find(
         (competitor: any) => competitor.homeAway === 'away',
       );
+
+      const situation = competition.situation;
 
       return {
         id: event.id,
@@ -89,6 +116,16 @@ export class GameAdapter {
           event.season?.type ?? responseSeasonType,
         ),
         week: event.week?.number ?? response?.week?.number ?? 0,
+
+        // Situación en vivo
+        possession: GameAdapter.possession(situation, home, away),
+        down: situation?.down ?? undefined,
+        distance: situation?.distance ?? undefined,
+        yardLine: situation?.yardLine ?? undefined,
+        downDistanceText: situation?.downDistanceText
+          ? String(situation.downDistanceText).replace(' at ', ' en ')
+          : undefined,
+        isRedZone: situation?.isRedZone ?? undefined,
       };
     });
   }
