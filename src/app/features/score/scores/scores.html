@@ -108,7 +108,9 @@
             <div class="game-center">
               <span class="game-vs">VS</span>
 
-              <span class="game-status">
+              <span
+                class="game-status"
+                [class.game-status--halftime]="game.status === 'Medio Tiempo'">
                 {{ displayGameStatus(game) }}
               </span>
 

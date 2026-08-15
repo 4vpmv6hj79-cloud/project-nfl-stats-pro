@@ -201,6 +201,7 @@
     <span
       class="game__status"
       [class.game__status--live]="isLive(game)"
+      [class.game__status--halftime]="game.status === 'Medio Tiempo'"
     >
       @if (isLive(game) || isFinal(game)) {
         {{ game.status }}

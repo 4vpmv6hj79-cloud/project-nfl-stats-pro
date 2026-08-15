@@ -60,6 +60,18 @@ export class GameAdapter {
     return 'unknown';
   }
 
+  private static translateStatus(status: string): string {
+    if (!status) {
+      return '';
+    }
+
+    return status
+      .replace(/^Halftime$/i, 'Medio Tiempo')
+      .replace(/^Half$/i, 'Medio Tiempo')
+      .replace(/^Final\/OT$/i, 'Final/TE')
+      .replace(/^End of (\d)/i, 'Fin del $1');
+  }
+
   private static possession(
     situation: any,
     home: any,
@@ -110,7 +122,7 @@ export class GameAdapter {
         homeRecord: GameAdapter.record(home),
         awayRecord: GameAdapter.record(away),
         startTime: event.date ?? competition.date ?? '',
-        status: competition.status.type.shortDetail,
+        status: GameAdapter.translateStatus(competition.status.type.shortDetail),
         statusState: GameAdapter.statusState(competition),
         seasonType: GameAdapter.seasonType(
           event.season?.type ?? responseSeasonType,
