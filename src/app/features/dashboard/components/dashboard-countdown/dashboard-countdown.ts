@@ -11,10 +11,10 @@ import { isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
 import { ScoreService } from '../../../../core/services/api/score.service';
-import { FavoritesService } from '../../../../core/services/favorites.service';
+import { FavoritesService, FavoriteTeam } from '../../../../core/services/favorites.service';
 import { Game } from '../../../../shared/models/domain/game.model';
 
-interface CountdownData {
+export interface CountdownData {
   game: Game;
   teamName: string;
   teamLogo: string;
@@ -41,62 +41,61 @@ export class DashboardCountdownComponent implements OnInit, OnDestroy {
   readonly upcomingGames = signal<Game[]>([]);
   readonly now = signal(new Date());
 
-  readonly countdown = computed<CountdownData | null>(() => {
+  /** Lista de countdowns para TODOS los equipos favoritos, ordenados del más cercano al más lejano */
+  readonly countdowns = computed<CountdownData[]>(() => {
     const favorites = this.favoritesService.favorites();
 
     if (favorites.length === 0) {
-      return null;
+      return [];
     }
 
     const games = this.upcomingGames();
     const currentTime = this.now();
 
-    // Buscar el próximo juego de un equipo favorito
-    const favAbbrs = new Set(favorites.map(f => f.abbreviation.toUpperCase()));
+    const upcoming = games.filter(g => g.statusState === 'pre');
 
-    const nextGame = games
-      .filter(g => g.statusState === 'pre')
-      .filter(g => {
-        const homeAbbr = this.extractAbbr(g.homeTeam, games, g, 'home');
-        const awayAbbr = this.extractAbbr(g.awayTeam, games, g, 'away');
-        return favAbbrs.has(homeAbbr) || favAbbrs.has(awayAbbr);
-      })
-      .sort((a, b) => Date.parse(a.startTime) - Date.parse(b.startTime))
-      [0];
+    const results: CountdownData[] = [];
 
-    if (!nextGame) {
-      return null;
+    for (const fav of favorites) {
+      // Buscar el próximo juego de este equipo favorito
+      const nextGame = upcoming
+        .filter(g => this.teamMatchesFavorite(g, fav))
+        .sort((a, b) => Date.parse(a.startTime) - Date.parse(b.startTime))
+        [0];
+
+      if (!nextGame) {
+        continue;
+      }
+
+      const gameTime = Date.parse(nextGame.startTime);
+      const diff = gameTime - currentTime.getTime();
+
+      if (diff <= 0) {
+        continue;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      results.push({
+        game: nextGame,
+        teamName: fav.name,
+        teamLogo: fav.logo,
+        days,
+        hours,
+        minutes,
+        seconds,
+      });
     }
 
-    const gameTime = Date.parse(nextGame.startTime);
-    const diff = gameTime - currentTime.getTime();
-
-    if (diff <= 0) {
-      return null;
-    }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    // Determinar cuál equipo favorito juega
-    const favTeam = favorites.find(f => {
-      const abbr = f.abbreviation.toUpperCase();
-      const homeAbbr = this.extractAbbr(nextGame.homeTeam, games, nextGame, 'home');
-      const awayAbbr = this.extractAbbr(nextGame.awayTeam, games, nextGame, 'away');
-      return abbr === homeAbbr || abbr === awayAbbr;
+    // Ordenar del más cercano al más lejano
+    return results.sort((a, b) => {
+      const totalA = a.days * 86400 + a.hours * 3600 + a.minutes * 60 + a.seconds;
+      const totalB = b.days * 86400 + b.hours * 3600 + b.minutes * 60 + b.seconds;
+      return totalA - totalB;
     });
-
-    return {
-      game: nextGame,
-      teamName: favTeam?.name ?? nextGame.homeTeam,
-      teamLogo: favTeam?.logo ?? nextGame.homeLogo,
-      days,
-      hours,
-      minutes,
-      seconds,
-    };
   });
 
   ngOnInit(): void {
@@ -121,20 +120,18 @@ export class DashboardCountdownComponent implements OnInit, OnDestroy {
     return n.toString().padStart(2, '0');
   }
 
-  /**
-   * Intenta extraer la abreviatura del nombre del equipo.
-   * Como el Game model no tiene un campo de abreviatura directamente,
-   * usamos los logos que contienen la abreviatura en la URL de ESPN.
-   */
-  private extractAbbr(teamName: string, games: Game[], game: Game, side: 'home' | 'away'): string {
-    const logo = side === 'home' ? game.homeLogo : game.awayLogo;
-    // ESPN logos: .../nfl/500/xxx.png donde xxx es el team id
-    // Fallback: buscar en favoritos por nombre parcial
-    const favorites = this.favoritesService.favorites();
-    const match = favorites.find(f =>
-      teamName.toLowerCase().includes(f.name.toLowerCase()) ||
-      f.name.toLowerCase().includes(teamName.split(' ').pop()?.toLowerCase() ?? '')
+  private teamMatchesFavorite(game: Game, fav: FavoriteTeam): boolean {
+    const favName = fav.name.toLowerCase();
+    const favLastWord = favName.split(' ').pop() ?? '';
+
+    const homeName = game.homeTeam.toLowerCase();
+    const awayName = game.awayTeam.toLowerCase();
+
+    return (
+      homeName.includes(favLastWord) ||
+      awayName.includes(favLastWord) ||
+      homeName.includes(favName) ||
+      awayName.includes(favName)
     );
-    return match?.abbreviation.toUpperCase() ?? '';
   }
 }
