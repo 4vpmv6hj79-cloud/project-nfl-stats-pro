@@ -1,5 +1,9 @@
 .favorites-section {
   margin-bottom: 24px;
+
+  @media (max-width: 600px) {
+    margin-bottom: 16px;
+  }
 }
 
 .favorites-title {
