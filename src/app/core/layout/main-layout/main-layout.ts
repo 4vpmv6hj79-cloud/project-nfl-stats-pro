@@ -8,6 +8,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -21,6 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatListModule,
     MatIconModule,
     MatButtonModule,
+    MatTooltipModule,
   ],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
@@ -28,6 +32,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class MainLayout {
 
   private readonly breakpointObserver = inject(BreakpointObserver);
+  readonly themeService = inject(ThemeService);
 
   readonly isMobile$ = this.breakpointObserver
     .observe([Breakpoints.Handset, Breakpoints.TabletPortrait])

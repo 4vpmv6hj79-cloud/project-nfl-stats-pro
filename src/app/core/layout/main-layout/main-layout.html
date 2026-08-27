@@ -1,9 +1,15 @@
+<a class="skip-link" href="#main-content">
+  Saltar al contenido principal
+</a>
+
 <mat-sidenav-container class="layout-container">
 
   <mat-sidenav
     #drawer
     class="mobile-sidebar"
-    mode="over">
+    mode="over"
+    role="navigation"
+    aria-label="Menú de navegación móvil">
 
     <div class="sidebar-logo">
       🏈 NFL CENTER
@@ -32,13 +38,13 @@
 
   <mat-sidenav-content>
 
-    <mat-toolbar class="toolbar">
+    <mat-toolbar class="toolbar" role="banner">
 
       <button
         class="mobile-menu-button"
         mat-icon-button
         type="button"
-        aria-label="Abrir navegación"
+        aria-label="Abrir menú de navegación"
         (click)="drawer.toggle()">
 
         <mat-icon>menu</mat-icon>
@@ -46,18 +52,20 @@
 
       <a
         class="brand"
-        routerLink="/dashboard">
+        routerLink="/dashboard"
+        aria-label="Centro NFL - Ir al inicio">
         🏈 Centro NFL
       </a>
 
-      <nav class="desktop-navigation">
+      <nav class="desktop-navigation" aria-label="Navegación principal">
         @for (item of menuItems; track item.route) {
           <a
             mat-button
             [routerLink]="item.route"
-            routerLinkActive="active-link">
+            routerLinkActive="active-link"
+            [attr.aria-current]="undefined">
 
-            <mat-icon>{{ item.icon }}</mat-icon>
+            <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
             {{ item.title }}
           </a>
         }
@@ -65,9 +73,21 @@
 
       <span class="toolbar-spacer"></span>
 
+      <button
+        mat-icon-button
+        type="button"
+        [matTooltip]="themeService.mode() === 'dark' ? 'Modo claro' : 'Modo oscuro'"
+        [attr.aria-label]="themeService.mode() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+        (click)="themeService.toggle()">
+
+        <mat-icon aria-hidden="true">
+          {{ themeService.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}
+        </mat-icon>
+      </button>
+
     </mat-toolbar>
 
-    <main class="content">
+    <main id="main-content" class="content" role="main">
       <router-outlet></router-outlet>
     </main>
 

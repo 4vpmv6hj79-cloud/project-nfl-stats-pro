@@ -1,13 +1,31 @@
 .team-card {
+  position: relative;
   border-radius: 16px;
   overflow: hidden;
-  transition: 0.3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 }
 
 .team-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  color: var(--color-text-secondary);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  .favorite-active {
+    color: #facc15;
+  }
 }
 
 img {
@@ -44,6 +62,6 @@ h2 {
 
 .info p {
   margin: 0;
-  color: #555;
+  color: var(--color-text-secondary);
   font-size: clamp(0.75rem, 2vw, 0.875rem);
 }

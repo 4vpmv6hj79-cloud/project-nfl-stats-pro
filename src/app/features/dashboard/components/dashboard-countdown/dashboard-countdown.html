@@ -1,0 +1,45 @@
+@if (countdown(); as cd) {
+  <section class="countdown-section" aria-label="Cuenta regresiva para el próximo juego">
+    <div class="countdown-header">
+      <img
+        class="countdown-logo"
+        [src]="cd.teamLogo"
+        [alt]="cd.teamName" />
+
+      <div class="countdown-info">
+        <span class="countdown-label">Próximo juego</span>
+        <span class="countdown-matchup">
+          {{ cd.game.awayTeam }} vs {{ cd.game.homeTeam }}
+        </span>
+      </div>
+    </div>
+
+    <div class="countdown-timer">
+      <div class="countdown-unit">
+        <span class="countdown-value">{{ cd.days }}</span>
+        <span class="countdown-unit-label">Días</span>
+      </div>
+
+      <span class="countdown-separator">:</span>
+
+      <div class="countdown-unit">
+        <span class="countdown-value">{{ pad(cd.hours) }}</span>
+        <span class="countdown-unit-label">Hrs</span>
+      </div>
+
+      <span class="countdown-separator">:</span>
+
+      <div class="countdown-unit">
+        <span class="countdown-value">{{ pad(cd.minutes) }}</span>
+        <span class="countdown-unit-label">Min</span>
+      </div>
+
+      <span class="countdown-separator">:</span>
+
+      <div class="countdown-unit">
+        <span class="countdown-value">{{ pad(cd.seconds) }}</span>
+        <span class="countdown-unit-label">Seg</span>
+      </div>
+    </div>
+  </section>
+}

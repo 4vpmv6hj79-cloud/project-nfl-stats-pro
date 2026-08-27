@@ -9,6 +9,8 @@ import { DashboardStats } from '../../../../shared/models/domain/dashboard-stats
 import { DashboardHeader } from '../dashboard-header/dashboard-header';
 import { DashboardScoreboardComponent } from '../dashboard-scoreboard/dashboard-scoreboard';
 import { DashboardNewsComponent } from '../dashboard-news/dashboard-news';
+import { DashboardFavoritesComponent } from '../dashboard-favorites/dashboard-favorites';
+import { DashboardCountdownComponent } from '../dashboard-countdown/dashboard-countdown';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +19,8 @@ import { DashboardNewsComponent } from '../dashboard-news/dashboard-news';
     CommonModule,
     DashboardHeader,
     DashboardScoreboardComponent,
+    DashboardFavoritesComponent,
+    DashboardCountdownComponent,
     DashboardNewsComponent,
   ],
   templateUrl: './dashboard.html',

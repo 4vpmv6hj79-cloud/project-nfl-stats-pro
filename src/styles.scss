@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 
-// ── Tipografía: Barlow Condensed en títulos y cifras ──────
+// ── Tipografía ────────────────────────────────────────────
 :root {
   --font-display: 'Barlow Condensed', Arial Narrow, sans-serif;
   --font-body:    Roboto, Arial, sans-serif;
@@ -18,8 +18,9 @@ h1, h2, h3 {
   letter-spacing: 0.02em;
 }
 
-// ── Paleta de colores ─────────────────────────────────────
-:root {
+// ── Paleta: Modo Oscuro (default) ─────────────────────────
+:root,
+[data-theme='dark'] {
   --color-primary:        #2563EB;
   --color-secondary:      #7C3AED;
   --color-success:        #22C55E;
@@ -33,10 +34,26 @@ h1, h2, h3 {
   --color-text-secondary: #94A3B8;
 }
 
+// ── Paleta: Modo Claro ────────────────────────────────────
+[data-theme='light'] {
+  --color-primary:        #1D4ED8;
+  --color-secondary:      #6D28D9;
+  --color-success:        #16A34A;
+  --color-warning:        #D97706;
+  --color-error:          #DC2626;
+  --color-background:     #F1F5F9;
+  --color-surface:        #FFFFFF;
+  --color-toolbar:        #FFFFFF;
+  --color-border:         #CBD5E1;
+  --color-text:           #0F172A;
+  --color-text-secondary: #475569;
+}
+
 // ── Tema Angular Material (modo oscuro) ───────────────────
 html {
   background-color: var(--color-background);
   color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   @include mat.theme((
     color: (
@@ -55,6 +72,7 @@ html {
     color: var(--color-text);
     -webkit-text-size-adjust: 100%;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
@@ -67,4 +85,70 @@ html {
 .error-snackbar {
   --mdc-snackbar-container-color: var(--color-error);
   --mdc-snackbar-supporting-text-color: #fff;
+}
+
+// ── Focus visible global (accesibilidad) ──────────────────
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+// ── Smooth scroll ─────────────────────────────────────────
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ── Animaciones globales ──────────────────────────────────
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out both;
 }

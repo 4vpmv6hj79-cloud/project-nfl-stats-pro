@@ -1,0 +1,92 @@
+.favorites-section {
+  margin-bottom: 24px;
+}
+
+.favorites-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.favorites-icon {
+  color: #facc15;
+  font-size: 1.3rem;
+}
+
+.favorites-strip {
+  display: flex;
+  gap: 10px;
+  padding: 4px 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.favorite-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+}
+
+.favorite-chip__logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.favorite-chip__name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.favorites-section--empty {
+  margin-bottom: 16px;
+}
+
+.favorites-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+
+  a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}

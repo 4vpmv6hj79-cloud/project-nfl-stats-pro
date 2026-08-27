@@ -1,5 +1,17 @@
 <mat-card [routerLink]="['/teams', team.id]" class="team-card">
 
+  <button
+    class="favorite-btn"
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+    (click)="toggleFavorite($event)">
+
+    <mat-icon [class.favorite-active]="isFavorite">
+      {{ isFavorite ? 'star' : 'star_border' }}
+    </mat-icon>
+  </button>
+
   <img
       mat-card-image
       [src]="team.logo"

@@ -21,6 +21,7 @@ import {
   formatMexicoGameDateTime,
   formatMexicoTime,
 } from '../../../../shared/utils/mexico-date-time.util';
+import { fadeIn } from '../../../../shared/animations/animations';
 
 const REFRESH_MS = 30_000;
 const UPCOMING_GAME_LIMIT = 16;
@@ -32,6 +33,7 @@ const FINAL_GAME_LIMIT = 5;
   imports: [CommonModule],
   templateUrl: './dashboard-scoreboard.html',
   styleUrl: './dashboard-scoreboard.scss',
+  animations: [fadeIn],
 })
 export class DashboardScoreboardComponent
   implements OnInit, OnDestroy

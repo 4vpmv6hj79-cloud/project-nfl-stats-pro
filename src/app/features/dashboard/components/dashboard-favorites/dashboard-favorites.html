@@ -1,0 +1,36 @@
+@if (favoritesService.favorites().length > 0) {
+  <section class="favorites-section" aria-label="Mis equipos favoritos">
+    <h2 class="favorites-title">
+      <mat-icon class="favorites-icon">star</mat-icon>
+      Mis Equipos
+    </h2>
+
+    <div class="favorites-strip">
+      @for (team of favoritesService.favorites(); track team.id) {
+        <a
+          class="favorite-chip"
+          [routerLink]="['/teams', team.id]"
+          [attr.aria-label]="'Ver ' + team.name">
+
+          <img
+            class="favorite-chip__logo"
+            [src]="team.logo"
+            [alt]="team.name"
+            loading="lazy" />
+
+          <span class="favorite-chip__name">
+            {{ team.abbreviation }}
+          </span>
+        </a>
+      }
+    </div>
+  </section>
+} @else {
+  <section class="favorites-section favorites-section--empty">
+    <p class="favorites-empty">
+      <mat-icon>star_border</mat-icon>
+      Agrega equipos favoritos desde la sección de
+      <a routerLink="/teams">Equipos</a>
+    </p>
+  </section>
+}

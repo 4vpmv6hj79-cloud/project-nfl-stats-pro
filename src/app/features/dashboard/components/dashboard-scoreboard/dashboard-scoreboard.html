@@ -1,4 +1,4 @@
-<section class="scoreboard">
+<section class="scoreboard" aria-label="Marcadores de la NFL">
   <div class="scoreboard__header">
     <h2 class="scoreboard__title">
       🏈 Marcadores
@@ -47,7 +47,7 @@
 
   @if (!loading()) {
     @if (liveGames().length > 0) {
-      <div class="group">
+      <div class="group" @fadeIn>
         <span
           class="group__label group__label--live"
         >
@@ -60,6 +60,8 @@
           role="region"
           tabindex="0"
           aria-label="Partidos en vivo"
+          aria-live="polite"
+          aria-atomic="false"
         >
           @for (
             game of liveGames();
