@@ -100,6 +100,10 @@ export class ComparatorComponent {
 
     this.playerService.getPlayerStats(result.id).subscribe({
       next: profile => {
+        // Completar con datos del search result si el profile no los tiene
+        profile.displayName = profile.displayName || result.displayName;
+        profile.position = profile.position || result.position || '';
+        profile.teamAbbr = profile.teamAbbr || result.teamAbbr || '';
         this.playerA.set(profile);
         this.loadingA.set(false);
       },
@@ -114,6 +118,9 @@ export class ComparatorComponent {
 
     this.playerService.getPlayerStats(result.id).subscribe({
       next: profile => {
+        profile.displayName = profile.displayName || result.displayName;
+        profile.position = profile.position || result.position || '';
+        profile.teamAbbr = profile.teamAbbr || result.teamAbbr || '';
         this.playerB.set(profile);
         this.loadingB.set(false);
       },

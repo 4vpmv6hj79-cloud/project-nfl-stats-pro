@@ -98,6 +98,9 @@ export class PlayerService {
     const header = response?.athlete ?? response?.header ?? {};
     const athlete = header?.athlete ?? header;
 
+    // ESPN headshot URL estándar (siempre disponible)
+    const headshotUrl = `https://a.espncdn.com/i/headshots/nfl/players/full/${playerId}.png`;
+
     return {
       id: playerId,
       displayName: athlete?.displayName ?? '',
@@ -106,7 +109,7 @@ export class PlayerService {
       teamName: athlete?.team?.displayName ?? '',
       teamLogo: athlete?.team?.logos?.[0]?.href ?? athlete?.team?.logo ?? '',
       jersey: athlete?.jersey ?? '',
-      headshot: athlete?.headshot?.href ?? '',
+      headshot: athlete?.headshot?.href || headshotUrl,
       stats: playerStats,
       categories,
     };
