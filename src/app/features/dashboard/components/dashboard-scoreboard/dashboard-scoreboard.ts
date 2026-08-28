@@ -7,6 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   Subscription,
   interval,
@@ -38,6 +39,7 @@ const FINAL_GAME_LIMIT = 5;
 export class DashboardScoreboardComponent
   implements OnInit, OnDestroy
 {
+  private readonly router = inject(Router);
   private readonly scoreService = inject(ScoreService);
 
   readonly games = signal<Game[]>([]);
@@ -155,6 +157,10 @@ export class DashboardScoreboardComponent
     scoreB: number,
   ): boolean {
     return scoreA > scoreB;
+  }
+
+  openGame(game: Game): void {
+    this.router.navigate(['/scores', game.id]);
   }
 
   private gameTimestamp(game: Game): number {

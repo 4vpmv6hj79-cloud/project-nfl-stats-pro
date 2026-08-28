@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { NotificationService } from '../../../core/services/api/notification.service';
@@ -34,6 +35,7 @@ type GameStatusFilter = 'all' | 'live' | 'final' | 'upcoming';
 export class Scores implements OnInit {
   private readonly scoreService = inject(ScoreService);
   private readonly notification = inject(NotificationService);
+  private readonly router = inject(Router);
 
   readonly games = signal<Game[]>([]);
   readonly filter = signal<GameStatusFilter>('all');
@@ -135,5 +137,9 @@ export class Scores implements OnInit {
 
   isAwayWinning(game: Game): boolean {
     return game.awayScore > game.homeScore;
+  }
+
+  openGame(game: Game): void {
+    this.router.navigate(['/scores', game.id]);
   }
 }

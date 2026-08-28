@@ -68,7 +68,12 @@
             track game.id
           ) {
             <div
-              class="game-card game-card--live"
+              class="game-card game-card--live game-card--clickable"
+              (click)="openGame(game)"
+              (keydown.enter)="openGame(game)"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'Ver detalles: ' + game.awayTeam + ' vs ' + game.homeTeam"
             >
               <ng-container
                 *ngTemplateOutlet="
@@ -101,7 +106,12 @@
             track game.id
           ) {
             <div
-              class="game-card game-card--final"
+              class="game-card game-card--final game-card--clickable"
+              (click)="openGame(game)"
+              (keydown.enter)="openGame(game)"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'Ver detalles: ' + game.awayTeam + ' vs ' + game.homeTeam"
             >
               <ng-container
                 *ngTemplateOutlet="
@@ -134,7 +144,12 @@
             track game.id
           ) {
             <div
-              class="game-card game-card--upcoming"
+              class="game-card game-card--upcoming game-card--clickable"
+              (click)="openGame(game)"
+              (keydown.enter)="openGame(game)"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'Ver detalles: ' + game.awayTeam + ' vs ' + game.homeTeam"
             >
               <ng-container
                 *ngTemplateOutlet="

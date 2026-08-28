@@ -49,7 +49,14 @@
   } @else {
     <div class="games-grid">
       @for (game of filtered(); track game.id) {
-        <article class="game-card">
+        <article
+          class="game-card"
+          (click)="openGame(game)"
+          (keydown.enter)="openGame(game)"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'Ver detalles: ' + game.awayTeam + ' vs ' + game.homeTeam"
+        >
           <header class="game-meta">
             <span
               class="season-badge"

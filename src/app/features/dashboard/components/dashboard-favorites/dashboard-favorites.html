@@ -5,23 +5,62 @@
       Mis Equipos
     </h2>
 
-    <div class="favorites-strip">
-      @for (team of favoritesService.favorites(); track team.id) {
-        <a
-          class="favorite-chip"
-          [routerLink]="['/teams', team.id]"
-          [attr.aria-label]="'Ver ' + team.name">
+    <div class="favorites-cards">
+      @for (info of favoriteTeamsInfo(); track info.team.id) {
+        <div class="fav-card">
+          <!-- Header del equipo -->
+          <a class="fav-card__header" [routerLink]="['/teams', info.team.id]">
+            <img
+              class="fav-card__logo"
+              [src]="info.team.logo"
+              [alt]="info.team.name"
+              loading="lazy" />
 
-          <img
-            class="favorite-chip__logo"
-            [src]="team.logo"
-            [alt]="team.name"
-            loading="lazy" />
+            <div class="fav-card__info">
+              <span class="fav-card__name">{{ info.team.name }}</span>
 
-          <span class="favorite-chip__name">
-            {{ team.abbreviation }}
-          </span>
-        </a>
+              @if (info.record) {
+                <span class="fav-card__record">{{ info.record }}</span>
+              }
+            </div>
+
+            <span class="fav-card__abbr">{{ info.team.abbreviation }}</span>
+          </a>
+
+          <!-- Posición en conferencia/división -->
+          @if (info.conferenceRank > 0) {
+            <div class="fav-card__standings">
+              <div class="fav-card__rank">
+                <mat-icon class="fav-card__rank-icon">leaderboard</mat-icon>
+                <span>#{{ info.conferenceRank }} {{ info.conference }}</span>
+              </div>
+
+              <div class="fav-card__rank">
+                <mat-icon class="fav-card__rank-icon">group_work</mat-icon>
+                <span>#{{ info.divisionRank }} {{ info.division }}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Noticias del equipo -->
+          @if (info.news.length > 0) {
+            <div class="fav-card__news">
+              @for (article of info.news; track article.id) {
+                <div
+                  class="fav-card__article"
+                  role="button"
+                  tabindex="0"
+                  (click)="openArticle(article.link)"
+                  (keydown.enter)="openArticle(article.link)">
+
+                  <span class="fav-card__article-text">
+                    {{ article.headline }}
+                  </span>
+                </div>
+              }
+            </div>
+          }
+        </div>
       }
     </div>
   </section>

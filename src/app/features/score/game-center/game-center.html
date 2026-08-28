@@ -1,0 +1,157 @@
+@if (loading()) {
+  <div class="gc-loading">
+    <div class="gc-loading__spinner"></div>
+    <p>Cargando partido...</p>
+  </div>
+}
+
+@if (error()) {
+  <div class="gc-error">
+    <mat-icon>error_outline</mat-icon>
+    <p>No se pudo cargar la información del partido.</p>
+    <a mat-button routerLink="/scores">← Volver a marcadores</a>
+  </div>
+}
+
+@if (!loading() && !error() && game(); as g) {
+  <div class="game-center">
+
+    <!-- Header / Scoreboard -->
+    <header class="gc-header">
+      <a class="gc-back" routerLink="/scores" aria-label="Volver a marcadores">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+
+      <div class="gc-scoreboard">
+        <div class="gc-team gc-team--away">
+          <img class="gc-team__logo" [src]="g.awayTeam.logo" [alt]="g.awayTeam.name" />
+          <span class="gc-team__abbr">{{ g.awayTeam.abbreviation }}</span>
+          <span class="gc-team__record">{{ g.awayTeam.record }}</span>
+        </div>
+
+        <div class="gc-score">
+          <span class="gc-score__value">{{ g.awayTeam.score }}</span>
+          <span class="gc-score__separator">-</span>
+          <span class="gc-score__value">{{ g.homeTeam.score }}</span>
+        </div>
+
+        <div class="gc-team gc-team--home">
+          <img class="gc-team__logo" [src]="g.homeTeam.logo" [alt]="g.homeTeam.name" />
+          <span class="gc-team__abbr">{{ g.homeTeam.abbreviation }}</span>
+          <span class="gc-team__record">{{ g.homeTeam.record }}</span>
+        </div>
+      </div>
+
+      <div class="gc-status">
+        <span class="gc-status__text" [class.gc-status__text--live]="g.statusState === 'in'">
+          {{ g.status }}
+        </span>
+
+        @if (g.statusState === 'in' && g.downDistanceText) {
+          <span class="gc-status__situation" [class.gc-status__situation--redzone]="g.isRedZone">
+            {{ g.downDistanceText }}
+          </span>
+        }
+      </div>
+
+      @if (g.venue) {
+        <span class="gc-venue">{{ g.venue }}</span>
+      }
+    </header>
+
+    <!-- Momentum Bar -->
+    @if (g.momentum.length > 0) {
+      <section class="gc-momentum" aria-label="Probabilidad de victoria">
+        <h3 class="gc-section-title">Momentum</h3>
+
+        <div class="gc-momentum__bar">
+          <div class="gc-momentum__away" [style.width.%]="awayWinPct">
+            <span class="gc-momentum__label">{{ g.awayTeam.abbreviation }}</span>
+            <span class="gc-momentum__pct">{{ awayWinPct }}%</span>
+          </div>
+          <div class="gc-momentum__home" [style.width.%]="homeWinPct">
+            <span class="gc-momentum__pct">{{ homeWinPct }}%</span>
+            <span class="gc-momentum__label">{{ g.homeTeam.abbreviation }}</span>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- Líderes -->
+    @if (g.homeLeaders.length > 0 || g.awayLeaders.length > 0) {
+      <section class="gc-leaders">
+        <h3 class="gc-section-title">Líderes del partido</h3>
+
+        <div class="gc-leaders__grid">
+          @for (leader of g.awayLeaders; track leader.category) {
+            <div class="gc-leader">
+              <span class="gc-leader__category">{{ leader.category }}</span>
+              <span class="gc-leader__name">{{ leader.athleteName }}</span>
+              <span class="gc-leader__value">{{ leader.displayValue }}</span>
+              <span class="gc-leader__team">{{ leader.teamAbbr }}</span>
+            </div>
+          }
+
+          @for (leader of g.homeLeaders; track leader.category) {
+            <div class="gc-leader">
+              <span class="gc-leader__category">{{ leader.category }}</span>
+              <span class="gc-leader__name">{{ leader.athleteName }}</span>
+              <span class="gc-leader__value">{{ leader.displayValue }}</span>
+              <span class="gc-leader__team">{{ leader.teamAbbr }}</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Últimos Drives -->
+    @if (g.drives.length > 0) {
+      <section class="gc-drives">
+        <h3 class="gc-section-title">Últimos drives</h3>
+
+        <div class="gc-drives__list">
+          @for (drive of g.drives; track drive.id; let i = $index) {
+            @if (i < 10) {
+              <div class="gc-drive" [class]="driveResultClass(drive)">
+                <span class="gc-drive__icon">{{ driveIcon(drive) }}</span>
+
+                <div class="gc-drive__info">
+                  <span class="gc-drive__team">{{ drive.teamAbbr }}</span>
+                  <span class="gc-drive__result">{{ drive.shortResult }}</span>
+                </div>
+
+                <span class="gc-drive__desc">{{ drive.description }}</span>
+              </div>
+            }
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Scoring Plays -->
+    @if (g.scoringPlays.length > 0) {
+      <section class="gc-scoring">
+        <h3 class="gc-section-title">Anotaciones</h3>
+
+        <div class="gc-scoring__list">
+          @for (play of g.scoringPlays; track play.id) {
+            <div class="gc-scoring-play">
+              <div class="gc-scoring-play__header">
+                <span class="gc-scoring-play__team">{{ play.teamAbbr }}</span>
+                <span class="gc-scoring-play__type">{{ play.type }}</span>
+                <span class="gc-scoring-play__time">Q{{ play.quarter }} · {{ play.clock }}</span>
+              </div>
+
+              <p class="gc-scoring-play__text">{{ play.text }}</p>
+
+              <div class="gc-scoring-play__score">
+                {{ g.awayTeam.abbreviation }} {{ play.awayScore }} - {{ play.homeScore }} {{ g.homeTeam.abbreviation }}
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+  </div>
+}
