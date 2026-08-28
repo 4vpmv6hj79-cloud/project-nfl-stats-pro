@@ -24,7 +24,6 @@ export class PlayerService {
     }
 
     const params = new HttpParams()
-      .set('path', 'apis/common/v3/search')
       .set('query', query.trim())
       .set('limit', '10')
       .set('type', 'player')
@@ -32,7 +31,7 @@ export class PlayerService {
       .set('league', 'nfl');
 
     return this.http
-      .get<any>('/api', { params })
+      .get<any>('/api/apis/common/v3/search', { params })
       .pipe(map(response => this.adaptSearchResults(response)));
   }
 
@@ -41,11 +40,10 @@ export class PlayerService {
    */
   getPlayerStats(playerId: string): Observable<PlayerProfile> {
     const params = new HttpParams()
-      .set('path', `apis/common/v3/sports/football/nfl/athletes/${playerId}/overview`)
       .set('origin', 'site-web');
 
     return this.http
-      .get<any>('/api', { params })
+      .get<any>(`/api/apis/common/v3/sports/football/nfl/athletes/${playerId}/overview`, { params })
       .pipe(map(response => this.adaptPlayerProfile(playerId, response)));
   }
 
