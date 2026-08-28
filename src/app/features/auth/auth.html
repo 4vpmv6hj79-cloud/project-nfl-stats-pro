@@ -34,85 +34,153 @@
       <span>o</span>
     </div>
 
-    <!-- Email Form -->
-    <form class="auth-form" (ngSubmit)="onSubmit()">
+    <!-- Register Form -->
+    @if (mode() === 'register') {
+      <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-      @if (mode() === 'register') {
         <mat-form-field appearance="outline">
           <mat-label>Nombre</mat-label>
           <input
             matInput
-            [(ngModel)]="displayName"
-            name="displayName"
-            placeholder="Tu nombre"
-            required />
+            formControlName="displayName"
+            placeholder="Tu nombre completo"
+            autocomplete="name" />
           <mat-icon matPrefix>person</mat-icon>
+          @if (getNameError()) {
+            <mat-error>{{ getNameError() }}</mat-error>
+          }
+          <mat-hint>Solo letras y espacios</mat-hint>
         </mat-form-field>
-      }
 
-      <mat-form-field appearance="outline">
-        <mat-label>Correo electrónico</mat-label>
-        <input
-          matInput
-          [(ngModel)]="email"
-          name="email"
-          type="email"
-          placeholder="tu@email.com"
-          required />
-        <mat-icon matPrefix>email</mat-icon>
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Correo electrónico</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            type="email"
+            placeholder="tu@email.com"
+            autocomplete="email" />
+          <mat-icon matPrefix>email</mat-icon>
+          @if (getEmailError()) {
+            <mat-error>{{ getEmailError() }}</mat-error>
+          }
+          <mat-hint>Debe ser un correo real</mat-hint>
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Contraseña</mat-label>
-        <input
-          matInput
-          [(ngModel)]="password"
-          name="password"
-          [type]="showPassword() ? 'text' : 'password'"
-          placeholder="••••••••"
-          required
-          minlength="6" />
-        <mat-icon matPrefix>lock</mat-icon>
-        <button
-          matSuffix
-          mat-icon-button
-          type="button"
-          (click)="showPassword.set(!showPassword())"
-          [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
-          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            placeholder="••••••••"
+            autocomplete="new-password" />
+          <mat-icon matPrefix>lock</mat-icon>
+          <button
+            matSuffix
+            mat-icon-button
+            type="button"
+            (click)="showPassword.set(!showPassword())"
+            [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (getPasswordError()) {
+            <mat-error>{{ getPasswordError() }}</mat-error>
+          }
+          <mat-hint>Mínimo 6 caracteres: letras, números y !&#64;#$%^&amp;*._-</mat-hint>
+        </mat-form-field>
 
-      @if (errorMessage; as err) {
-        <div class="auth-error">
-          <mat-icon>error</mat-icon>
-          {{ err }}
-        </div>
-      }
-
-      <button
-        class="auth-submit-btn"
-        mat-flat-button
-        type="submit"
-        [disabled]="loading()">
-
-        @if (loading()) {
-          <span class="auth-spinner"></span>
-        } @else {
-          {{ mode() === 'login' ? 'Iniciar sesión' : 'Crear cuenta' }}
+        @if (errorMessage; as err) {
+          <div class="auth-error">
+            <mat-icon>error</mat-icon>
+            {{ err }}
+          </div>
         }
-      </button>
 
-    </form>
+        <button
+          class="auth-submit-btn"
+          mat-flat-button
+          type="submit"
+          [disabled]="loading()">
+
+          @if (loading()) {
+            <span class="auth-spinner"></span>
+          } @else {
+            Crear cuenta
+          }
+        </button>
+
+      </form>
+    }
+
+    <!-- Login Form -->
+    @if (mode() === 'login') {
+      <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Correo electrónico</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            type="email"
+            placeholder="tu@email.com"
+            autocomplete="email" />
+          <mat-icon matPrefix>email</mat-icon>
+          @if (getEmailError()) {
+            <mat-error>{{ getEmailError() }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            placeholder="••••••••"
+            autocomplete="current-password" />
+          <mat-icon matPrefix>lock</mat-icon>
+          <button
+            matSuffix
+            mat-icon-button
+            type="button"
+            (click)="showPassword.set(!showPassword())"
+            [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        @if (errorMessage; as err) {
+          <div class="auth-error">
+            <mat-icon>error</mat-icon>
+            {{ err }}
+          </div>
+        }
+
+        <button
+          class="auth-submit-btn"
+          mat-flat-button
+          type="submit"
+          [disabled]="loading()">
+
+          @if (loading()) {
+            <span class="auth-spinner"></span>
+          } @else {
+            Iniciar sesión
+          }
+        </button>
+
+      </form>
+    }
 
     <!-- Toggle mode -->
     <p class="auth-toggle">
       @if (mode() === 'login') {
         ¿No tienes cuenta?
-        <button class="auth-toggle-btn" (click)="toggleMode()">Regístrate</button>
+        <button class="auth-toggle-btn" type="button" (click)="toggleMode()">Regístrate</button>
       } @else {
         ¿Ya tienes cuenta?
-        <button class="auth-toggle-btn" (click)="toggleMode()">Inicia sesión</button>
+        <button class="auth-toggle-btn" type="button" (click)="toggleMode()">Inicia sesión</button>
       }
     </p>
 
