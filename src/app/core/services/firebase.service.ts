@@ -1,41 +1,60 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { FirebaseApp, initializeApp } from 'firebase/app';
-import { Auth, getAuth } from 'firebase/auth';
-import { Firestore, getFirestore } from 'firebase/firestore';
 
 import { environment } from '../../../environments/environment';
 
 /**
- * Servicio singleton que inicializa Firebase y expone Auth y Firestore.
+ * Servicio singleton que inicializa Firebase lazily y expone Auth y Firestore.
+ * Usa dynamic imports para que Firebase no entre en el bundle inicial.
  * Solo se inicializa en el browser (no en SSR).
  */
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
   private readonly platformId = inject(PLATFORM_ID);
-  private app: FirebaseApp | null = null;
-  private _auth: Auth | null = null;
-  private _firestore: Firestore | null = null;
+  private _auth: any = null;
+  private _firestore: any = null;
+  private _initialized = false;
+  private _initPromise: Promise<void> | null = null;
 
-  get auth(): Auth | null {
-    if (!this._auth && isPlatformBrowser(this.platformId)) {
-      this.initialize();
-    }
+  get auth(): any {
     return this._auth;
   }
 
-  get firestore(): Firestore | null {
-    if (!this._firestore && isPlatformBrowser(this.platformId)) {
-      this.initialize();
-    }
+  get firestore(): any {
     return this._firestore;
   }
 
-  private initialize(): void {
-    if (this.app) return;
+  get initialized(): boolean {
+    return this._initialized;
+  }
 
-    this.app = initializeApp(environment.firebase);
-    this._auth = getAuth(this.app);
-    this._firestore = getFirestore(this.app);
+  /**
+   * Inicializa Firebase de forma lazy. Debe llamarse antes de usar auth/firestore.
+   * Se puede llamar múltiples veces de forma segura.
+   */
+  async initialize(): Promise<void> {
+    if (this._initialized) return;
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    if (!this._initPromise) {
+      this._initPromise = this.doInitialize();
+    }
+
+    return this._initPromise;
+  }
+
+  private async doInitialize(): Promise<void> {
+    try {
+      const { initializeApp } = await import('firebase/app');
+      const { getAuth } = await import('firebase/auth');
+      const { getFirestore } = await import('firebase/firestore');
+
+      const app = initializeApp(environment.firebase);
+      this._auth = getAuth(app);
+      this._firestore = getFirestore(app);
+      this._initialized = true;
+    } catch (e) {
+      console.error('Failed to initialize Firebase:', e);
+    }
   }
 }

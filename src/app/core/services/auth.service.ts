@@ -1,15 +1,5 @@
 import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import {
-  User,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  updateProfile,
-} from 'firebase/auth';
 
 import { FirebaseService } from './firebase.service';
 
@@ -36,7 +26,7 @@ export class AuthService {
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      this.listenAuthState();
+      this.initAuth();
     } else {
       this.loading.set(false);
     }
@@ -50,12 +40,14 @@ export class AuthService {
    * Registro con correo y contraseña.
    */
   async register(email: string, password: string, displayName: string): Promise<boolean> {
+    await this.firebase.initialize();
     const auth = this.firebase.auth;
     if (!auth) return false;
 
     this.error.set(null);
 
     try {
+      const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
       const credential = await createUserWithEmailAndPassword(auth, email, password);
 
       if (credential.user && displayName) {
@@ -74,12 +66,14 @@ export class AuthService {
    * Login con correo y contraseña.
    */
   async login(email: string, password: string): Promise<boolean> {
+    await this.firebase.initialize();
     const auth = this.firebase.auth;
     if (!auth) return false;
 
     this.error.set(null);
 
     try {
+      const { signInWithEmailAndPassword } = await import('firebase/auth');
       const credential = await signInWithEmailAndPassword(auth, email, password);
       this.user.set(this.mapUser(credential.user));
       return true;
@@ -93,12 +87,14 @@ export class AuthService {
    * Login con Google (popup).
    */
   async loginWithGoogle(): Promise<boolean> {
+    await this.firebase.initialize();
     const auth = this.firebase.auth;
     if (!auth) return false;
 
     this.error.set(null);
 
     try {
+      const { signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
       const provider = new GoogleAuthProvider();
       const credential = await signInWithPopup(auth, provider);
       this.user.set(this.mapUser(credential.user));
@@ -113,27 +109,32 @@ export class AuthService {
    * Cerrar sesión.
    */
   async logout(): Promise<void> {
+    await this.firebase.initialize();
     const auth = this.firebase.auth;
     if (!auth) return;
 
+    const { signOut } = await import('firebase/auth');
     await signOut(auth);
     this.user.set(null);
   }
 
-  private listenAuthState(): void {
+  private async initAuth(): Promise<void> {
+    await this.firebase.initialize();
     const auth = this.firebase.auth;
+
     if (!auth) {
       this.loading.set(false);
       return;
     }
 
-    onAuthStateChanged(auth, (firebaseUser) => {
+    const { onAuthStateChanged } = await import('firebase/auth');
+    onAuthStateChanged(auth, (firebaseUser: any) => {
       this.user.set(firebaseUser ? this.mapUser(firebaseUser) : null);
       this.loading.set(false);
     });
   }
 
-  private mapUser(u: User): AppUser {
+  private mapUser(u: any): AppUser {
     return {
       uid: u.uid,
       email: u.email,

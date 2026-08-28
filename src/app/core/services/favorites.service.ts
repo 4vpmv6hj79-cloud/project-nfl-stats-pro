@@ -1,6 +1,5 @@
 import { Injectable, signal, effect, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 import { FirebaseService } from './firebase.service';
 import { AuthService } from './auth.service';
@@ -98,6 +97,7 @@ export class FavoritesService {
     this.syncing = true;
 
     try {
+      const { doc, getDoc } = await import('firebase/firestore');
       const docRef = doc(firestore, 'users', uid);
       const snapshot = await getDoc(docRef);
 
@@ -149,6 +149,7 @@ export class FavoritesService {
     if (!firestore) return;
 
     try {
+      const { doc, setDoc } = await import('firebase/firestore');
       const docRef = doc(firestore, 'users', uid);
       await setDoc(docRef, { favorites }, { merge: true });
     } catch (e) {
