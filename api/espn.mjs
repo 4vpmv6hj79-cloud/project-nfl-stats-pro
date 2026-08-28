@@ -1,5 +1,8 @@
-const ESPN_ORIGIN =
-  'https://site.api.espn.com';
+const ALLOWED_ORIGINS = {
+  'site': 'https://site.api.espn.com',
+  'site-web': 'https://site.web.api.espn.com',
+  'core': 'https://sports.core.api.espn.com',
+};
 
 export default async function handler(
   request,
@@ -25,6 +28,13 @@ export default async function handler(
   const requestedPath =
     requestUrl.searchParams.get('path') ?? '';
 
+  // Seleccionar el origin basado en parámetro 'origin' (default: site)
+  const originKey =
+    requestUrl.searchParams.get('origin') ?? 'site';
+
+  const espnOrigin =
+    ALLOWED_ORIGINS[originKey] ?? ALLOWED_ORIGINS['site'];
+
   const normalizedPath =
     requestedPath.replace(/^\/+/, '');
 
@@ -49,14 +59,14 @@ export default async function handler(
 
   const upstreamUrl = new URL(
     `/${normalizedPath}`,
-    ESPN_ORIGIN,
+    espnOrigin,
   );
 
   for (
     const [key, value] of
     requestUrl.searchParams.entries()
   ) {
-    if (key !== 'path') {
+    if (key !== 'path' && key !== 'origin') {
       upstreamUrl.searchParams.append(
         key,
         value,

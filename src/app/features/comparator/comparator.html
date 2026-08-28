@@ -1,0 +1,170 @@
+<div class="comparator-page">
+
+  <header class="cmp-header">
+    <h1 class="cmp-title">⚔️ Comparador de Jugadores</h1>
+    <p class="cmp-subtitle">Busca dos jugadores y compara sus estadísticas lado a lado</p>
+  </header>
+
+  <!-- Search Section -->
+  <div class="cmp-search-row">
+
+    <!-- Player A Search -->
+    <div class="cmp-search">
+      <mat-form-field appearance="outline" class="cmp-search__field">
+        <mat-label>Jugador 1</mat-label>
+        <input
+          matInput
+          [value]="searchQueryA()"
+          (input)="onSearchA($any($event.target).value)"
+          (focus)="showResultsA.set(searchResultsA().length > 0)"
+          placeholder="Buscar jugador..."
+          autocomplete="off" />
+
+        @if (playerA()) {
+          <button matSuffix mat-icon-button (click)="clearPlayerA()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+
+      @if (showResultsA()) {
+        <div class="cmp-search__results">
+          @for (result of searchResultsA(); track result.id) {
+            <button
+              class="cmp-search__result"
+              (click)="selectPlayerA(result)">
+              <span class="cmp-result__name">{{ result.displayName }}</span>
+              <span class="cmp-result__meta">{{ result.position }} · {{ result.teamAbbr }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <span class="cmp-vs">VS</span>
+
+    <!-- Player B Search -->
+    <div class="cmp-search">
+      <mat-form-field appearance="outline" class="cmp-search__field">
+        <mat-label>Jugador 2</mat-label>
+        <input
+          matInput
+          [value]="searchQueryB()"
+          (input)="onSearchB($any($event.target).value)"
+          (focus)="showResultsB.set(searchResultsB().length > 0)"
+          placeholder="Buscar jugador..."
+          autocomplete="off" />
+
+        @if (playerB()) {
+          <button matSuffix mat-icon-button (click)="clearPlayerB()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+
+      @if (showResultsB()) {
+        <div class="cmp-search__results">
+          @for (result of searchResultsB(); track result.id) {
+            <button
+              class="cmp-search__result"
+              (click)="selectPlayerB(result)">
+              <span class="cmp-result__name">{{ result.displayName }}</span>
+              <span class="cmp-result__meta">{{ result.position }} · {{ result.teamAbbr }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+
+  <!-- Loading -->
+  @if (loadingA() || loadingB()) {
+    <div class="cmp-loading">
+      <div class="cmp-loading__spinner"></div>
+      <p>Cargando estadísticas...</p>
+    </div>
+  }
+
+  <!-- Player Cards -->
+  @if (playerA() || playerB()) {
+    <div class="cmp-profiles">
+
+      @if (playerA(); as a) {
+        <div class="cmp-profile">
+          @if (a.headshot) {
+            <img class="cmp-profile__photo" [src]="a.headshot" [alt]="a.displayName" />
+          } @else {
+            <div class="cmp-profile__photo-placeholder">
+              <mat-icon>person</mat-icon>
+            </div>
+          }
+          <h3 class="cmp-profile__name">{{ a.displayName }}</h3>
+          <span class="cmp-profile__info">{{ a.position }} · #{{ a.jersey }} · {{ a.teamAbbr }}</span>
+        </div>
+      }
+
+      @if (playerB(); as b) {
+        <div class="cmp-profile">
+          @if (b.headshot) {
+            <img class="cmp-profile__photo" [src]="b.headshot" [alt]="b.displayName" />
+          } @else {
+            <div class="cmp-profile__photo-placeholder">
+              <mat-icon>person</mat-icon>
+            </div>
+          }
+          <h3 class="cmp-profile__name">{{ b.displayName }}</h3>
+          <span class="cmp-profile__info">{{ b.position }} · #{{ b.jersey }} · {{ b.teamAbbr }}</span>
+        </div>
+      }
+
+    </div>
+  }
+
+  <!-- Comparison Table -->
+  @if (playerA() && playerB() && commonStats.length > 0) {
+    <section class="cmp-table">
+      <h2 class="cmp-section-title">Comparación de Estadísticas</h2>
+
+      <div class="cmp-stats">
+        @for (stat of commonStats; track stat.label) {
+          <div class="cmp-stat-row">
+            <span
+              class="cmp-stat-value cmp-stat-value--a"
+              [class.cmp-stat-value--winner]="compareValues(stat.valueA, stat.valueB, stat.displayName) === 'a'">
+              {{ stat.valueA }}
+            </span>
+
+            <div class="cmp-stat-center">
+              <span class="cmp-stat-label">{{ stat.displayName }}</span>
+
+              <div class="cmp-stat-bar">
+                <div
+                  class="cmp-stat-bar__a"
+                  [style.width.%]="barWidth(stat.valueA, stat.valueB).a">
+                </div>
+                <div
+                  class="cmp-stat-bar__b"
+                  [style.width.%]="barWidth(stat.valueA, stat.valueB).b">
+                </div>
+              </div>
+            </div>
+
+            <span
+              class="cmp-stat-value cmp-stat-value--b"
+              [class.cmp-stat-value--winner]="compareValues(stat.valueA, stat.valueB, stat.displayName) === 'b'">
+              {{ stat.valueB }}
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  @if (playerA() && playerB() && commonStats.length === 0) {
+    <p class="cmp-no-stats">
+      Estos jugadores no comparten categorías estadísticas comparables.
+    </p>
+  }
+
+</div>

@@ -61,6 +61,20 @@ export const routes: Routes = [
             .then(m => m.PlayoffBracketComponent)
       },
 
+      {
+        path: 'simulator',
+        loadComponent: () =>
+          import('./features/simulator/simulator')
+            .then(m => m.SimulatorComponent)
+      },
+
+      {
+        path: 'comparator',
+        loadComponent: () =>
+          import('./features/comparator/comparator')
+            .then(m => m.ComparatorComponent)
+      },
+
       // Siempre debe ser la última ruta
       {
         path: '**',

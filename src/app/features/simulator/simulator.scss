@@ -1,0 +1,417 @@
+.simulator-page {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 16px 12px;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────
+.sim-header {
+  margin-bottom: 24px;
+}
+
+.sim-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sim-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+// ── Loading ───────────────────────────────────────────────
+.sim-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  gap: 12px;
+  color: var(--color-text-secondary);
+}
+
+.sim-loading__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Week Selector ─────────────────────────────────────────
+.sim-weeks {
+  margin-bottom: 24px;
+}
+
+.sim-weeks__strip {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar { height: 3px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+}
+
+.sim-week-btn {
+  flex-shrink: 0;
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.1);
+  }
+
+  &--active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+
+  &--has-sims {
+    border-color: var(--color-success);
+
+    &::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      margin: 2px auto 0;
+      border-radius: 50%;
+      background: var(--color-success);
+    }
+  }
+}
+
+.sim-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.sim-reset-btn {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.sim-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-success);
+  margin-left: auto;
+}
+
+// ── Section title ─────────────────────────────────────────
+.sim-section-title {
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+// ── Games Grid ────────────────────────────────────────────
+.sim-games {
+  margin-bottom: 32px;
+}
+
+.sim-games__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sim-game {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  transition: border-color 0.2s ease;
+
+  &--played {
+    opacity: 0.6;
+  }
+
+  &--simulated {
+    border-color: var(--color-success);
+    background: rgba(34, 197, 94, 0.05);
+  }
+}
+
+.sim-game__team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  color: var(--color-text);
+
+  &:hover:not(:disabled) {
+    background: rgba(37, 99, 235, 0.1);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  &--winner {
+    background: rgba(34, 197, 94, 0.15);
+
+    .sim-game__abbr {
+      color: var(--color-success);
+      font-weight: 800;
+    }
+  }
+
+  &--loser {
+    opacity: 0.4;
+  }
+}
+
+.sim-game__logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.sim-game__abbr {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.sim-game__check {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 0.85rem;
+  width: 16px;
+  height: 16px;
+  color: var(--color-success);
+}
+
+.sim-game__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.sim-game__vs {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.sim-game__final {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.sim-game__simulated-icon {
+  font-size: 0.9rem;
+  width: 16px;
+  height: 16px;
+  color: var(--color-success);
+}
+
+.sim-empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  padding: 24px 0;
+}
+
+// ── Standings Table ───────────────────────────────────────
+.sim-standings {
+  margin-bottom: 32px;
+}
+
+.sim-standings__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sim-standings__table {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sim-standings__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--color-surface);
+  border: 1px solid transparent;
+
+  &--header {
+    background: transparent;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-secondary);
+    border: none;
+    padding-bottom: 4px;
+  }
+
+  &--playoff {
+    border-left: 3px solid var(--color-success);
+  }
+
+  &--divwinner {
+    border-left: 3px solid var(--color-primary);
+  }
+
+  &--out {
+    opacity: 0.55;
+  }
+}
+
+.sim-standings__cutline {
+  text-align: center;
+  padding: 6px 0;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-error);
+  letter-spacing: 0.04em;
+}
+
+// ── Column widths ─────────────────────────────────────────
+.sim-col-seed {
+  min-width: 24px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.sim-col-team {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sim-team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sim-team-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+  }
+}
+
+.sim-team-conf {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+.sim-col-record {
+  min-width: 40px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.sim-col-pct {
+  min-width: 30px;
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.sim-col-change {
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  &.seed-up {
+    color: var(--color-success);
+  }
+
+  &.seed-down {
+    color: var(--color-error);
+  }
+}
+
+.sim-change-icon {
+  font-size: 0.8rem;
+  width: 14px;
+  height: 14px;
+}
+
+// ── Reduced motion ────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .sim-loading__spinner { animation: none; }
+}

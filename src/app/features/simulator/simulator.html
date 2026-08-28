@@ -1,0 +1,190 @@
+<div class="simulator-page">
+
+  <header class="sim-header">
+    <h1 class="sim-title">🏆 Simulador de Playoffs</h1>
+    <p class="sim-subtitle">
+      Selecciona ganadores y observa cómo cambian los standings
+    </p>
+  </header>
+
+  @if (loading()) {
+    <div class="sim-loading">
+      <div class="sim-loading__spinner"></div>
+      <p>Cargando temporada...</p>
+    </div>
+  } @else {
+
+    <!-- Week Selector -->
+    <section class="sim-weeks">
+      <div class="sim-weeks__strip">
+        @for (week of availableWeeks(); track week) {
+          <button
+            class="sim-week-btn"
+            [class.sim-week-btn--active]="selectedWeek() === week"
+            [class.sim-week-btn--has-sims]="weeks()[week - 1]?.games?.some(g => !g.isPlayed && g.result !== null)"
+            (click)="selectWeek(week)">
+            {{ week }}
+          </button>
+        }
+      </div>
+
+      <div class="sim-actions">
+        <button mat-button (click)="resetWeek()" class="sim-reset-btn">
+          <mat-icon>refresh</mat-icon>
+          Reset semana
+        </button>
+        <button mat-button (click)="resetAll()" class="sim-reset-btn">
+          <mat-icon>restart_alt</mat-icon>
+          Reset todo
+        </button>
+
+        @if (simulatedCount() > 0) {
+          <span class="sim-count">
+            {{ simulatedCount() }} partidos simulados
+          </span>
+        }
+      </div>
+    </section>
+
+    <!-- Games for selected week -->
+    <section class="sim-games">
+      <h2 class="sim-section-title">Semana {{ selectedWeek() }}</h2>
+
+      <div class="sim-games__grid">
+        @for (game of currentWeekGames(); track game.id) {
+          <div
+            class="sim-game"
+            [class.sim-game--played]="game.isPlayed"
+            [class.sim-game--simulated]="!game.isPlayed && game.result !== null">
+
+            <!-- Away team -->
+            <button
+              class="sim-game__team"
+              [class.sim-game__team--winner]="game.result === 'away'"
+              [class.sim-game__team--loser]="game.result === 'home'"
+              [disabled]="game.isPlayed"
+              (click)="setResult(game, game.result === 'away' ? null : 'away')">
+
+              <img
+                class="sim-game__logo"
+                [src]="game.awayTeamLogo"
+                [alt]="game.awayTeamAbbr"
+                loading="lazy" />
+              <span class="sim-game__abbr">{{ game.awayTeamAbbr }}</span>
+
+              @if (game.result === 'away') {
+                <mat-icon class="sim-game__check">check_circle</mat-icon>
+              }
+            </button>
+
+            <!-- VS / Status -->
+            <div class="sim-game__center">
+              @if (game.isPlayed) {
+                <span class="sim-game__final">Final</span>
+              } @else if (game.result) {
+                <mat-icon class="sim-game__simulated-icon">edit</mat-icon>
+              } @else {
+                <span class="sim-game__vs">@</span>
+              }
+            </div>
+
+            <!-- Home team -->
+            <button
+              class="sim-game__team"
+              [class.sim-game__team--winner]="game.result === 'home'"
+              [class.sim-game__team--loser]="game.result === 'away'"
+              [disabled]="game.isPlayed"
+              (click)="setResult(game, game.result === 'home' ? null : 'home')">
+
+              <img
+                class="sim-game__logo"
+                [src]="game.homeTeamLogo"
+                [alt]="game.homeTeamAbbr"
+                loading="lazy" />
+              <span class="sim-game__abbr">{{ game.homeTeamAbbr }}</span>
+
+              @if (game.result === 'home') {
+                <mat-icon class="sim-game__check">check_circle</mat-icon>
+              }
+            </button>
+          </div>
+        }
+      </div>
+
+      @if (currentWeekGames().length === 0) {
+        <p class="sim-empty">No hay partidos disponibles para esta semana.</p>
+      }
+    </section>
+
+    <!-- Projected Standings -->
+    <section class="sim-standings">
+      <div class="sim-standings__header">
+        <h2 class="sim-section-title">Standings Proyectados</h2>
+
+        <mat-button-toggle-group
+          [value]="conferenceFilter()"
+          (change)="onConferenceChange($any($event).value)"
+          aria-label="Filtrar por conferencia">
+          <mat-button-toggle value="all">Todos</mat-button-toggle>
+          <mat-button-toggle value="AFC">AFC</mat-button-toggle>
+          <mat-button-toggle value="NFC">NFC</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="sim-standings__table">
+        <div class="sim-standings__row sim-standings__row--header">
+          <span class="sim-col-seed">#</span>
+          <span class="sim-col-team">Equipo</span>
+          <span class="sim-col-record">Record</span>
+          <span class="sim-col-pct">%</span>
+          <span class="sim-col-change">Δ</span>
+        </div>
+
+        @for (team of filteredStandings(); track team.abbreviation) {
+          <div
+            class="sim-standings__row"
+            [class.sim-standings__row--playoff]="team.inPlayoffs"
+            [class.sim-standings__row--divwinner]="team.isDivisionWinner"
+            [class.sim-standings__row--out]="!team.inPlayoffs">
+
+            <span class="sim-col-seed">{{ team.seed }}</span>
+
+            <div class="sim-col-team">
+              <img
+                class="sim-team-logo"
+                [src]="team.logo"
+                [alt]="team.abbreviation"
+                loading="lazy" />
+              <span class="sim-team-name">{{ team.name }}</span>
+              <span class="sim-team-conf">{{ team.conference }}</span>
+            </div>
+
+            <span class="sim-col-record">
+              {{ team.wins }}-{{ team.losses }}{{ team.ties > 0 ? '-' + team.ties : '' }}
+            </span>
+
+            <span class="sim-col-pct">
+              {{ (team.percentage * 100).toFixed(0) }}
+            </span>
+
+            <span class="sim-col-change" [class]="seedChangeClass(team.seedChange)">
+              @if (team.seedChange !== 0) {
+                <mat-icon class="sim-change-icon">
+                  {{ seedChangeIcon(team.seedChange) }}
+                </mat-icon>
+                {{ team.seedChange > 0 ? '+' : '' }}{{ team.seedChange }}
+              }
+            </span>
+          </div>
+
+          @if (team.inPlayoffs && team.seed === 7) {
+            <div class="sim-standings__cutline">
+              <span>── Línea de corte playoffs ──</span>
+            </div>
+          }
+        }
+      </div>
+    </section>
+
+  }
+</div>
