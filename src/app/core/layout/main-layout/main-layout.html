@@ -85,6 +85,44 @@
         </mat-icon>
       </button>
 
+      <!-- User menu / Login -->
+      @if (authService.user(); as user) {
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="userMenu"
+          [matTooltip]="user.displayName ?? user.email ?? 'Mi cuenta'"
+          aria-label="Menú de usuario">
+
+          @if (user.photoURL) {
+            <img
+              class="user-avatar"
+              [src]="user.photoURL"
+              [alt]="user.displayName ?? 'Avatar'" />
+          } @else {
+            <mat-icon>account_circle</mat-icon>
+          }
+        </button>
+
+        <mat-menu #userMenu="matMenu">
+          <div class="user-menu-header">
+            <span class="user-menu-name">{{ user.displayName ?? 'Usuario' }}</span>
+            <span class="user-menu-email">{{ user.email }}</span>
+          </div>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Cerrar sesión</span>
+          </button>
+        </mat-menu>
+      } @else {
+        <a
+          mat-icon-button
+          routerLink="/auth"
+          matTooltip="Iniciar sesión"
+          aria-label="Iniciar sesión">
+          <mat-icon>login</mat-icon>
+        </a>
+      }
+
     </mat-toolbar>
 
     <main id="main-content" class="content" role="main">

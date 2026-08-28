@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   firebase: {
     apiKey: 'AIzaSyAocxFBIOojjDRbT0ImxNyo5HftoJDUJuw',
     authDomain: 'nfl-stats-pro.firebaseapp.com',

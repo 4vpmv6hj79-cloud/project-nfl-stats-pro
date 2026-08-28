@@ -159,3 +159,31 @@
 
   .footer__copy { width: 100%; text-align: center; }
 }
+
+// ── User menu ─────────────────────────────────────────────
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-menu-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 4px;
+}
+
+.user-menu-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.user-menu-email {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}

@@ -55,6 +55,13 @@ export const routes: Routes = [
       },
 
       {
+        path: 'auth',
+        loadComponent: () =>
+          import('./features/auth/auth')
+            .then(m => m.AuthComponent)
+      },
+
+      {
         path: 'playoffs',
         loadComponent: () =>
           import('./features/playoffs/playoff-bracket/playoff-bracket')

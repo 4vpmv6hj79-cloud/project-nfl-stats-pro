@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 
@@ -9,8 +9,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { ThemeService } from '../../services/theme.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -25,6 +27,7 @@ import { ThemeService } from '../../services/theme.service';
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
+    MatMenuModule,
   ],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
@@ -32,7 +35,9 @@ import { ThemeService } from '../../services/theme.service';
 export class MainLayout {
 
   private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly router = inject(Router);
   readonly themeService = inject(ThemeService);
+  readonly authService = inject(AuthService);
 
   readonly isMobile$ = this.breakpointObserver
     .observe([Breakpoints.Handset, Breakpoints.TabletPortrait])
@@ -50,4 +55,8 @@ export class MainLayout {
     { title: 'Conferencias', icon: 'hub',             route: '/conferences' },
   ];
 
+  async logout(): Promise<void> {
+    await this.authService.logout();
+    this.router.navigate(['/dashboard']);
+  }
 }
