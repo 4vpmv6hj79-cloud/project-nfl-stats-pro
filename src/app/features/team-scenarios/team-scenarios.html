@@ -163,6 +163,92 @@
             }
           </div>
 
+          <!-- Botón / Análisis de clasificación -->
+          @if (!getClinch(team.teamId) && !isLoadingClinch(team.teamId)) {
+            <button
+              class="sc-clinch-btn"
+              mat-stroked-button
+              (click)="loadClinchAnalysis(team.teamId)">
+              <mat-icon>analytics</mat-icon>
+              Ver escenarios de clasificación
+            </button>
+          }
+
+          @if (isLoadingClinch(team.teamId)) {
+            <div class="sc-clinch-loading">
+              <div class="sc-loading__spinner sc-loading__spinner--sm"></div>
+              <span>Calculando escenarios...</span>
+            </div>
+          }
+
+          @if (getClinch(team.teamId); as clinch) {
+            <div class="sc-clinch">
+
+              <!-- Resumen matemático -->
+              <div class="sc-clinch__summary">
+                <mat-icon>calculate</mat-icon>
+                <p>{{ clinch.mathSummary }}</p>
+              </div>
+
+              <!-- Escenarios concretos -->
+              @if (clinch.scenarios.length > 0) {
+                <h4 class="sc-clinch__title">Escenarios</h4>
+                @for (scenario of clinch.scenarios; track scenario.outcome) {
+                  <div class="sc-scenario" [class]="scenarioTypeClass(scenario.type)">
+                    <span class="sc-scenario__icon">{{ scenario.icon }}</span>
+                    <div class="sc-scenario__body">
+                      <ul class="sc-scenario__conditions">
+                        @for (cond of scenario.conditions; track cond) {
+                          <li>{{ cond }}</li>
+                        }
+                      </ul>
+                      <p class="sc-scenario__outcome">
+                        <mat-icon>arrow_forward</mat-icon>
+                        {{ scenario.outcome }}
+                      </p>
+                    </div>
+                  </div>
+                }
+              }
+
+              <!-- Rivales directos -->
+              @if (clinch.directRivals.length > 0) {
+                <h4 class="sc-clinch__title">Rivales directos por el puesto</h4>
+                <div class="sc-rivals">
+                  @for (rival of clinch.directRivals; track rival.teamAbbr) {
+                    <div class="sc-rival">
+                      <img class="sc-rival__logo" [src]="rival.teamLogo" [alt]="rival.teamAbbr" loading="lazy" />
+                      <span class="sc-rival__abbr">{{ rival.teamAbbr }}</span>
+                      <span class="sc-rival__record">{{ rival.record }}</span>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Próximos partidos -->
+              @if (clinch.upcomingGames.length > 0) {
+                <h4 class="sc-clinch__title">Próximos partidos</h4>
+                <div class="sc-upcoming">
+                  @for (game of clinch.upcomingGames.slice(0, 6); track game.week) {
+                    <div class="sc-upcoming__game">
+                      <span class="sc-upcoming__week">S{{ game.week }}</span>
+                      <span class="sc-upcoming__vs">{{ game.isHome ? 'vs' : '@' }}</span>
+                      <img class="sc-upcoming__logo" [src]="game.opponentLogo" [alt]="game.opponentAbbr" loading="lazy" />
+                      <span class="sc-upcoming__abbr">{{ game.opponentAbbr }}</span>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Disclaimer -->
+              <p class="sc-clinch__disclaimer">
+                <mat-icon>info</mat-icon>
+                {{ clinch.disclaimer }}
+              </p>
+
+            </div>
+          }
+
         </div>
       }
     </div>

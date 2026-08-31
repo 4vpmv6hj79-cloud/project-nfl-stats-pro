@@ -20,7 +20,10 @@ import {
   NotificationPreferences,
 } from '../../core/services/notification-preferences.service';
 import { GameWatcherService } from '../../core/services/game-watcher.service';
-import { TeamScenario } from '../../shared/models/domain/team-scenario.model';
+import {
+  TeamScenario,
+  ClinchAnalysis,
+} from '../../shared/models/domain/team-scenario.model';
 
 @Component({
   selector: 'app-team-scenarios',
@@ -47,6 +50,11 @@ export class TeamScenariosComponent implements OnInit {
   readonly error = signal(false);
   readonly allScenarios = signal<TeamScenario[]>([]);
   readonly selectedTeamId = signal<number | null>(null);
+
+  /** Análisis de clinch cargados por equipo (teamId -> analysis) */
+  readonly clinchAnalyses = signal<Record<number, ClinchAnalysis>>({});
+  /** Equipos con análisis en carga */
+  readonly loadingClinch = signal<Record<number, boolean>>({});
 
   /** Lista de preferencias de notificación para la UI */
   readonly notificationOptions: { key: keyof NotificationPreferences; label: string; icon: string }[] = [
@@ -109,6 +117,43 @@ export class TeamScenariosComponent implements OnInit {
 
   onTeamSelect(teamId: number): void {
     this.selectedTeamId.set(teamId);
+  }
+
+  /** Carga el análisis de clinch de un equipo bajo demanda */
+  loadClinchAnalysis(teamId: number): void {
+    // Ya cargado o cargando
+    if (this.clinchAnalyses()[teamId] || this.loadingClinch()[teamId]) {
+      return;
+    }
+
+    this.loadingClinch.update(state => ({ ...state, [teamId]: true }));
+
+    this.scenarioService.getClinchAnalysis(teamId, this.allScenarios()).subscribe({
+      next: analysis => {
+        this.clinchAnalyses.update(state => ({ ...state, [teamId]: analysis }));
+        this.loadingClinch.update(state => ({ ...state, [teamId]: false }));
+      },
+      error: () => {
+        this.loadingClinch.update(state => ({ ...state, [teamId]: false }));
+      },
+    });
+  }
+
+  getClinch(teamId: number): ClinchAnalysis | null {
+    return this.clinchAnalyses()[teamId] ?? null;
+  }
+
+  isLoadingClinch(teamId: number): boolean {
+    return this.loadingClinch()[teamId] ?? false;
+  }
+
+  scenarioTypeClass(type: string): string {
+    switch (type) {
+      case 'clinch': return 'scenario--clinch';
+      case 'help': return 'scenario--help';
+      case 'eliminate': return 'scenario--eliminate';
+      default: return '';
+    }
   }
 
   async enableNotifications(): Promise<void> {
