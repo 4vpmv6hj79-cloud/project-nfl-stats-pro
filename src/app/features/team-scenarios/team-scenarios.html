@@ -1,0 +1,171 @@
+<div class="scenarios-page">
+
+  <header class="sc-header">
+    <h1 class="sc-title">🎯 ¿Qué necesita mi equipo?</h1>
+    <p class="sc-subtitle">
+      Situación de clasificación a playoffs de tus equipos
+    </p>
+  </header>
+
+  @if (loading()) {
+    <div class="sc-loading">
+      <div class="sc-loading__spinner"></div>
+      <p>Analizando standings...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="sc-error">
+      <mat-icon>error_outline</mat-icon>
+      <p>No se pudo cargar la información. Intenta más tarde.</p>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+
+    <!-- Notificaciones -->
+    <section class="sc-notifications">
+      <div class="sc-notif-header">
+        <div class="sc-notif-title-group">
+          <mat-icon>notifications</mat-icon>
+          <span class="sc-notif-title">Notificaciones de mis equipos</span>
+        </div>
+
+        @if (notifications.permission() === 'granted') {
+          <span class="sc-notif-status sc-notif-status--on">
+            <mat-icon>check_circle</mat-icon>
+            Activadas
+          </span>
+        } @else if (notifications.permission() === 'denied') {
+          <span class="sc-notif-status sc-notif-status--off">
+            Bloqueadas en el navegador
+          </span>
+        } @else if (notifications.permission() === 'unsupported') {
+          <span class="sc-notif-status sc-notif-status--off">
+            No disponibles
+          </span>
+        } @else {
+          <button
+            class="sc-notif-enable"
+            mat-flat-button
+            (click)="enableNotifications()">
+            Activar
+          </button>
+        }
+      </div>
+
+      @if (notifications.permission() === 'granted') {
+        <div class="sc-notif-options">
+          @for (option of notificationOptions; track option.key) {
+            <div class="sc-notif-option">
+              <div class="sc-notif-option-label">
+                <mat-icon>{{ option.icon }}</mat-icon>
+                <span>{{ option.label }}</span>
+              </div>
+              <mat-slide-toggle
+                [checked]="notifications.preferences()[option.key]"
+                (change)="togglePreference(option.key, $any($event).checked)">
+              </mat-slide-toggle>
+            </div>
+          }
+        </div>
+
+        <p class="sc-notif-note">
+          Las notificaciones funcionan mientras la app está abierta.
+        </p>
+      } @else if (notifications.permission() === 'denied') {
+        <p class="sc-notif-note">
+          Para recibir notificaciones, habilítalas en la configuración de tu navegador.
+        </p>
+      }
+    </section>
+
+    <!-- Selector de equipo -->
+    <div class="sc-selector">
+      <mat-form-field appearance="outline">
+        <mat-label>Ver otro equipo</mat-label>
+        <mat-select (selectionChange)="onTeamSelect($any($event).value)">
+          @for (team of teamsForSelect(); track team.teamId) {
+            <mat-option [value]="team.teamId">
+              {{ team.teamName }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Sin favoritos ni selección -->
+    @if (displayScenarios().length === 0) {
+      <div class="sc-empty">
+        <mat-icon>star_border</mat-icon>
+        <p>
+          Agrega equipos favoritos desde
+          <a routerLink="/teams">Equipos</a>
+          o selecciona uno arriba para ver su situación.
+        </p>
+      </div>
+    }
+
+    <!-- Tarjetas de escenario -->
+    <div class="sc-cards">
+      @for (team of displayScenarios(); track team.teamId) {
+        <div class="sc-card">
+
+          <!-- Header equipo -->
+          <div class="sc-card__header">
+            <img
+              class="sc-card__logo"
+              [src]="team.teamLogo"
+              [alt]="team.teamName"
+              loading="lazy" />
+
+            <div class="sc-card__title-group">
+              <a
+                class="sc-card__name"
+                [routerLink]="['/teams', team.teamId]">
+                {{ team.teamName }}
+              </a>
+              <span class="sc-card__record">
+                {{ team.wins }}-{{ team.losses }}{{ team.ties > 0 ? '-' + team.ties : '' }}
+                · {{ team.conference }} {{ team.division }}
+              </span>
+            </div>
+
+            <span class="sc-card__badge" [class]="statusClass(team.status)">
+              {{ team.statusLabel }}
+            </span>
+          </div>
+
+          <!-- Probabilidad de playoffs -->
+          <div class="sc-probability">
+            <div class="sc-probability__label">
+              <span>Probabilidad de Playoffs</span>
+              <span class="sc-probability__value" [class]="probabilityColor(team.playoffProbability)">
+                {{ team.playoffProbability }}%
+              </span>
+            </div>
+            <div class="sc-probability__bar">
+              <div
+                class="sc-probability__fill"
+                [class]="probabilityColor(team.playoffProbability)"
+                [style.width.%]="team.playoffProbability">
+              </div>
+            </div>
+          </div>
+
+          <!-- Insights -->
+          <div class="sc-insights">
+            @for (insight of team.insights; track insight.text) {
+              <div class="sc-insight" [class]="'sc-insight--' + insight.type">
+                <span class="sc-insight__icon">{{ insight.icon }}</span>
+                <span class="sc-insight__text">{{ insight.text }}</span>
+              </div>
+            }
+          </div>
+
+        </div>
+      }
+    </div>
+
+  }
+</div>

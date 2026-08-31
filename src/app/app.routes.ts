@@ -82,6 +82,13 @@ export const routes: Routes = [
             .then(m => m.ComparatorComponent)
       },
 
+      {
+        path: 'mi-equipo',
+        loadComponent: () =>
+          import('./features/team-scenarios/team-scenarios')
+            .then(m => m.TeamScenariosComponent)
+      },
+
       // Siempre debe ser la última ruta
       {
         path: '**',

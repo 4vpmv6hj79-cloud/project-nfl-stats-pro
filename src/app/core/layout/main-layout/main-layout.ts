@@ -49,6 +49,7 @@ export class MainLayout {
     { title: 'Inicio',       icon: 'dashboard',      route: '/dashboard'   },
     { title: 'Equipos',      icon: 'shield',         route: '/teams'       },
     { title: 'Marcadores',   icon: 'sports_score',   route: '/scores'      },
+    { title: 'Mi Equipo',    icon: 'insights',       route: '/mi-equipo'   },
     { title: 'Simulador',    icon: 'tune',           route: '/simulator'   },
     { title: 'Comparador',   icon: 'compare_arrows', route: '/comparator'  },
     { title: 'Playoffs',     icon: 'account_tree',   route: '/playoffs'    },

@@ -1,0 +1,379 @@
+.scenarios-page {
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 16px 12px;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────
+.sc-header {
+  margin-bottom: 20px;
+}
+
+.sc-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sc-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+// ── Loading / Error ───────────────────────────────────────
+.sc-loading,
+.sc-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  gap: 12px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.sc-loading__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.sc-error mat-icon {
+  font-size: 3rem;
+  width: 48px;
+  height: 48px;
+  color: var(--color-error);
+}
+
+// ── Notifications ─────────────────────────────────────────
+.sc-notifications {
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+
+.sc-notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sc-notif-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    color: var(--color-primary);
+  }
+}
+
+.sc-notif-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.sc-notif-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  mat-icon {
+    font-size: 1rem;
+    width: 16px;
+    height: 16px;
+  }
+
+  &--on { color: var(--color-success); }
+  &--off { color: var(--color-text-secondary); }
+}
+
+.sc-notif-enable {
+  background: var(--color-primary) !important;
+  color: white !important;
+  font-size: 0.78rem;
+  border-radius: 8px;
+}
+
+.sc-notif-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+.sc-notif-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.sc-notif-option-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--color-text);
+
+  mat-icon {
+    font-size: 1.1rem;
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-secondary);
+  }
+}
+
+.sc-notif-note {
+  margin: 12px 0 0;
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+// ── Selector ──────────────────────────────────────────────
+.sc-selector {
+  margin-bottom: 20px;
+
+  mat-form-field {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+// ── Empty ─────────────────────────────────────────────────
+.sc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 16px;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--color-text-secondary);
+
+  mat-icon {
+    font-size: 2.5rem;
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+// ── Cards ─────────────────────────────────────────────────
+.sc-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sc-card {
+  padding: 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  animation: fadeInUp 0.3s ease-out both;
+
+  @media (max-width: 600px) {
+    padding: 14px;
+  }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ── Card header ───────────────────────────────────────────
+.sc-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.sc-card__logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sc-card__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.sc-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.sc-card__record {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.sc-card__badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+
+  &.status--clinched {
+    background: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
+  }
+  &.status--hunt {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+  }
+  &.status--bubble {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+  }
+  &.status--longshot {
+    background: rgba(148, 163, 184, 0.15);
+    color: #64748b;
+  }
+  &.status--eliminated {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+  }
+}
+
+// ── Probability ───────────────────────────────────────────
+.sc-probability {
+  margin-bottom: 16px;
+}
+
+.sc-probability__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.sc-probability__value {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+
+  &.prob--high { color: #16a34a; }
+  &.prob--medium { color: #d97706; }
+  &.prob--low { color: #f97316; }
+  &.prob--verylow { color: #dc2626; }
+}
+
+.sc-probability__bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-background);
+  overflow: hidden;
+}
+
+.sc-probability__fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+
+  &.prob--high { background: linear-gradient(90deg, #16a34a, #22c55e); }
+  &.prob--medium { background: linear-gradient(90deg, #d97706, #f59e0b); }
+  &.prob--low { background: linear-gradient(90deg, #f97316, #fb923c); }
+  &.prob--verylow { background: linear-gradient(90deg, #dc2626, #ef4444); }
+}
+
+// ── Insights ──────────────────────────────────────────────
+.sc-insights {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sc-insight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--color-background);
+  font-size: 0.8rem;
+
+  &--positive {
+    border-left: 3px solid var(--color-success);
+  }
+  &--negative {
+    border-left: 3px solid var(--color-error);
+  }
+  &--neutral {
+    border-left: 3px solid var(--color-text-secondary);
+  }
+}
+
+.sc-insight__icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.sc-insight__text {
+  color: var(--color-text);
+}
+
+// ── Reduced motion ────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .sc-loading__spinner { animation: none; }
+  .sc-probability__fill { transition: none; }
+  .sc-card { animation: none; }
+}
