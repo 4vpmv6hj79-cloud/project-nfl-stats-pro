@@ -102,6 +102,20 @@ export class TeamScenariosComponent implements OnInit {
     this.favoritesService.favorites().length > 0
   );
 
+  /**
+   * Verifica si la temporada ya comenzó.
+   * Si ningún equipo ha jugado partidos (todos en 0-0-0),
+   * significa que la temporada regular aún no arranca.
+   */
+  readonly seasonStarted = computed<boolean>(() => {
+    const scenarios = this.allScenarios();
+    if (scenarios.length === 0) return false;
+
+    return scenarios.some(
+      s => s.wins > 0 || s.losses > 0 || s.ties > 0
+    );
+  });
+
   ngOnInit(): void {
     this.scenarioService.getScenarios().subscribe({
       next: scenarios => {
