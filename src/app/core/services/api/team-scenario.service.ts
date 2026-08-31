@@ -40,7 +40,7 @@ export class TeamScenarioService {
   private readonly http = inject(HttpClient);
 
   private readonly endpoint =
-    '/api/apis/v2/sports/football/nfl/standings?level=3';
+    '/api/apis/v2/sports/football/nfl/standings?level=3&seasontype=2';
 
   /**
    * Obtiene los escenarios de todos los equipos.
