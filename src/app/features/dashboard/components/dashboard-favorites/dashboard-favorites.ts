@@ -16,6 +16,7 @@ export interface FavoriteTeamInfo {
   divisionRank: number;
   division: string;
   news: NewsArticle[];
+  seasonStarted: boolean;
 }
 
 @Component({
@@ -36,11 +37,23 @@ export class DashboardFavoritesComponent implements OnInit {
   readonly standings = signal<Standing[]>([]);
   readonly news = signal<NewsArticle[]>([]);
 
+  /**
+   * Verifica si la temporada ya comenzó.
+   * Si ningún equipo tiene partidos jugados (todos en 0-0-0),
+   * la temporada regular aún no arranca.
+   */
+  readonly seasonStarted = computed<boolean>(() => {
+    const standings = this.standings();
+    if (standings.length === 0) return false;
+    return standings.some(s => s.wins > 0 || s.losses > 0 || s.ties > 0);
+  });
+
   /** Información enriquecida de cada equipo favorito */
   readonly favoriteTeamsInfo = computed<FavoriteTeamInfo[]>(() => {
     const favorites = this.favoritesService.favorites();
     const allStandings = this.standings();
     const allNews = this.news();
+    const seasonStarted = this.seasonStarted();
 
     if (favorites.length === 0) {
       return [];
@@ -96,6 +109,7 @@ export class DashboardFavoritesComponent implements OnInit {
         divisionRank,
         division,
         news: teamNews,
+        seasonStarted,
       };
     });
   });

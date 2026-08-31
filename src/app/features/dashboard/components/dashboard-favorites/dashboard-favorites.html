@@ -19,7 +19,7 @@
             <div class="fav-card__info">
               <span class="fav-card__name">{{ info.team.name }}</span>
 
-              @if (info.record) {
+              @if (info.seasonStarted && info.record) {
                 <span class="fav-card__record">{{ info.record }}</span>
               }
             </div>
@@ -27,8 +27,8 @@
             <span class="fav-card__abbr">{{ info.team.abbreviation }}</span>
           </a>
 
-          <!-- Posición en conferencia/división -->
-          @if (info.conferenceRank > 0) {
+          <!-- Posición en conferencia/división (solo si la temporada comenzó) -->
+          @if (info.seasonStarted && info.conferenceRank > 0) {
             <div class="fav-card__standings">
               <div class="fav-card__rank">
                 <mat-icon class="fav-card__rank-icon">leaderboard</mat-icon>
@@ -39,6 +39,14 @@
                 <mat-icon class="fav-card__rank-icon">group_work</mat-icon>
                 <span>#{{ info.divisionRank }} {{ info.division }}</span>
               </div>
+            </div>
+          }
+
+          <!-- Mensaje temporada no iniciada -->
+          @if (!info.seasonStarted) {
+            <div class="fav-card__preseason">
+              <mat-icon>schedule</mat-icon>
+              <span>La temporada aún no comienza</span>
             </div>
           }
 

@@ -141,6 +141,26 @@
   color: var(--color-primary);
 }
 
+// ── Preseason ─────────────────────────────────────────────
+.fav-card__preseason {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: var(--color-background);
+  border-radius: 8px;
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+
+  mat-icon {
+    font-size: 0.95rem;
+    width: 16px;
+    height: 16px;
+    color: var(--color-primary);
+  }
+}
+
 // ── News ──────────────────────────────────────────────────
 .fav-card__news {
   display: flex;
