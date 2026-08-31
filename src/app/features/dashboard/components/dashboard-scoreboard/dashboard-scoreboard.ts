@@ -59,8 +59,8 @@ export class DashboardScoreboardComponent
       .filter((game) => game.statusState === 'post')
       .sort(
         (first, second) =>
-          this.gameTimestamp(second) -
-          this.gameTimestamp(first),
+          this.gameEndEstimate(second) -
+          this.gameEndEstimate(first),
       ),
   );
 
@@ -169,5 +169,18 @@ export class DashboardScoreboardComponent
     return Number.isNaN(timestamp)
       ? 0
       : timestamp;
+  }
+
+  /**
+   * Estima la hora de finalización de un partido sumando la duración
+   * típica de un juego de NFL (~3.25 horas) a la hora de inicio.
+   * Permite ordenar los partidos finalizados por cuál terminó más
+   * recientemente, incluso si empezaron a horas distintas.
+   */
+  private gameEndEstimate(game: Game): number {
+    const start = this.gameTimestamp(game);
+    const AVG_GAME_DURATION_MS = 3.25 * 60 * 60 * 1000;
+
+    return start + AVG_GAME_DURATION_MS;
   }
 }
