@@ -1,0 +1,52 @@
+@if (gameOfWeek(); as game) {
+  <section
+    class="gow"
+    role="button"
+    tabindex="0"
+    [attr.aria-label]="'Ver ' + game.awayTeam + ' vs ' + game.homeTeam"
+    (click)="openGame(game)"
+    (keydown.enter)="openGame(game)">
+
+    <div class="gow__label">
+      <mat-icon>star</mat-icon>
+      Juego Destacado
+    </div>
+
+    <div class="gow__matchup">
+      <!-- Away -->
+      <div class="gow__team">
+        <img class="gow__logo" [src]="game.awayLogo" [alt]="game.awayTeam" loading="lazy" />
+        <span class="gow__name">{{ game.awayTeam }}</span>
+        <span class="gow__record">{{ game.awayRecord }}</span>
+      </div>
+
+      <!-- Center -->
+      <div class="gow__center">
+        @if (isLive(game)) {
+          <span class="gow__live">
+            <span class="gow__live-dot"></span>
+            EN VIVO
+          </span>
+          <div class="gow__score">
+            {{ game.awayScore }} - {{ game.homeScore }}
+          </div>
+        } @else {
+          <span class="gow__vs">VS</span>
+          <span class="gow__time">{{ gameDateTime(game) }}</span>
+        }
+      </div>
+
+      <!-- Home -->
+      <div class="gow__team">
+        <img class="gow__logo" [src]="game.homeLogo" [alt]="game.homeTeam" loading="lazy" />
+        <span class="gow__name">{{ game.homeTeam }}</span>
+        <span class="gow__record">{{ game.homeRecord }}</span>
+      </div>
+    </div>
+
+    <span class="gow__cta">
+      Ver detalles del partido
+      <mat-icon>arrow_forward</mat-icon>
+    </span>
+  </section>
+}

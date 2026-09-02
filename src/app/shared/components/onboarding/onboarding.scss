@@ -1,0 +1,235 @@
+.ob-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ob-modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 28px;
+  animation: slideUp 0.3s ease-out;
+
+  @media (max-width: 600px) {
+    padding: 20px;
+    border-radius: 16px;
+  }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ── Paso 1: Bienvenida ────────────────────────────────────
+.ob-welcome {
+  text-align: center;
+}
+
+.ob-logo {
+  font-size: 3.5rem;
+  margin-bottom: 8px;
+}
+
+.ob-title {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.ob-subtitle {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.ob-features {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--color-text);
+
+    mat-icon {
+      color: var(--color-primary);
+      font-size: 1.2rem;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// ── Acciones ──────────────────────────────────────────────
+.ob-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &--sticky {
+    position: sticky;
+    bottom: 0;
+    padding-top: 12px;
+    background: var(--color-surface);
+  }
+}
+
+.ob-btn {
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  &--primary {
+    padding: 12px;
+    background: var(--color-primary) !important;
+    color: white !important;
+  }
+
+  &--text {
+    padding: 8px;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-text);
+    }
+  }
+}
+
+// ── Paso 2: Equipos ───────────────────────────────────────
+.ob-teams__title {
+  margin: 0 0 4px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.ob-teams__subtitle {
+  margin: 0 0 16px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.ob-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+
+  mat-icon {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    width: 20px;
+    height: 20px;
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    outline: none;
+
+    &::placeholder {
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+.ob-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.ob-team {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-background);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &--selected {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.1);
+  }
+}
+
+.ob-team__logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.ob-team__abbr {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.ob-team__check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 1rem;
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-overlay,
+  .ob-modal { animation: none; }
+  .ob-team { transition: none; }
+}

@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { GameDetailService } from '../../../core/services/api/game-detail.service';
 import { GameDetail, GameDrive } from '../../../shared/models/domain/game-detail.model';
+import { ShareService } from '../../../core/services/share.service';
 
 const REFRESH_MS = 20_000; // Refrescar cada 20 segundos para juegos en vivo
 
@@ -32,6 +33,7 @@ export class GameCenterComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly gameDetailService = inject(GameDetailService);
   private readonly platformId = inject(PLATFORM_ID);
+  readonly shareService = inject(ShareService);
 
   private sub!: Subscription;
 
@@ -109,5 +111,20 @@ export class GameCenterComponent implements OnInit, OnDestroy {
     if (result.includes('INT') || result.includes('INTERCEPTION')) return 'drive--turnover';
     if (result.includes('FUMBLE')) return 'drive--turnover';
     return 'drive--neutral';
+  }
+
+  shareGame(): void {
+    const g = this.game();
+    if (!g) return;
+
+    const scoreLine =
+      g.statusState === 'pre'
+        ? `${g.awayTeam.abbreviation} vs ${g.homeTeam.abbreviation}`
+        : `${g.awayTeam.abbreviation} ${g.awayTeam.score} - ${g.homeTeam.score} ${g.homeTeam.abbreviation}`;
+
+    this.shareService.share({
+      title: 'Centro NFL',
+      text: `🏈 ${scoreLine} · ${g.status}`,
+    });
   }
 }

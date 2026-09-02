@@ -22,6 +22,14 @@
         <mat-icon>arrow_back</mat-icon>
       </a>
 
+      <button
+        class="gc-share"
+        type="button"
+        [attr.aria-label]="'Compartir partido'"
+        (click)="shareGame()">
+        <mat-icon>{{ shareService.copied() ? 'check' : 'share' }}</mat-icon>
+      </button>
+
       <div class="gc-scoreboard">
         <div class="gc-team gc-team--away">
           <img class="gc-team__logo" [src]="g.awayTeam.logo" [alt]="g.awayTeam.name" />

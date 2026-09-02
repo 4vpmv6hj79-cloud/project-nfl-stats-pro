@@ -13,6 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
+import { OnboardingComponent } from '../../../shared/components/onboarding/onboarding';
 
 @Component({
   selector: 'app-main-layout',
@@ -28,6 +29,7 @@ import { AuthService } from '../../services/auth.service';
     MatButtonModule,
     MatTooltipModule,
     MatMenuModule,
+    OnboardingComponent,
   ],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',

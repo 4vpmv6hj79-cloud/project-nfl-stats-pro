@@ -305,6 +305,32 @@
   color: var(--color-text-secondary);
 }
 
+.sc-card__share {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: var(--color-primary);
+    background: var(--color-background);
+  }
+
+  mat-icon {
+    font-size: 1.1rem;
+    width: 18px;
+    height: 18px;
+  }
+}
+
 .sc-card__badge {
   padding: 4px 10px;
   border-radius: 999px;

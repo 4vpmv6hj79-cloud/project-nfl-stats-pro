@@ -149,6 +149,14 @@
             <span class="sc-card__badge" [class]="statusClass(team.status)">
               {{ team.statusLabel }}
             </span>
+
+            <button
+              class="sc-card__share"
+              type="button"
+              aria-label="Compartir situación del equipo"
+              (click)="shareTeam(team)">
+              <mat-icon>{{ shareService.copied() ? 'check' : 'share' }}</mat-icon>
+            </button>
           </div>
 
           <!-- Probabilidad de playoffs -->

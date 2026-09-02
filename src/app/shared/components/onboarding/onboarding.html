@@ -1,0 +1,84 @@
+@if (onboarding.showOnboarding()) {
+  <div class="ob-overlay" role="dialog" aria-modal="true" aria-label="Bienvenida">
+    <div class="ob-modal">
+
+      <!-- Paso 1: Bienvenida -->
+      @if (step() === 1) {
+        <div class="ob-welcome">
+          <div class="ob-logo">🏈</div>
+          <h1 class="ob-title">¡Bienvenido a Centro NFL!</h1>
+          <p class="ob-subtitle">
+            Tu app de la NFL en español: marcadores en vivo, estadísticas,
+            escenarios de playoffs y más.
+          </p>
+
+          <ul class="ob-features">
+            <li><mat-icon>sports_score</mat-icon> Marcadores en vivo con jugada por jugada</li>
+            <li><mat-icon>insights</mat-icon> Situación de playoffs de tu equipo</li>
+            <li><mat-icon>tune</mat-icon> Simulador de playoffs interactivo</li>
+            <li><mat-icon>notifications</mat-icon> Notificaciones de tus equipos favoritos</li>
+          </ul>
+
+          <div class="ob-actions">
+            <button class="ob-btn ob-btn--primary" mat-flat-button (click)="goToTeamSelection()">
+              Elegir mis equipos
+            </button>
+            <button class="ob-btn ob-btn--text" (click)="skip()">
+              Saltar por ahora
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Paso 2: Selección de equipos -->
+      @if (step() === 2) {
+        <div class="ob-teams">
+          <h2 class="ob-teams__title">¿Cuáles son tus equipos?</h2>
+          <p class="ob-teams__subtitle">
+            Selecciona uno o más. Podrás cambiarlos después.
+          </p>
+
+          <div class="ob-search">
+            <mat-icon>search</mat-icon>
+            <input
+              type="text"
+              placeholder="Buscar equipo..."
+              [value]="search()"
+              (input)="onSearchInput($any($event.target).value)"
+              aria-label="Buscar equipo" />
+          </div>
+
+          <div class="ob-team-grid">
+            @for (team of filteredTeams(); track team.id) {
+              <button
+                class="ob-team"
+                [class.ob-team--selected]="isSelected(team.id)"
+                (click)="toggleTeam(team)"
+                [attr.aria-pressed]="isSelected(team.id)">
+                <img class="ob-team__logo" [src]="team.logo" [alt]="team.name" loading="lazy" />
+                <span class="ob-team__abbr">{{ team.abbreviation }}</span>
+                @if (isSelected(team.id)) {
+                  <mat-icon class="ob-team__check">check_circle</mat-icon>
+                }
+              </button>
+            }
+          </div>
+
+          <div class="ob-actions ob-actions--sticky">
+            <button
+              class="ob-btn ob-btn--primary"
+              mat-flat-button
+              (click)="finish()">
+              @if (selectedCount() > 0) {
+                Continuar con {{ selectedCount() }} {{ selectedCount() === 1 ? 'equipo' : 'equipos' }}
+              } @else {
+                Continuar sin favoritos
+              }
+            </button>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+}

@@ -11,6 +11,7 @@ import { DashboardScoreboardComponent } from '../dashboard-scoreboard/dashboard-
 import { DashboardNewsComponent } from '../dashboard-news/dashboard-news';
 import { DashboardFavoritesComponent } from '../dashboard-favorites/dashboard-favorites';
 import { DashboardCountdownComponent } from '../dashboard-countdown/dashboard-countdown';
+import { DashboardGameOfWeekComponent } from '../dashboard-game-of-week/dashboard-game-of-week';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,6 +22,7 @@ import { DashboardCountdownComponent } from '../dashboard-countdown/dashboard-co
     DashboardScoreboardComponent,
     DashboardFavoritesComponent,
     DashboardCountdownComponent,
+    DashboardGameOfWeekComponent,
     DashboardNewsComponent,
   ],
   templateUrl: './dashboard.html',

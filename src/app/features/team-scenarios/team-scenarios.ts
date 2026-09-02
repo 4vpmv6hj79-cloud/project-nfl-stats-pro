@@ -20,6 +20,7 @@ import {
   NotificationPreferences,
 } from '../../core/services/notification-preferences.service';
 import { GameWatcherService } from '../../core/services/game-watcher.service';
+import { ShareService } from '../../core/services/share.service';
 import {
   TeamScenario,
   ClinchAnalysis,
@@ -45,6 +46,7 @@ export class TeamScenariosComponent implements OnInit {
   private readonly favoritesService = inject(FavoritesService);
   readonly notifications = inject(NotificationPreferencesService);
   private readonly gameWatcher = inject(GameWatcherService);
+  readonly shareService = inject(ShareService);
 
   readonly loading = signal(true);
   readonly error = signal(false);
@@ -168,6 +170,14 @@ export class TeamScenariosComponent implements OnInit {
       case 'eliminate': return 'scenario--eliminate';
       default: return '';
     }
+  }
+
+  shareTeam(team: TeamScenario): void {
+    const record = `${team.wins}-${team.losses}${team.ties > 0 ? '-' + team.ties : ''}`;
+    this.shareService.share({
+      title: 'Centro NFL',
+      text: `🏈 ${team.teamName} (${record}) · ${team.statusLabel} · ${team.playoffProbability}% de probabilidad de playoffs`,
+    });
   }
 
   async enableNotifications(): Promise<void> {
