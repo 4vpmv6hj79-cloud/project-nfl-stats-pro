@@ -449,3 +449,116 @@
   .gc-momentum__home { transition: none; }
   .gc-drive { transition: none; }
 }
+
+// ── AI Explanation ────────────────────────────────────────
+.gc-ai {
+  margin-bottom: 28px;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--color-surface) 0%, rgba(124, 58, 237, 0.08) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+
+.gc-ai__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+
+  .gc-section-title {
+    margin: 0;
+  }
+}
+
+.gc-ai__levels {
+  display: flex;
+  gap: 4px;
+  background: var(--color-background);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.gc-ai__level {
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &--active {
+    background: var(--color-primary);
+    color: white;
+  }
+}
+
+.gc-ai__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 12px;
+  border: 1px dashed var(--color-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(124, 58, 237, 0.08);
+  }
+
+  mat-icon {
+    font-size: 1.1rem;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.gc-ai__loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.gc-ai__result {
+  p {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+}
+
+.gc-ai__regen {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+
+  &:hover { color: var(--color-primary); }
+
+  mat-icon {
+    font-size: 0.9rem;
+    width: 14px;
+    height: 14px;
+  }
+}

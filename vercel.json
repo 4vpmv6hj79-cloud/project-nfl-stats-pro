@@ -3,6 +3,10 @@
   "buildCommand": "npm run build",
   "rewrites": [
     {
+      "source": "/api/explain",
+      "destination": "/api/explain"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/espn?path=:path*"
     },

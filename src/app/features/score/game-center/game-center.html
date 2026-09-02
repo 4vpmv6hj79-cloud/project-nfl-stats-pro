@@ -85,6 +85,54 @@
       </section>
     }
 
+    <!-- Explicación con IA: ¿Qué está pasando? -->
+    @if (!aiUnavailable()) {
+      <section class="gc-ai" aria-label="Explicación del partido">
+        <div class="gc-ai__header">
+          <h3 class="gc-section-title">🤖 ¿Qué está pasando?</h3>
+
+          <div class="gc-ai__levels">
+            <button
+              class="gc-ai__level"
+              [class.gc-ai__level--active]="aiLevel() === 'beginner'"
+              (click)="setAiLevel('beginner')">
+              Principiante
+            </button>
+            <button
+              class="gc-ai__level"
+              [class.gc-ai__level--active]="aiLevel() === 'advanced'"
+              (click)="setAiLevel('advanced')">
+              Avanzado
+            </button>
+          </div>
+        </div>
+
+        @if (!aiExplanation() && !aiLoading()) {
+          <button class="gc-ai__cta" (click)="explainGame()">
+            <mat-icon>auto_awesome</mat-icon>
+            Explícame el partido
+          </button>
+        }
+
+        @if (aiLoading()) {
+          <div class="gc-ai__loading">
+            <div class="gc-loading__spinner gc-loading__spinner--sm"></div>
+            <span>Analizando el partido...</span>
+          </div>
+        }
+
+        @if (aiExplanation()) {
+          <div class="gc-ai__result">
+            <p>{{ aiExplanation() }}</p>
+            <button class="gc-ai__regen" (click)="explainGame()">
+              <mat-icon>refresh</mat-icon>
+              Actualizar
+            </button>
+          </div>
+        }
+      </section>
+    }
+
     <!-- Líderes -->
     @if (g.homeLeaders.length > 0 || g.awayLeaders.length > 0) {
       <section class="gc-leaders">

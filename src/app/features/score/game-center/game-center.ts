@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { GameDetailService } from '../../../core/services/api/game-detail.service';
 import { GameDetail, GameDrive } from '../../../shared/models/domain/game-detail.model';
 import { ShareService } from '../../../core/services/share.service';
+import { AiExplainService, ExplainLevel } from '../../../core/services/ai-explain.service';
 
 const REFRESH_MS = 20_000; // Refrescar cada 20 segundos para juegos en vivo
 
@@ -34,12 +35,19 @@ export class GameCenterComponent implements OnInit, OnDestroy {
   private readonly gameDetailService = inject(GameDetailService);
   private readonly platformId = inject(PLATFORM_ID);
   readonly shareService = inject(ShareService);
+  private readonly aiExplain = inject(AiExplainService);
 
   private sub!: Subscription;
 
   readonly game = signal<GameDetail | null>(null);
   readonly loading = signal(true);
   readonly error = signal(false);
+
+  // Explicación con IA
+  readonly aiLevel = signal<ExplainLevel>('beginner');
+  readonly aiExplanation = signal<string>('');
+  readonly aiLoading = signal(false);
+  readonly aiUnavailable = signal(false);
 
   ngOnInit(): void {
     const eventId = this.route.snapshot.paramMap.get('id') ?? '';
@@ -126,5 +134,74 @@ export class GameCenterComponent implements OnInit, OnDestroy {
       title: 'Centro NFL',
       text: `🏈 ${scoreLine} · ${g.status}`,
     });
+  }
+
+  setAiLevel(level: ExplainLevel): void {
+    this.aiLevel.set(level);
+    // Si ya había una explicación, regenerar con el nuevo nivel
+    if (this.aiExplanation()) {
+      this.explainGame();
+    }
+  }
+
+  explainGame(): void {
+    const g = this.game();
+    if (!g || this.aiLoading()) return;
+
+    this.aiLoading.set(true);
+    this.aiExplanation.set('');
+
+    const context = this.buildGameContext(g);
+
+    this.aiExplain.explain(context, this.aiLevel()).subscribe({
+      next: result => {
+        if (result.available) {
+          this.aiExplanation.set(result.explanation);
+        } else {
+          this.aiUnavailable.set(true);
+        }
+        this.aiLoading.set(false);
+      },
+      error: () => {
+        this.aiUnavailable.set(true);
+        this.aiLoading.set(false);
+      },
+    });
+  }
+
+  /**
+   * Construye un resumen textual del estado del partido para enviar a la IA.
+   */
+  private buildGameContext(g: GameDetail): string {
+    const parts: string[] = [];
+
+    parts.push(
+      `${g.awayTeam.name} (${g.awayTeam.score}) vs ${g.homeTeam.name} (${g.homeTeam.score}). ` +
+      `Estado: ${g.status}.`
+    );
+
+    if (g.statusState === 'in' && g.downDistanceText) {
+      parts.push(`Situación actual: ${g.downDistanceText}.`);
+      const posTeam = g.possession === 'home' ? g.homeTeam.name : g.possession === 'away' ? g.awayTeam.name : '';
+      if (posTeam) {
+        parts.push(`${posTeam} tiene el balón.`);
+      }
+    }
+
+    // Últimos drives
+    if (g.drives.length > 0) {
+      const recent = g.drives.slice(0, 3)
+        .map(d => `${d.teamAbbr}: ${d.shortResult} (${d.description})`)
+        .join('; ');
+      parts.push(`Últimos drives: ${recent}.`);
+    }
+
+    // Última anotación
+    if (g.scoringPlays.length > 0) {
+      const last = g.scoringPlays[g.scoringPlays.length - 1];
+      parts.push(`Última anotación: ${last.text}.`);
+    }
+
+    return parts.join(' ');
   }
 }
