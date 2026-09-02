@@ -59,6 +59,10 @@ export class DashboardGameOfWeekComponent implements OnInit {
   ngOnInit(): void {
     this.scoreService.getScoreboard().subscribe({
       next: games => this.games.set(games),
+      error: () => {
+        // Widget secundario: si falla, la tarjeta simplemente no se muestra
+        this.games.set([]);
+      },
     });
   }
 

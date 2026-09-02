@@ -34,6 +34,7 @@ export class SimulatorComponent implements OnInit {
   private readonly simulatorService = inject(SimulatorService);
 
   readonly loading = signal(true);
+  readonly error = signal(false);
   readonly baseStandings = signal<Standing[]>([]);
   readonly weeks = signal<SimulatorWeek[]>([]);
   readonly selectedWeek = signal<number>(1);
@@ -105,6 +106,7 @@ export class SimulatorComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
+        this.error.set(true);
         this.loading.set(false);
       },
     });

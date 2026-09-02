@@ -58,6 +58,7 @@
                   class="fav-card__article"
                   role="button"
                   tabindex="0"
+                  [attr.aria-label]="'Leer noticia: ' + article.headline"
                   (click)="openArticle(article.link)"
                   (keydown.enter)="openArticle(article.link)">
 

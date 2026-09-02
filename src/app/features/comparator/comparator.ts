@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 
 import { PlayerService } from '../../core/services/api/player.service';
+import { NotificationService } from '../../core/services/api/notification.service';
 import {
   PlayerSearchResult,
   PlayerProfile,
@@ -34,6 +35,7 @@ import {
 })
 export class ComparatorComponent {
   private readonly playerService = inject(PlayerService);
+  private readonly notification = inject(NotificationService);
 
   // Search state
   readonly searchQueryA = signal('');
@@ -107,7 +109,10 @@ export class ComparatorComponent {
         this.playerA.set(profile);
         this.loadingA.set(false);
       },
-      error: () => this.loadingA.set(false),
+      error: () => {
+        this.loadingA.set(false);
+        this.notification.error('No se pudieron cargar las estadísticas del jugador.');
+      },
     });
   }
 
@@ -124,7 +129,10 @@ export class ComparatorComponent {
         this.playerB.set(profile);
         this.loadingB.set(false);
       },
-      error: () => this.loadingB.set(false),
+      error: () => {
+        this.loadingB.set(false);
+        this.notification.error('No se pudieron cargar las estadísticas del jugador.');
+      },
     });
   }
 

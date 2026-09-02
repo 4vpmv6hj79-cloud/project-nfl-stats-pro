@@ -1,10 +1,10 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 
 import { FavoritesService, FavoriteTeam } from '../../../../core/services/favorites.service';
 import { NFLService } from '../../../../core/services/api/nfl.service';
+import { NotificationService } from '../../../../core/services/api/notification.service';
 import { Standing } from '../../../../shared/models/domain/standing.model';
 import { NewsArticle } from '../../../../shared/models/domain/news-article.model';
 
@@ -25,7 +25,6 @@ export interface FavoriteTeamInfo {
   imports: [
     RouterLink,
     MatIconModule,
-    MatButtonModule,
   ],
   templateUrl: './dashboard-favorites.html',
   styleUrl: './dashboard-favorites.scss',
@@ -33,6 +32,7 @@ export interface FavoriteTeamInfo {
 export class DashboardFavoritesComponent implements OnInit {
   readonly favoritesService = inject(FavoritesService);
   private readonly nflService = inject(NFLService);
+  private readonly notification = inject(NotificationService);
 
   readonly standings = signal<Standing[]>([]);
   readonly news = signal<NewsArticle[]>([]);
@@ -117,10 +117,15 @@ export class DashboardFavoritesComponent implements OnInit {
   ngOnInit(): void {
     this.nflService.getStandings().subscribe({
       next: (standings) => this.standings.set(standings),
+      error: () =>
+        this.notification.error('No fue posible cargar la información de tus equipos.'),
     });
 
     this.nflService.getNews(50).subscribe({
       next: (news) => this.news.set(news),
+      error: () => {
+        // Las noticias son secundarias; fallar en silencio no rompe la sección
+      },
     });
   }
 

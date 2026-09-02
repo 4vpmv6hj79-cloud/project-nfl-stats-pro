@@ -55,41 +55,41 @@
     }
 
     <!-- Jugadores -->
-    <section class="srch-section">
-      <h2 class="srch-section__title">
-        Jugadores
-        @if (searchingPlayers()) {
-          <span class="srch-loading-inline">buscando...</span>
-        }
-      </h2>
-
-      @if (playerResults().length > 0) {
-        <div class="srch-results">
-          @for (player of playerResults(); track player.id) {
-            <button class="srch-result" (click)="openPlayer(player)">
-              @if (player.headshot) {
-                <img class="srch-result__photo" [src]="player.headshot" [alt]="player.displayName" loading="lazy" />
-              } @else {
-                <div class="srch-result__photo-ph">
-                  <mat-icon>person</mat-icon>
-                </div>
-              }
-              <div class="srch-result__info">
-                <span class="srch-result__name">{{ player.displayName }}</span>
-                @if (player.position || player.teamAbbr) {
-                  <span class="srch-result__meta">
-                    {{ player.position }}{{ player.position && player.teamAbbr ? ' · ' : '' }}{{ player.teamAbbr }}
-                  </span>
-                }
-              </div>
-              <mat-icon class="srch-result__arrow">chevron_right</mat-icon>
-            </button>
+    @if (playerResults().length > 0 || searchingPlayers()) {
+      <section class="srch-section">
+        <h2 class="srch-section__title">
+          Jugadores
+          @if (searchingPlayers()) {
+            <span class="srch-loading-inline">buscando...</span>
           }
-        </div>
-      } @else if (!searchingPlayers()) {
-        <p class="srch-empty">No se encontraron jugadores.</p>
-      }
-    </section>
+        </h2>
+
+        @if (playerResults().length > 0) {
+          <div class="srch-results">
+            @for (player of playerResults(); track player.id) {
+              <button class="srch-result" (click)="openPlayer(player)">
+                @if (player.headshot) {
+                  <img class="srch-result__photo" [src]="player.headshot" [alt]="player.displayName" loading="lazy" />
+                } @else {
+                  <div class="srch-result__photo-ph">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                }
+                <div class="srch-result__info">
+                  <span class="srch-result__name">{{ player.displayName }}</span>
+                  @if (player.position || player.teamAbbr) {
+                    <span class="srch-result__meta">
+                      {{ player.position }}{{ player.position && player.teamAbbr ? ' · ' : '' }}{{ player.teamAbbr }}
+                    </span>
+                  }
+                </div>
+                <mat-icon class="srch-result__arrow">chevron_right</mat-icon>
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
 
     <!-- Nada encontrado -->
     @if (!hasResults() && !searchingPlayers()) {

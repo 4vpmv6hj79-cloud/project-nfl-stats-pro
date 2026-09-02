@@ -3,7 +3,7 @@
   <header class="sim-header">
     <h1 class="sim-title">🏆 Simulador de Playoffs</h1>
     <p class="sim-subtitle">
-      Selecciona ganadores y observa cómo cambian los standings
+      Selecciona ganadores y observa cómo cambian las posiciones
     </p>
   </header>
 
@@ -11,6 +11,11 @@
     <div class="sim-loading">
       <div class="sim-loading__spinner"></div>
       <p>Cargando temporada...</p>
+    </div>
+  } @else if (error()) {
+    <div class="sim-error">
+      <mat-icon>error_outline</mat-icon>
+      <p>No se pudo cargar la temporada. Intenta más tarde.</p>
     </div>
   } @else {
 
@@ -119,7 +124,7 @@
     <!-- Projected Standings -->
     <section class="sim-standings">
       <div class="sim-standings__header">
-        <h2 class="sim-section-title">Standings Proyectados</h2>
+        <h2 class="sim-section-title">Posiciones Proyectadas</h2>
 
         <mat-button-toggle-group
           [value]="conferenceFilter()"
@@ -135,7 +140,7 @@
         <div class="sim-standings__row sim-standings__row--header">
           <span class="sim-col-seed">#</span>
           <span class="sim-col-team">Equipo</span>
-          <span class="sim-col-record">Record</span>
+          <span class="sim-col-record">Récord</span>
           <span class="sim-col-pct">%</span>
           <span class="sim-col-change">Δ</span>
         </div>

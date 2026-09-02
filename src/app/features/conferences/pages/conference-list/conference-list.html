@@ -34,12 +34,36 @@
 
   </header>
 
-  @if (conferences$ | async; as conferences) {
+  @if (loading()) {
+
+    <div
+      class="conference-loading"
+      aria-label="Cargando conferencias">
+
+      @for (item of [1, 2]; track item) {
+        <div class="conference-skeleton"></div>
+      }
+
+    </div>
+
+  } @else if (error()) {
+
+    <p class="conference-error">
+      No se pudieron cargar las conferencias. Intenta más tarde.
+    </p>
+
+  } @else if (conferences().length === 0) {
+
+    <p class="conference-error">
+      No hay información de conferencias disponible.
+    </p>
+
+  } @else {
 
     <div class="conferences">
 
       @for (
-        conference of conferences;
+        conference of conferences();
         track conference.id;
         let conferenceIndex = $index
       ) {
@@ -140,18 +164,6 @@
           </div>
 
         </article>
-      }
-
-    </div>
-
-  } @else {
-
-    <div
-      class="conference-loading"
-      aria-label="Cargando conferencias">
-
-      @for (item of [1, 2]; track item) {
-        <div class="conference-skeleton"></div>
       }
 
     </div>

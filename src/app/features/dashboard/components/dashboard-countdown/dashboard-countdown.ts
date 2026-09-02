@@ -101,6 +101,10 @@ export class DashboardCountdownComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.scoreService.getScoreboardWindow(0, 14).subscribe({
       next: (games) => this.upcomingGames.set(games),
+      error: () => {
+        // Widget secundario: si falla, el countdown simplemente no se muestra
+        this.upcomingGames.set([]);
+      },
     });
 
     if (isPlatformBrowser(this.platformId)) {
