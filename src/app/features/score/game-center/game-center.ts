@@ -19,6 +19,10 @@ import { AiExplainService, ExplainLevel } from '../../../core/services/ai-explai
 
 const REFRESH_MS = 20_000; // Refrescar cada 20 segundos para juegos en vivo
 
+// Bandera para activar/ocultar la explicación con IA.
+// Cambiar a true cuando OPENAI_API_KEY esté configurada en Vercel.
+const AI_ENABLED = false;
+
 @Component({
   selector: 'app-game-center',
   standalone: true,
@@ -44,6 +48,7 @@ export class GameCenterComponent implements OnInit, OnDestroy {
   readonly error = signal(false);
 
   // Explicación con IA
+  readonly aiEnabled = AI_ENABLED;
   readonly aiLevel = signal<ExplainLevel>('beginner');
   readonly aiExplanation = signal<string>('');
   readonly aiLoading = signal(false);

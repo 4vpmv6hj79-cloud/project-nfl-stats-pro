@@ -86,7 +86,7 @@
     }
 
     <!-- Explicación con IA: ¿Qué está pasando? -->
-    @if (!aiUnavailable()) {
+    @if (aiEnabled && !aiUnavailable()) {
       <section class="gc-ai" aria-label="Explicación del partido">
         <div class="gc-ai__header">
           <h3 class="gc-section-title">🤖 ¿Qué está pasando?</h3>
