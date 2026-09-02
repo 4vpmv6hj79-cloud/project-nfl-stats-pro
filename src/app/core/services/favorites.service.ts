@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 
 import { FirebaseService } from './firebase.service';
 import { AuthService } from './auth.service';
+import { AnalyticsService } from './analytics.service';
 
 export interface FavoriteTeam {
   id: number;
@@ -21,6 +22,7 @@ export class FavoritesService {
   private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly firebase = inject(FirebaseService);
   private readonly authService = inject(AuthService);
+  private readonly analytics = inject(AnalyticsService);
 
   readonly favorites = signal<FavoriteTeam[]>(this.loadLocal());
 
@@ -43,8 +45,10 @@ export class FavoritesService {
 
     if (exists) {
       this.favorites.set(current.filter(t => t.id !== team.id));
+      this.analytics.logEvent('remove_favorite', { team: team.abbreviation });
     } else {
       this.favorites.set([...current, team]);
+      this.analytics.logEvent('add_favorite', { team: team.abbreviation });
     }
 
     this.saveLocal();

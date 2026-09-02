@@ -11,8 +11,10 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
   private readonly platformId = inject(PLATFORM_ID);
+  private _app: any = null;
   private _auth: any = null;
   private _firestore: any = null;
+  private _analytics: any = null;
   private _initialized = false;
   private _initPromise: Promise<void> | null = null;
 
@@ -22,6 +24,10 @@ export class FirebaseService {
 
   get firestore(): any {
     return this._firestore;
+  }
+
+  get analytics(): any {
+    return this._analytics;
   }
 
   get initialized(): boolean {
@@ -49,12 +55,31 @@ export class FirebaseService {
       const { getAuth } = await import('firebase/auth');
       const { getFirestore } = await import('firebase/firestore');
 
-      const app = initializeApp(environment.firebase);
-      this._auth = getAuth(app);
-      this._firestore = getFirestore(app);
+      this._app = initializeApp(environment.firebase);
+      this._auth = getAuth(this._app);
+      this._firestore = getFirestore(this._app);
       this._initialized = true;
+
+      // Analytics: solo si hay measurementId configurado y el navegador lo soporta
+      await this.initAnalytics();
     } catch (e) {
       console.error('Failed to initialize Firebase:', e);
+    }
+  }
+
+  private async initAnalytics(): Promise<void> {
+    // Solo si el proyecto tiene measurementId (Google Analytics habilitado)
+    const measurementId = (environment.firebase as any).measurementId;
+    if (!measurementId) return;
+
+    try {
+      const { getAnalytics, isSupported } = await import('firebase/analytics');
+      const supported = await isSupported();
+      if (supported && this._app) {
+        this._analytics = getAnalytics(this._app);
+      }
+    } catch {
+      // Analytics no disponible; continuar sin él
     }
   }
 }

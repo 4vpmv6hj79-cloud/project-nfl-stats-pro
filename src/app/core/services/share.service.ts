@@ -1,6 +1,8 @@
 import { Injectable, inject, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
+import { AnalyticsService } from './analytics.service';
+
 export interface ShareContent {
   title: string;
   text: string;
@@ -11,6 +13,7 @@ export interface ShareContent {
 export class ShareService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly analytics = inject(AnalyticsService);
 
   /** Se activa brevemente cuando se copia al portapapeles (para feedback UI) */
   readonly copied = signal(false);
@@ -21,6 +24,8 @@ export class ShareService {
    */
   async share(content: ShareContent): Promise<void> {
     if (!this.isBrowser) return;
+
+    this.analytics.logEvent('share', { title: content.title });
 
     const url = content.url ?? (typeof window !== 'undefined' ? window.location.href : '');
 

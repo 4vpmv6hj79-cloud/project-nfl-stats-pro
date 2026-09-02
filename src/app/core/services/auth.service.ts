@@ -2,6 +2,7 @@ import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import { FirebaseService } from './firebase.service';
+import { AnalyticsService } from './analytics.service';
 
 export interface AppUser {
   uid: string;
@@ -13,6 +14,7 @@ export interface AppUser {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly firebase = inject(FirebaseService);
+  private readonly analytics = inject(AnalyticsService);
   private readonly platformId = inject(PLATFORM_ID);
 
   /** Usuario actual (null = no autenticado) */
@@ -55,6 +57,7 @@ export class AuthService {
       }
 
       this.user.set(this.mapUser(credential.user));
+      this.analytics.logEvent('sign_up', { method: 'email' });
       return true;
     } catch (e: any) {
       this.error.set(this.translateError(e.code));
@@ -76,6 +79,7 @@ export class AuthService {
       const { signInWithEmailAndPassword } = await import('firebase/auth');
       const credential = await signInWithEmailAndPassword(auth, email, password);
       this.user.set(this.mapUser(credential.user));
+      this.analytics.logEvent('login', { method: 'email' });
       return true;
     } catch (e: any) {
       this.error.set(this.translateError(e.code));
@@ -98,6 +102,7 @@ export class AuthService {
       const provider = new GoogleAuthProvider();
       const credential = await signInWithPopup(auth, provider);
       this.user.set(this.mapUser(credential.user));
+      this.analytics.logEvent('login', { method: 'google' });
       return true;
     } catch (e: any) {
       this.error.set(this.translateError(e.code));
