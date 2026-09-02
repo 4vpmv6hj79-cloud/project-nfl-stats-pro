@@ -103,6 +103,13 @@ export const routes: Routes = [
             .then(m => m.WeekComponent)
       },
 
+      {
+        path: 'buscar',
+        loadComponent: () =>
+          import('./features/search/search')
+            .then(m => m.SearchComponent)
+      },
+
       // Siempre debe ser la última ruta
       {
         path: '**',

@@ -1,0 +1,222 @@
+.search-page {
+  padding: 24px;
+  max-width: 640px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 16px 12px;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────
+.srch-header {
+  margin-bottom: 16px;
+}
+
+.srch-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.srch-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+// ── Barra de búsqueda ─────────────────────────────────────
+.srch-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  &:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  > mat-icon {
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+  }
+}
+
+.srch-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.95rem;
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
+}
+
+.srch-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+
+  &:hover { color: var(--color-text); }
+
+  mat-icon {
+    font-size: 1.1rem;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// ── Hints / estados vacíos ────────────────────────────────
+.srch-hint,
+.srch-none {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--color-text-secondary);
+
+  mat-icon {
+    font-size: 2.5rem;
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+  }
+}
+
+// ── Secciones ─────────────────────────────────────────────
+.srch-section {
+  margin-bottom: 24px;
+}
+
+.srch-section__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.srch-loading-inline {
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+
+.srch-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.srch-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    transform: translateX(3px);
+    border-color: var(--color-primary);
+  }
+}
+
+.srch-result__logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.srch-result__photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-background);
+  flex-shrink: 0;
+}
+
+.srch-result__photo-ph {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    color: var(--color-text-secondary);
+    font-size: 1.2rem;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.srch-result__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.srch-result__name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.srch-result__meta {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}
+
+.srch-result__arrow {
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.srch-empty {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  padding: 8px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .srch-result { transition: none; }
+}

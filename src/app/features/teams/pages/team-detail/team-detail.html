@@ -19,6 +19,26 @@
         <span class="tag">{{ team()!.division }}</span>
       </div>
     </div>
+
+    <div class="team-actions">
+      <button
+        class="team-action-btn"
+        type="button"
+        [attr.aria-label]="isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+        (click)="toggleFavorite()">
+        <mat-icon [class.team-action-btn--active]="isFavorite">
+          {{ isFavorite ? 'star' : 'star_border' }}
+        </mat-icon>
+      </button>
+
+      <button
+        class="team-action-btn"
+        type="button"
+        aria-label="Compartir equipo"
+        (click)="shareTeam()">
+        <mat-icon>{{ shareService.copied() ? 'check' : 'share' }}</mat-icon>
+      </button>
+    </div>
   </div>
 
   <div class="info-card">

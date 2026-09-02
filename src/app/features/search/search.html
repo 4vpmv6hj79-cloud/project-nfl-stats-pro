@@ -1,0 +1,102 @@
+<div class="search-page">
+
+  <header class="srch-header">
+    <h1 class="srch-title">🔍 Buscar</h1>
+    <p class="srch-subtitle">Encuentra equipos y jugadores de la NFL</p>
+  </header>
+
+  <!-- Barra de búsqueda -->
+  <div class="srch-bar">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      class="srch-input"
+      placeholder="Escribe un equipo o jugador..."
+      [value]="query()"
+      (input)="onSearch($any($event.target).value)"
+      autocomplete="off"
+      autofocus
+      aria-label="Buscar" />
+    @if (query()) {
+      <button class="srch-clear" (click)="clear()" aria-label="Limpiar búsqueda">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>
+
+  <!-- Estado inicial -->
+  @if (!hasSearched()) {
+    <div class="srch-hint">
+      <mat-icon>manage_search</mat-icon>
+      <p>Escribe al menos 2 letras para buscar equipos o jugadores.</p>
+    </div>
+  }
+
+  <!-- Resultados -->
+  @if (hasSearched()) {
+
+    <!-- Equipos -->
+    @if (teamResults().length > 0) {
+      <section class="srch-section">
+        <h2 class="srch-section__title">Equipos</h2>
+        <div class="srch-results">
+          @for (team of teamResults(); track team.id) {
+            <button class="srch-result" (click)="openTeam(team)">
+              <img class="srch-result__logo" [src]="team.logo" [alt]="team.name" loading="lazy" />
+              <div class="srch-result__info">
+                <span class="srch-result__name">{{ team.name }}</span>
+                <span class="srch-result__meta">{{ team.conference }} · {{ team.division }}</span>
+              </div>
+              <mat-icon class="srch-result__arrow">chevron_right</mat-icon>
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Jugadores -->
+    <section class="srch-section">
+      <h2 class="srch-section__title">
+        Jugadores
+        @if (searchingPlayers()) {
+          <span class="srch-loading-inline">buscando...</span>
+        }
+      </h2>
+
+      @if (playerResults().length > 0) {
+        <div class="srch-results">
+          @for (player of playerResults(); track player.id) {
+            <button class="srch-result" (click)="openPlayer(player)">
+              @if (player.headshot) {
+                <img class="srch-result__photo" [src]="player.headshot" [alt]="player.displayName" loading="lazy" />
+              } @else {
+                <div class="srch-result__photo-ph">
+                  <mat-icon>person</mat-icon>
+                </div>
+              }
+              <div class="srch-result__info">
+                <span class="srch-result__name">{{ player.displayName }}</span>
+                @if (player.position || player.teamAbbr) {
+                  <span class="srch-result__meta">
+                    {{ player.position }}{{ player.position && player.teamAbbr ? ' · ' : '' }}{{ player.teamAbbr }}
+                  </span>
+                }
+              </div>
+              <mat-icon class="srch-result__arrow">chevron_right</mat-icon>
+            </button>
+          }
+        </div>
+      } @else if (!searchingPlayers()) {
+        <p class="srch-empty">No se encontraron jugadores.</p>
+      }
+    </section>
+
+    <!-- Nada encontrado -->
+    @if (!hasResults() && !searchingPlayers()) {
+      <div class="srch-none">
+        <mat-icon>search_off</mat-icon>
+        <p>No se encontraron resultados para "{{ query() }}".</p>
+      </div>
+    }
+  }
+</div>
