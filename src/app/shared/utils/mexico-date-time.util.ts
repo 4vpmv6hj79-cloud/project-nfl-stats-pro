@@ -137,3 +137,43 @@ export function formatMexicoTime(
     hour12: true,
   }).format(date);
 }
+
+/**
+ * Etiqueta de día para agrupar partidos.
+ * Ejemplo: "Domingo 8 de septiembre"
+ */
+export function formatMexicoDayLabel(
+  value: DateValue,
+): string {
+  const date = parseDate(value);
+
+  if (!date) {
+    return 'Fecha por confirmar';
+  }
+
+  const label = new Intl.DateTimeFormat('es-MX', {
+    timeZone: MEXICO_CITY_TIME_ZONE,
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(date);
+
+  // Capitalizar primera letra
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+/**
+ * Clave estable de día en zona horaria de México (YYYY-MM-DD)
+ * para agrupar partidos por día.
+ */
+export function mexicoDayKey(
+  value: DateValue,
+): string {
+  const date = parseDate(value);
+
+  if (!date) {
+    return 'unknown';
+  }
+
+  return mexicoDatePartsFormatter.format(date);
+}

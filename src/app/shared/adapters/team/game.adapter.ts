@@ -110,6 +110,7 @@ export class GameAdapter {
       );
 
       const situation = competition.situation;
+      const favorite = GameAdapter.favorite(competition);
 
       return {
         id: event.id,
@@ -138,7 +139,24 @@ export class GameAdapter {
           ? String(situation.downDistanceText).replace(' at ', ' en ')
           : undefined,
         isRedZone: situation?.isRedZone ?? undefined,
+
+        // Predicción pre-partido
+        favorite,
       };
     });
+  }
+
+  /**
+   * Determina el equipo favorito según los datos de análisis de ESPN.
+   * Solo se usa el indicador de favorito (sin spreads ni líneas de apuestas).
+   */
+  private static favorite(competition: any): 'home' | 'away' | undefined {
+    const odds = competition?.odds?.[0];
+    if (!odds) return undefined;
+
+    if (odds.homeTeamOdds?.favorite === true) return 'home';
+    if (odds.awayTeamOdds?.favorite === true) return 'away';
+
+    return undefined;
   }
 }

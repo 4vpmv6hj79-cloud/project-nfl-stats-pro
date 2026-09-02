@@ -34,4 +34,7 @@ export interface Game {
   yardLine?: number;
   downDistanceText?: string;
   isRedZone?: boolean;
+
+  // Predicción pre-partido (favorito según casas de análisis, sin apuestas)
+  favorite?: 'home' | 'away';
 }

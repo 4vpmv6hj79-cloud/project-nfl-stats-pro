@@ -1,0 +1,231 @@
+.week-page {
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 16px 12px;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────
+.wk-header {
+  margin-bottom: 24px;
+}
+
+.wk-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.wk-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.wk-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+// ── Loading / Error / Empty ───────────────────────────────
+.wk-loading,
+.wk-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  gap: 12px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.wk-loading__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.wk-error mat-icon {
+  font-size: 3rem;
+  width: 48px;
+  height: 48px;
+  color: var(--color-error);
+}
+
+.wk-empty {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--color-text-secondary);
+}
+
+// ── Day group ─────────────────────────────────────────────
+.wk-day {
+  margin-bottom: 24px;
+}
+
+.wk-day__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-text);
+
+  mat-icon {
+    font-size: 1.1rem;
+    width: 18px;
+    height: 18px;
+    color: var(--color-primary);
+  }
+}
+
+// ── Games ─────────────────────────────────────────────────
+.wk-games {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wk-game {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+  }
+
+  &--live {
+    border-color: rgba(239, 68, 68, 0.4);
+  }
+}
+
+.wk-game__team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+
+  &--home {
+    justify-content: flex-end;
+  }
+}
+
+.wk-game__logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.wk-game__abbr {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 480px) {
+    font-size: 0.68rem;
+  }
+}
+
+.wk-game__score {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.wk-game__fav {
+  font-size: 0.8rem;
+  color: #facc15;
+  flex-shrink: 0;
+}
+
+.wk-game__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  flex-shrink: 0;
+}
+
+.wk-game__time {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.wk-game__status {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-text-secondary);
+  text-align: center;
+
+  &--live {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-error);
+  }
+}
+
+.wk-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-error);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+// ── Reduced motion ────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .wk-loading__spinner,
+  .wk-live-dot { animation: none; }
+  .wk-game { transition: none; }
+}

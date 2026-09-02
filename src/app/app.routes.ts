@@ -89,6 +89,20 @@ export const routes: Routes = [
             .then(m => m.TeamScenariosComponent)
       },
 
+      {
+        path: 'lideres',
+        loadComponent: () =>
+          import('./features/leaders/leaders')
+            .then(m => m.LeadersComponent)
+      },
+
+      {
+        path: 'semana',
+        loadComponent: () =>
+          import('./features/week/week')
+            .then(m => m.WeekComponent)
+      },
+
       // Siempre debe ser la última ruta
       {
         path: '**',

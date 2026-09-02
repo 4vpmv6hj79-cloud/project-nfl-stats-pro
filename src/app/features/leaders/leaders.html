@@ -1,0 +1,68 @@
+<div class="leaders-page">
+
+  <header class="ld-header">
+    <h1 class="ld-title">📊 Líderes de la Liga</h1>
+    <p class="ld-subtitle">
+      Los mejores jugadores por categoría · Temporada {{ season() }}
+    </p>
+  </header>
+
+  @if (loading()) {
+    <div class="ld-loading">
+      <div class="ld-loading__spinner"></div>
+      <p>Cargando líderes...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="ld-error">
+      <mat-icon>error_outline</mat-icon>
+      <p>No se pudieron cargar los líderes. Intenta más tarde.</p>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <div class="ld-grid">
+      @for (category of categories(); track category.name) {
+        @if (category.leaders.length > 0) {
+          <section class="ld-card">
+            <h2 class="ld-card__title">{{ category.displayName }}</h2>
+
+            <!-- Líder destacado -->
+            @if (category.leaders[0]; as top) {
+              <a
+                class="ld-featured"
+                [routerLink]="['/comparator']"
+                [queryParams]="{ player: top.athleteId }">
+                <img
+                  class="ld-featured__photo"
+                  [src]="top.headshot"
+                  [alt]="top.athleteName"
+                  loading="lazy" />
+                <div class="ld-featured__info">
+                  <span class="ld-featured__name">{{ top.athleteName }}</span>
+                  <span class="ld-featured__pos">{{ top.position }}</span>
+                </div>
+                <span class="ld-featured__value">
+                  {{ top.displayValue }}
+                </span>
+              </a>
+            }
+
+            <!-- Resto de líderes -->
+            <ol class="ld-list">
+              @for (leader of category.leaders.slice(1, 5); track leader.athleteId) {
+                <li class="ld-list__item">
+                  <span class="ld-list__rank">{{ leader.rank }}</span>
+                  <span class="ld-list__name">{{ leader.athleteName }}</span>
+                  <span class="ld-list__pos">{{ leader.position }}</span>
+                  <span class="ld-list__value">{{ leader.displayValue }}</span>
+                </li>
+              }
+            </ol>
+          </section>
+        }
+      }
+    </div>
+  }
+</div>

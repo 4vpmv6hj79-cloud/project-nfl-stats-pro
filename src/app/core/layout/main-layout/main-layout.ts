@@ -47,8 +47,10 @@ export class MainLayout {
 
   readonly menuItems = [
     { title: 'Inicio',       icon: 'dashboard',      route: '/dashboard'   },
-    { title: 'Equipos',      icon: 'shield',         route: '/teams'       },
+    { title: 'Esta Semana',  icon: 'event',          route: '/semana'      },
     { title: 'Marcadores',   icon: 'sports_score',   route: '/scores'      },
+    { title: 'Equipos',      icon: 'shield',         route: '/teams'       },
+    { title: 'Líderes',      icon: 'leaderboard',    route: '/lideres'     },
     { title: 'Mi Equipo',    icon: 'insights',       route: '/mi-equipo'   },
     { title: 'Simulador',    icon: 'tune',           route: '/simulator'   },
     { title: 'Comparador',   icon: 'compare_arrows', route: '/comparator'  },

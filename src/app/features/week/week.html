@@ -1,0 +1,94 @@
+<div class="week-page">
+
+  <header class="wk-header">
+    <h1 class="wk-title">📅 Esta Semana</h1>
+    <p class="wk-subtitle">
+      Todos los partidos de la semana · horarios de México
+    </p>
+    <p class="wk-legend">
+      <span class="wk-game__fav">★</span>
+      Equipo favorito según el análisis previo al partido
+    </p>
+  </header>
+
+  @if (loading()) {
+    <div class="wk-loading">
+      <div class="wk-loading__spinner"></div>
+      <p>Cargando partidos...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="wk-error">
+      <mat-icon>error_outline</mat-icon>
+      <p>No se pudieron cargar los partidos. Intenta más tarde.</p>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    @if (dayGroups().length === 0) {
+      <p class="wk-empty">No hay partidos programados para esta semana.</p>
+    }
+
+    @for (day of dayGroups(); track day.key) {
+      <section class="wk-day">
+        <h2 class="wk-day__label">
+          <mat-icon>event</mat-icon>
+          {{ day.label }}
+        </h2>
+
+        <div class="wk-games">
+          @for (game of day.games; track game.id) {
+            <div
+              class="wk-game"
+              [class.wk-game--live]="isLive(game)"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'Ver ' + game.awayTeam + ' vs ' + game.homeTeam"
+              (click)="openGame(game)"
+              (keydown.enter)="openGame(game)">
+
+              <!-- Away -->
+              <div class="wk-game__team">
+                <img class="wk-game__logo" [src]="game.awayLogo" [alt]="game.awayTeam" loading="lazy" />
+                <span class="wk-game__abbr">{{ game.awayTeam }}</span>
+                @if (!isLive(game) && !isFinal(game) && game.favorite === 'away') {
+                  <span class="wk-game__fav" title="Favorito">★</span>
+                }
+                @if (isLive(game) || isFinal(game)) {
+                  <span class="wk-game__score">{{ game.awayScore }}</span>
+                }
+              </div>
+
+              <!-- Center -->
+              <div class="wk-game__center">
+                @if (isLive(game)) {
+                  <span class="wk-game__status wk-game__status--live">
+                    <span class="wk-live-dot"></span>
+                    {{ game.status }}
+                  </span>
+                } @else if (isFinal(game)) {
+                  <span class="wk-game__status">{{ game.status }}</span>
+                } @else {
+                  <span class="wk-game__time">{{ gameTime(game) }}</span>
+                }
+              </div>
+
+              <!-- Home -->
+              <div class="wk-game__team wk-game__team--home">
+                @if (isLive(game) || isFinal(game)) {
+                  <span class="wk-game__score">{{ game.homeScore }}</span>
+                }
+                @if (!isLive(game) && !isFinal(game) && game.favorite === 'home') {
+                  <span class="wk-game__fav" title="Favorito">★</span>
+                }
+                <span class="wk-game__abbr">{{ game.homeTeam }}</span>
+                <img class="wk-game__logo" [src]="game.homeLogo" [alt]="game.homeTeam" loading="lazy" />
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  }
+</div>
