@@ -32,4 +32,16 @@ export class NotificationService {
 
   }
 
+  info(message: string): void {
+
+    this.snackBar.open(message, 'Cerrar', {
+      duration: 3500,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['info-snackbar']
+
+    });
+
+  }
+
 }

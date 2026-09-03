@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/api/notification.service';
+import { StripeService } from '../../core/services/stripe.service';
 
 interface PlanFeature {
   text: string;
@@ -25,15 +26,21 @@ interface Plan {
 @Component({
   selector: 'app-plans',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatIconModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './plans.html',
   styleUrl: './plans.scss',
 })
-export class PlansComponent {
+export class PlansComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly notification = inject(NotificationService);
+  private readonly stripe = inject(StripeService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   readonly isAuthenticated = signal(this.authService.isAuthenticated);
+
+  /** true mientras se está creando la sesión de pago (evita doble clic) */
+  readonly processing = signal(false);
 
   readonly plans: Plan[] = [
     {
@@ -96,15 +103,56 @@ export class PlansComponent {
     },
   ];
 
-  selectPlan(plan: Plan): void {
-    if (plan.id === 'free') {
+  ngOnInit(): void {
+    // Manejar el retorno desde Stripe Checkout
+    const pago = this.route.snapshot.queryParamMap.get('pago');
+    if (pago === 'exito') {
+      this.notification.success(
+        '¡Pago completado! Tu acceso Pro se activará en breve.'
+      );
+      this.clearPagoQueryParam();
+    } else if (pago === 'cancelado') {
+      this.notification.info('Cancelaste el pago. Puedes intentarlo cuando quieras.');
+      this.clearPagoQueryParam();
+    }
+  }
+
+  async selectPlan(plan: Plan): Promise<void> {
+    if (plan.id === 'free' || this.processing()) {
       return;
     }
 
-    // Placeholder: aquí irá la integración de pago (Stripe) más adelante.
-    // Cuando esté Stripe, aquí se redirigirá al checkout con el Price ID del plan.
-    this.notification.success(
-      '¡Gracias por tu interés! Los pagos estarán disponibles muy pronto.'
-    );
+    // Requiere sesión iniciada para poder asociar el pago al usuario
+    if (!this.authService.isAuthenticated) {
+      this.notification.info('Inicia sesión para suscribirte.');
+      this.router.navigate(['/auth'], {
+        queryParams: { redirect: '/planes' },
+      });
+      return;
+    }
+
+    this.processing.set(true);
+    const result = await this.stripe.startCheckout(plan.id);
+    this.processing.set(false);
+
+    // Si ok es true, el navegador ya está redirigiendo a Stripe.
+    if (!result.ok) {
+      if (result.reason === 'unavailable') {
+        this.notification.info(
+          'Los pagos estarán disponibles muy pronto. Estamos terminando de configurarlos.'
+        );
+      } else {
+        this.notification.error('No se pudo iniciar el pago. Intenta de nuevo.');
+      }
+    }
+  }
+
+  private clearPagoQueryParam(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { pago: null, session_id: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 }

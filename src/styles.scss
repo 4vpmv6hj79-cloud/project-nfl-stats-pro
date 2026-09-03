@@ -87,6 +87,11 @@ html {
   --mdc-snackbar-supporting-text-color: #fff;
 }
 
+.info-snackbar {
+  --mdc-snackbar-container-color: var(--color-primary);
+  --mdc-snackbar-supporting-text-color: #fff;
+}
+
 // ── Focus visible global (accesibilidad) ──────────────────
 :focus-visible {
   outline: 2px solid var(--color-primary);
