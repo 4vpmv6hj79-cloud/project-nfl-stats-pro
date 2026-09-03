@@ -45,3 +45,8 @@ git add.
 Thumbs.db
 .vercel
 .env*
+
+# Secretos / credenciales (NUNCA subir al repo)
+*serviceAccount*.json
+*-adminsdk-*.json
+*firebase-adminsdk*.json
