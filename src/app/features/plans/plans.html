@@ -1,0 +1,54 @@
+<div class="plans-page">
+
+  <header class="pl-header">
+    <h1 class="pl-title">🏈 Elige tu plan</h1>
+    <p class="pl-subtitle">
+      Disfruta la NFL en español. Empieza gratis o desbloquea todo con Pro.
+    </p>
+  </header>
+
+  <div class="pl-grid">
+    @for (plan of plans; track plan.id) {
+      <div
+        class="pl-card"
+        [class.pl-card--highlight]="plan.highlight">
+
+        @if (plan.highlight) {
+          <span class="pl-badge">Recomendado</span>
+        }
+
+        <h2 class="pl-card__name">{{ plan.name }}</h2>
+
+        <div class="pl-card__price">
+          <span class="pl-card__amount">{{ plan.price }}</span>
+          <span class="pl-card__note">{{ plan.priceNote }}</span>
+        </div>
+
+        <ul class="pl-features">
+          @for (feature of plan.features; track feature.text) {
+            <li
+              class="pl-feature"
+              [class.pl-feature--excluded]="!feature.included">
+              <mat-icon>{{ feature.included ? 'check_circle' : 'cancel' }}</mat-icon>
+              <span>{{ feature.text }}</span>
+            </li>
+          }
+        </ul>
+
+        <button
+          class="pl-cta"
+          [class.pl-cta--primary]="plan.highlight"
+          [disabled]="plan.id === 'free'"
+          (click)="selectPlan(plan)">
+          {{ plan.ctaLabel }}
+        </button>
+      </div>
+    }
+  </div>
+
+  <p class="pl-footnote">
+    Los precios están en pesos mexicanos (MXN). La temporada cubre desde
+    la semana 1 hasta el Super Bowl. Puedes cancelar cuando quieras.
+  </p>
+
+</div>

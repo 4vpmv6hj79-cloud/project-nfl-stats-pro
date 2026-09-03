@@ -58,6 +58,7 @@ export class MainLayout {
     { title: 'Comparador',   icon: 'compare_arrows', route: '/comparator'  },
     { title: 'Playoffs',     icon: 'account_tree',   route: '/playoffs'    },
     { title: 'Conferencias', icon: 'hub',             route: '/conferences' },
+    { title: 'Planes',       icon: 'workspace_premium', route: '/planes'   },
   ];
 
   async logout(): Promise<void> {

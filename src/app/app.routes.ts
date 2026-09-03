@@ -110,6 +110,13 @@ export const routes: Routes = [
             .then(m => m.SearchComponent)
       },
 
+      {
+        path: 'planes',
+        loadComponent: () =>
+          import('./features/plans/plans')
+            .then(m => m.PlansComponent)
+      },
+
       // Siempre debe ser la última ruta
       {
         path: '**',

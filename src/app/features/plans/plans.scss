@@ -1,0 +1,196 @@
+.plans-page {
+  padding: 32px 24px;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 20px 12px;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────
+.pl-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.pl-title {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 800;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pl-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+// ── Grid ──────────────────────────────────────────────────
+.pl-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+// ── Card ──────────────────────────────────────────────────
+.pl-card {
+  position: relative;
+  padding: 28px 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+
+  &--highlight {
+    border-color: var(--color-primary);
+    border-width: 2px;
+    box-shadow: 0 12px 40px rgba(37, 99, 235, 0.18);
+  }
+
+  @media (max-width: 600px) {
+    padding: 22px 18px;
+  }
+}
+
+.pl-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 14px;
+  background: var(--color-primary);
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.pl-card__name {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.pl-card__price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 24px;
+}
+
+.pl-card__amount {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.pl-card__note {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+// ── Features ──────────────────────────────────────────────
+.pl-features {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.pl-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--color-text);
+
+  mat-icon {
+    font-size: 1.1rem;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--color-success);
+  }
+
+  &--excluded {
+    color: var(--color-text-secondary);
+    opacity: 0.6;
+
+    mat-icon {
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+// ── CTA ───────────────────────────────────────────────────
+.pl-cta {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  &--primary {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+
+    &:hover:not(:disabled) {
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+  }
+}
+
+// ── Footnote ──────────────────────────────────────────────
+.pl-footnote {
+  margin: 28px auto 0;
+  max-width: 520px;
+  text-align: center;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-cta { transition: none; }
+}
