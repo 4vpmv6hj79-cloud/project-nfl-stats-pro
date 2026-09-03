@@ -45,10 +45,27 @@
 .desktop-navigation {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-left: 32px;
+  gap: 2px;
+  margin-left: 24px;
+  // Si los items no caben, permitir desplazamiento horizontal en vez de
+  // que el último botón se apriete contra los íconos de la derecha.
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none; // Firefox
+  &::-webkit-scrollbar { display: none; } // Chrome/Safari
 
-  a { color: white; }
+  a {
+    color: white;
+    flex: 0 0 auto; // no encoger los botones (evita texto cortado)
+    white-space: nowrap;
+    // Compactar un poco para ganar espacio horizontal
+    padding: 0 10px;
+    min-width: auto;
+
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
 }
 
 .active-link {
@@ -57,6 +74,7 @@
 
 .toolbar-spacer {
   flex: 1 1 auto;
+  min-width: 16px; // separación mínima entre la navegación y los íconos
 }
 
 .mobile-menu-button {

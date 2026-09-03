@@ -105,31 +105,28 @@ export class FavoritesService {
       const docRef = doc(firestore, 'users', uid);
       const snapshot = await getDoc(docRef);
 
-      if (snapshot.exists()) {
-        const data = snapshot.data();
-        const cloudFavorites: FavoriteTeam[] = data['favorites'] ?? [];
+      // IMPORTANTE: releer el estado local AQUÍ, después del await del getDoc,
+      // para no perder favoritos que el usuario haya agregado mientras la
+      // lectura de red estaba en vuelo (p. ej. al terminar el onboarding).
+      const localNow = this.favorites();
+      const cloudFavorites: FavoriteTeam[] = snapshot.exists()
+        ? (snapshot.data()['favorites'] ?? [])
+        : [];
 
-        if (cloudFavorites.length > 0) {
-          // La nube tiene datos — usar esos (merge con locales)
-          const merged = this.mergeFavorites(this.favorites(), cloudFavorites);
-          this.favorites.set(merged);
-          this.saveLocal();
+      // Siempre unir nube + local (sin duplicados). Nunca sobreescribir con
+      // un snapshot que podría estar desactualizado respecto al signal local.
+      const merged = this.mergeFavorites(localNow, cloudFavorites);
 
-          // Si hubo merge, guardar el resultado en la nube
-          if (merged.length !== cloudFavorites.length) {
-            await this.saveToFirestoreInternal(uid, merged);
-          }
-        } else {
-          // La nube está vacía — subir los locales
-          const local = this.favorites();
-          if (local.length > 0) {
-            await this.saveToFirestoreInternal(uid, local);
-          }
-        }
-      } else {
-        // No existe documento — crear con los favoritos locales
-        const local = this.favorites();
-        await this.saveToFirestoreInternal(uid, local);
+      // Actualizar el signal solo si el resultado difiere del estado actual,
+      // para evitar renders innecesarios.
+      if (!this.sameFavorites(localNow, merged)) {
+        this.favorites.set(merged);
+        this.saveLocal();
+      }
+
+      // Sincronizar la nube si difiere del merge (o si el doc no existía).
+      if (!snapshot.exists() || !this.sameFavorites(cloudFavorites, merged)) {
+        await this.saveToFirestoreInternal(uid, merged);
       }
     } catch (e) {
       console.error('Error syncing favorites:', e);
@@ -159,6 +156,15 @@ export class FavoritesService {
     } catch (e) {
       console.error('Error saving favorites to Firestore:', e);
     }
+  }
+
+  /**
+   * Compara dos listas de favoritos por el conjunto de ids (ignora orden).
+   */
+  private sameFavorites(a: FavoriteTeam[], b: FavoriteTeam[]): boolean {
+    if (a.length !== b.length) return false;
+    const idsA = new Set(a.map(t => t.id));
+    return b.every(t => idsA.has(t.id));
   }
 
   /**
