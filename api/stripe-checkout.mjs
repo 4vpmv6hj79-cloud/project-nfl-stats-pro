@@ -170,6 +170,11 @@ export default async function handler(request, response) {
       ...(email ? { customer_email: email } : {}),
       // Guardamos el uid para poder marcar al usuario como Pro desde el webhook
       ...(uid ? { client_reference_id: uid, metadata: { uid, plan } } : { metadata: { plan } }),
+      // Si es suscripción, propagar la metadata (uid/plan) a la suscripción,
+      // así los eventos de cancelación/actualización también traen el uid.
+      ...(mode === 'subscription' && uid
+        ? { subscription_data: { metadata: { uid, plan } } }
+        : {}),
     });
 
     response.statusCode = 200;
