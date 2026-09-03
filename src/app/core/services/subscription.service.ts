@@ -86,4 +86,23 @@ export class SubscriptionService {
       this.unsubscribe = null;
     }
   }
+
+  /**
+   * Resuelve cuando el estado de auth y de suscripción ya se determinaron.
+   * Útil para guards, que no deben decidir mientras aún se está cargando.
+   */
+  async whenReady(): Promise<void> {
+    if (!this.isBrowser) return;
+
+    // Esperar a que auth deje de estar en loading (con un tope de seguridad)
+    const start = Date.now();
+    const timeoutMs = 8000;
+
+    while (
+      (this.authService.loading() || this.loading()) &&
+      Date.now() - start < timeoutMs
+    ) {
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }
 }

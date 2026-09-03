@@ -72,6 +72,16 @@
   background: rgb(255 255 255 / 16%);
 }
 
+// Candado pequeño para features Pro (usuarios no suscritos)
+.pro-lock {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
 .toolbar-spacer {
   flex: 1 1 auto;
   min-width: 16px; // separación mínima entre la navegación y los íconos

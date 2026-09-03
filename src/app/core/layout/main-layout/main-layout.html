@@ -29,6 +29,9 @@
 
           <span matListItemTitle>
             {{ item.title }}
+            @if (item.pro && !subscription.isPro()) {
+              <mat-icon class="pro-lock" aria-label="Requiere Pro">lock</mat-icon>
+            }
           </span>
         </a>
       }
@@ -67,6 +70,9 @@
 
             <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
             {{ item.title }}
+            @if (item.pro && !subscription.isPro()) {
+              <mat-icon class="pro-lock" aria-label="Requiere Pro">lock</mat-icon>
+            }
           </a>
         }
       </nav>

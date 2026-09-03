@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from './core/layout/main-layout/main-layout';
+import { proGuard } from './core/guards/pro.guard';
 
 export const routes: Routes = [
   {
@@ -63,6 +64,7 @@ export const routes: Routes = [
 
       {
         path: 'playoffs',
+        canActivate: [proGuard],
         loadComponent: () =>
           import('./features/playoffs/playoff-bracket/playoff-bracket')
             .then(m => m.PlayoffBracketComponent)
@@ -70,6 +72,7 @@ export const routes: Routes = [
 
       {
         path: 'simulator',
+        canActivate: [proGuard],
         loadComponent: () =>
           import('./features/simulator/simulator')
             .then(m => m.SimulatorComponent)
@@ -77,6 +80,7 @@ export const routes: Routes = [
 
       {
         path: 'comparator',
+        canActivate: [proGuard],
         loadComponent: () =>
           import('./features/comparator/comparator')
             .then(m => m.ComparatorComponent)
@@ -84,6 +88,7 @@ export const routes: Routes = [
 
       {
         path: 'mi-equipo',
+        canActivate: [proGuard],
         loadComponent: () =>
           import('./features/team-scenarios/team-scenarios')
             .then(m => m.TeamScenariosComponent)

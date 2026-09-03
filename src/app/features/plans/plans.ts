@@ -115,6 +115,14 @@ export class PlansComponent implements OnInit {
       this.notification.info('Cancelaste el pago. Puedes intentarlo cuando quieras.');
       this.clearPagoQueryParam();
     }
+
+    // Si llegó aquí por intentar entrar a una sección Pro sin suscripción
+    const requiere = this.route.snapshot.queryParamMap.get('requiere');
+    if (requiere) {
+      this.notification.info(
+        'Esta sección es parte de Pro. Suscríbete para desbloquearla.'
+      );
+    }
   }
 
   async selectPlan(plan: Plan): Promise<void> {
