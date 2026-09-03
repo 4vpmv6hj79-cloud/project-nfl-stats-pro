@@ -21,7 +21,7 @@ const REFRESH_MS = 20_000; // Refrescar cada 20 segundos para juegos en vivo
 
 // Bandera para activar/ocultar la explicación con IA.
 // Cambiar a true cuando OPENAI_API_KEY esté configurada en Vercel.
-const AI_ENABLED = false;
+const AI_ENABLED = true;
 
 @Component({
   selector: 'app-game-center',
