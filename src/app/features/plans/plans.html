@@ -13,8 +13,8 @@
         class="pl-card"
         [class.pl-card--highlight]="plan.highlight">
 
-        @if (plan.highlight) {
-          <span class="pl-badge">Recomendado</span>
+        @if (plan.badge) {
+          <span class="pl-badge">{{ plan.badge }}</span>
         }
 
         <h2 class="pl-card__name">{{ plan.name }}</h2>

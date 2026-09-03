@@ -1,6 +1,6 @@
 .plans-page {
   padding: 32px 24px;
-  max-width: 900px;
+  max-width: 1080px;
   margin: 0 auto;
 
   @media (max-width: 600px) {
@@ -35,13 +35,15 @@
 // ── Grid ──────────────────────────────────────────────────
 .pl-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   align-items: start;
 
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
     grid-template-columns: 1fr;
     gap: 16px;
+    max-width: 440px;
+    margin: 0 auto;
   }
 }
 

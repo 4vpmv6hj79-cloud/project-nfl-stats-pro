@@ -1,8 +1,9 @@
-import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
+import { Injectable, inject, signal, effect, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import { FirebaseService } from './firebase.service';
 import { AnalyticsService } from './analytics.service';
+import { SessionService } from './session.service';
 
 export interface AppUser {
   uid: string;
@@ -15,6 +16,7 @@ export interface AppUser {
 export class AuthService {
   private readonly firebase = inject(FirebaseService);
   private readonly analytics = inject(AnalyticsService);
+  private readonly session = inject(SessionService);
   private readonly platformId = inject(PLATFORM_ID);
 
   /** Usuario actual (null = no autenticado) */
@@ -26,9 +28,20 @@ export class AuthService {
   /** Mensaje de error del último intento de login/registro */
   readonly error = signal<string | null>(null);
 
+  /** Se activa cuando la sesión se cerró por inicio en otro dispositivo */
+  readonly sessionClosedRemotely = signal(false);
+
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
       this.initAuth();
+
+      // Si la sesión es invalidada por otro dispositivo, cerrar sesión aquí
+      effect(() => {
+        if (this.session.invalidated() && this.user()) {
+          this.sessionClosedRemotely.set(true);
+          this.forceLogout();
+        }
+      });
     } else {
       this.loading.set(false);
     }
@@ -58,6 +71,7 @@ export class AuthService {
 
       this.user.set(this.mapUser(credential.user));
       this.analytics.logEvent('sign_up', { method: 'email' });
+      await this.session.registerSession(credential.user.uid);
       return true;
     } catch (e: any) {
       this.error.set(this.translateError(e.code));
@@ -80,6 +94,7 @@ export class AuthService {
       const credential = await signInWithEmailAndPassword(auth, email, password);
       this.user.set(this.mapUser(credential.user));
       this.analytics.logEvent('login', { method: 'email' });
+      await this.session.registerSession(credential.user.uid);
       return true;
     } catch (e: any) {
       this.error.set(this.translateError(e.code));
@@ -103,6 +118,7 @@ export class AuthService {
       const credential = await signInWithPopup(auth, provider);
       this.user.set(this.mapUser(credential.user));
       this.analytics.logEvent('login', { method: 'google' });
+      await this.session.registerSession(credential.user.uid);
       return true;
     } catch (e: any) {
       this.error.set(this.translateError(e.code));
@@ -111,15 +127,29 @@ export class AuthService {
   }
 
   /**
-   * Cerrar sesión.
+   * Cerrar sesión (acción del usuario).
    */
   async logout(): Promise<void> {
+    this.session.clear();
     await this.firebase.initialize();
     const auth = this.firebase.auth;
     if (!auth) return;
 
     const { signOut } = await import('firebase/auth');
     await signOut(auth);
+    this.user.set(null);
+  }
+
+  /**
+   * Cierre de sesión forzado (por sesión iniciada en otro dispositivo).
+   */
+  private async forceLogout(): Promise<void> {
+    this.session.clear();
+    const auth = this.firebase.auth;
+    if (auth) {
+      const { signOut } = await import('firebase/auth');
+      await signOut(auth);
+    }
     this.user.set(null);
   }
 
@@ -134,8 +164,17 @@ export class AuthService {
 
     const { onAuthStateChanged } = await import('firebase/auth');
     onAuthStateChanged(auth, (firebaseUser: any) => {
+      const wasLoggedOut = !this.user();
       this.user.set(firebaseUser ? this.mapUser(firebaseUser) : null);
       this.loading.set(false);
+
+      // Si al restaurar la app hay un usuario ya autenticado (sesión
+      // persistida), empezar a vigilar su sesión. Solo registramos una
+      // nueva sesión en login/register explícito, no aquí, para no
+      // invalidar la sesión de otro dispositivo al abrir la app.
+      if (firebaseUser && wasLoggedOut) {
+        this.session.watchExisting(firebaseUser.uid);
+      }
     });
   }
 

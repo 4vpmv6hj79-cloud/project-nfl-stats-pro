@@ -12,13 +12,14 @@ interface PlanFeature {
 }
 
 interface Plan {
-  id: 'free' | 'pro';
+  id: 'free' | 'pro-monthly' | 'pro-season';
   name: string;
   price: string;
   priceNote: string;
   highlight: boolean;
   features: PlanFeature[];
   ctaLabel: string;
+  badge?: string;
 }
 
 @Component({
@@ -57,12 +58,12 @@ export class PlansComponent {
       ],
     },
     {
-      id: 'pro',
-      name: 'Pro',
-      price: '$299',
-      priceNote: 'por toda la temporada',
-      highlight: true,
-      ctaLabel: 'Obtener Pro',
+      id: 'pro-monthly',
+      name: 'Pro Mensual',
+      price: '$59.99',
+      priceNote: 'por mes',
+      highlight: false,
+      ctaLabel: 'Suscribirme',
       features: [
         { text: 'Todo lo del plan Gratis', included: true },
         { text: 'Sin publicidad', included: true },
@@ -74,6 +75,25 @@ export class PlansComponent {
         { text: 'Countdown de próximos juegos', included: true },
       ],
     },
+    {
+      id: 'pro-season',
+      name: 'Pro Temporada',
+      price: '$299',
+      priceNote: 'por toda la temporada',
+      highlight: true,
+      badge: 'Mejor valor',
+      ctaLabel: 'Obtener Pro',
+      features: [
+        { text: 'Todo lo del plan Pro Mensual', included: true },
+        { text: 'Acceso hasta el Super Bowl', included: true },
+        { text: 'Ahorra vs pagar mes con mes', included: true },
+        { text: 'Sin publicidad', included: true },
+        { text: 'Escenarios de playoffs', included: true },
+        { text: 'Simulador de Playoffs completo', included: true },
+        { text: 'Comparador de jugadores', included: true },
+        { text: 'Notificaciones y countdown', included: true },
+      ],
+    },
   ];
 
   selectPlan(plan: Plan): void {
@@ -82,6 +102,7 @@ export class PlansComponent {
     }
 
     // Placeholder: aquí irá la integración de pago (Stripe) más adelante.
+    // Cuando esté Stripe, aquí se redirigirá al checkout con el Price ID del plan.
     this.notification.success(
       '¡Gracias por tu interés! Los pagos estarán disponibles muy pronto.'
     );

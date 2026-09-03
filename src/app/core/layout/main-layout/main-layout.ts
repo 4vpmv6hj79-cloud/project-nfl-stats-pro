@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/api/notification.service';
 import { OnboardingComponent } from '../../../shared/components/onboarding/onboarding';
 
 @Component({
@@ -38,12 +39,26 @@ export class MainLayout {
 
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly router = inject(Router);
+  private readonly notification = inject(NotificationService);
   readonly themeService = inject(ThemeService);
   readonly authService = inject(AuthService);
 
   readonly isMobile$ = this.breakpointObserver
     .observe([Breakpoints.Handset, Breakpoints.TabletPortrait])
     .pipe(map((state: BreakpointState) => state.matches));
+
+  constructor() {
+    // Avisar y redirigir si la sesión se cerró por inicio en otro dispositivo
+    effect(() => {
+      if (this.authService.sessionClosedRemotely()) {
+        this.notification.error(
+          'Tu sesión se cerró porque iniciaste sesión en otro dispositivo.'
+        );
+        this.authService.sessionClosedRemotely.set(false);
+        this.router.navigate(['/dashboard']);
+      }
+    });
+  }
 
   readonly year = new Date().getFullYear();
 
