@@ -47,9 +47,24 @@ export class WeekComponent implements OnInit, OnDestroy {
   readonly loading = signal(true);
   readonly error = signal(false);
 
+  /**
+   * Partidos visibles. Si ya hay temporada regular/postemporada en la
+   * respuesta, ocultamos la pretemporada para no mezclar exhibiciones.
+   */
+  readonly visibleGames = computed<Game[]>(() => {
+    const games = this.games();
+    const hasRegularOrPlayoffs = games.some(
+      (g) => g.seasonType === 'regular' || g.seasonType === 'postseason',
+    );
+
+    return hasRegularOrPlayoffs
+      ? games.filter((g) => g.seasonType !== 'preseason')
+      : games;
+  });
+
   /** Partidos agrupados por día (jueves, domingo, lunes...) */
   readonly dayGroups = computed<DayGroup[]>(() => {
-    const games = this.games();
+    const games = this.visibleGames();
     const groups = new Map<string, DayGroup>();
 
     for (const game of games) {

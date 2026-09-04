@@ -48,14 +48,30 @@ export class DashboardScoreboardComponent
 
   private sub!: Subscription;
 
+  /**
+   * Partidos visibles. Cuando ya hay temporada regular (o postemporada)
+   * en la ventana, ocultamos la pretemporada para no mostrar exhibiciones
+   * ya pasadas junto a los partidos que sí cuentan.
+   */
+  readonly visibleGames = computed<Game[]>(() => {
+    const games = this.games();
+    const hasRegularOrPlayoffs = games.some(
+      (g) => g.seasonType === 'regular' || g.seasonType === 'postseason',
+    );
+
+    return hasRegularOrPlayoffs
+      ? games.filter((g) => g.seasonType !== 'preseason')
+      : games;
+  });
+
   readonly liveGames = computed(() =>
-    this.games().filter(
+    this.visibleGames().filter(
       (game) => game.statusState === 'in',
     ),
   );
 
   readonly finalGames = computed(() =>
-    this.games()
+    this.visibleGames()
       .filter((game) => game.statusState === 'post')
       .sort(
         (first, second) =>
@@ -65,7 +81,7 @@ export class DashboardScoreboardComponent
   );
 
   readonly upcomingGames = computed(() =>
-    this.games()
+    this.visibleGames()
       .filter((game) => game.statusState === 'pre')
       .sort(
         (first, second) =>

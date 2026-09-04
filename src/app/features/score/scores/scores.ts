@@ -41,12 +41,31 @@ export class Scores implements OnInit {
   readonly filter = signal<GameStatusFilter>('all');
   readonly loading = signal(true);
 
+  /**
+   * Partidos visibles. Una vez que ya hay partidos de temporada regular
+   * (o postemporada) en la ventana, ocultamos los de pretemporada para no
+   * confundir al usuario mezclando exhibiciones ya pasadas con la regular.
+   * Si solo hubiera pretemporada, se siguen mostrando.
+   */
+  readonly visibleGames = computed<Game[]>(() => {
+    const games = this.games();
+    const hasRegularOrPlayoffs = games.some(
+      (g) => g.seasonType === 'regular' || g.seasonType === 'postseason',
+    );
+
+    if (!hasRegularOrPlayoffs) {
+      return games;
+    }
+
+    return games.filter((g) => g.seasonType !== 'preseason');
+  });
+
   readonly hasPreseasonGames = computed(() =>
-    this.games().some((game) => game.seasonType === 'preseason'),
+    this.visibleGames().some((game) => game.seasonType === 'preseason'),
   );
 
   readonly filtered = computed(() => {
-    const games = this.games();
+    const games = this.visibleGames();
     const filter = this.filter();
 
     if (filter === 'all') {
