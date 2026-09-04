@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, effect, PLATFORM_ID } from '@angular/core';
+import { Injectable, inject, signal, computed, effect, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import { FirebaseService } from './firebase.service';
@@ -13,7 +13,16 @@ import { AuthService } from './auth.service';
  *
  * Se mantiene sincronizado en tiempo real con onSnapshot, así que si el
  * usuario paga en otra pestaña, el acceso Pro se refleja sin recargar.
+ *
+ * Además, los correos en ADMIN_EMAILS tienen acceso Pro permanente.
  */
+
+/**
+ * Correos con acceso de administrador. Estos usuarios tienen acceso Pro
+ * completo sin necesidad de pagar, y el webhook nunca se los revoca.
+ */
+const ADMIN_EMAILS = ['erikgonzalopalomares@gmail.com'];
+
 @Injectable({ providedIn: 'root' })
 export class SubscriptionService {
   private readonly firebase = inject(FirebaseService);
@@ -21,8 +30,20 @@ export class SubscriptionService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  /** true si el usuario tiene acceso Pro activo */
-  readonly isPro = signal(false);
+  /** Estado Pro real leído de Firestore (por pago/suscripción) */
+  private readonly proFromFirestore = signal(false);
+
+  /** true si el usuario actual es administrador */
+  readonly isAdmin = computed(() => {
+    const email = this.authService.user()?.email?.toLowerCase() ?? '';
+    return ADMIN_EMAILS.includes(email);
+  });
+
+  /**
+   * true si el usuario tiene acceso Pro (por ser admin o por suscripción).
+   * Los admins siempre tienen acceso.
+   */
+  readonly isPro = computed(() => this.isAdmin() || this.proFromFirestore());
 
   /** true mientras se resuelve el estado inicial */
   readonly loading = signal(true);
@@ -43,7 +64,7 @@ export class SubscriptionService {
       if (user) {
         this.watchPro(user.uid);
       } else {
-        this.isPro.set(false);
+        this.proFromFirestore.set(false);
         this.loading.set(false);
       }
     });
@@ -65,17 +86,17 @@ export class SubscriptionService {
         ref,
         (snapshot: any) => {
           const data = snapshot.data();
-          this.isPro.set(data?.pro === true);
+          this.proFromFirestore.set(data?.pro === true);
           this.loading.set(false);
         },
         () => {
           // Ante error de lectura, asumir no-Pro (fail closed)
-          this.isPro.set(false);
+          this.proFromFirestore.set(false);
           this.loading.set(false);
         },
       );
     } catch {
-      this.isPro.set(false);
+      this.proFromFirestore.set(false);
       this.loading.set(false);
     }
   }
