@@ -1,0 +1,31 @@
+@if (!started()) {
+  <section class="season-countdown" aria-label="Cuenta regresiva al inicio de la temporada">
+    <div class="season-countdown__header">
+      <span class="season-countdown__badge">🏈 Temporada 2026</span>
+      <h2 class="season-countdown__title">¡Arranca la NFL!</h2>
+      <p class="season-countdown__subtitle">Faltan para el kickoff de la temporada regular</p>
+    </div>
+
+    <div class="season-countdown__clock" role="timer">
+      <div class="season-countdown__unit">
+        <span class="season-countdown__value">{{ pad(remaining().days) }}</span>
+        <span class="season-countdown__label">Días</span>
+      </div>
+      <span class="season-countdown__sep">:</span>
+      <div class="season-countdown__unit">
+        <span class="season-countdown__value">{{ pad(remaining().hours) }}</span>
+        <span class="season-countdown__label">Horas</span>
+      </div>
+      <span class="season-countdown__sep">:</span>
+      <div class="season-countdown__unit">
+        <span class="season-countdown__value">{{ pad(remaining().minutes) }}</span>
+        <span class="season-countdown__label">Min</span>
+      </div>
+      <span class="season-countdown__sep">:</span>
+      <div class="season-countdown__unit">
+        <span class="season-countdown__value">{{ pad(remaining().seconds) }}</span>
+        <span class="season-countdown__label">Seg</span>
+      </div>
+    </div>
+  </section>
+}

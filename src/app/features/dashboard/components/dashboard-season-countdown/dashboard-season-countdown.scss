@@ -1,0 +1,107 @@
+.season-countdown {
+  background: linear-gradient(135deg, #013369 0%, #0a4a8f 60%, #d50a0a 160%);
+  border-radius: 16px;
+  padding: 24px;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 8px 24px rgb(1 51 105 / 25%);
+  overflow: hidden;
+}
+
+.season-countdown__header {
+  margin-bottom: 20px;
+}
+
+.season-countdown__badge {
+  display: inline-block;
+  background: rgb(255 255 255 / 15%);
+  border: 1px solid rgb(255 255 255 / 25%);
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.season-countdown__title {
+  font-family: 'Barlow Condensed', 'Roboto', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.season-countdown__subtitle {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.season-countdown__clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.season-countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 68px;
+  background: rgb(0 0 0 / 20%);
+  border-radius: 12px;
+  padding: 12px 8px;
+}
+
+.season-countdown__value {
+  font-family: 'Barlow Condensed', 'Roboto', sans-serif;
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.season-countdown__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.season-countdown__sep {
+  font-size: 2rem;
+  font-weight: 800;
+  opacity: 0.5;
+  align-self: flex-start;
+  margin-top: 12px;
+}
+
+// ── Responsive ────────────────────────────────────────────
+@media (max-width: 600px) {
+  .season-countdown {
+    padding: 18px 14px;
+  }
+
+  .season-countdown__title {
+    font-size: 1.7rem;
+  }
+
+  .season-countdown__unit {
+    min-width: 56px;
+    padding: 10px 6px;
+  }
+
+  .season-countdown__value {
+    font-size: 2rem;
+  }
+
+  .season-countdown__sep {
+    font-size: 1.5rem;
+    margin-top: 10px;
+  }
+}
