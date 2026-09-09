@@ -8,6 +8,7 @@ export interface LeaderEntry {
   athleteName: string;
   headshot: string;
   position: string;
+  teamAbbr: string;      // e.g. "KC", "SF" (abreviación del equipo)
   displayValue: string;
 }
 

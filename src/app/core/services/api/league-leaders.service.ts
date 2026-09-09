@@ -65,6 +65,9 @@ export class LeagueLeadersService {
           .slice(0, 10)
           .map((l: any, index: number) => {
             const athlete = l.athlete ?? {};
+            // La abreviación del equipo puede venir en distintos lugares
+            // según el endpoint: l.team, l.athlete.team, etc.
+            const team = l.team ?? athlete.team ?? {};
             return {
               rank: index + 1,
               athleteId: String(athlete.id ?? ''),
@@ -78,6 +81,7 @@ export class LeagueLeadersService {
                 typeof athlete.position === 'object'
                   ? athlete.position?.abbreviation ?? ''
                   : athlete.position ?? '',
+              teamAbbr: team.abbreviation ?? '',
               displayValue: l.displayValue ?? '',
             };
           });

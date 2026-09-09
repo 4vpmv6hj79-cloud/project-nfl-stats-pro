@@ -41,7 +41,9 @@
                   loading="lazy" />
                 <div class="ld-featured__info">
                   <span class="ld-featured__name">{{ top.athleteName }}</span>
-                  <span class="ld-featured__pos">{{ top.position }}</span>
+                  <span class="ld-featured__pos">
+                    {{ top.position }}@if (top.teamAbbr) { · {{ top.teamAbbr }} }
+                  </span>
                 </div>
                 <span class="ld-featured__value">
                   {{ top.displayValue }}
@@ -55,7 +57,9 @@
                 <li class="ld-list__item">
                   <span class="ld-list__rank">{{ leader.rank }}</span>
                   <span class="ld-list__name">{{ leader.athleteName }}</span>
-                  <span class="ld-list__pos">{{ leader.position }}</span>
+                  <span class="ld-list__pos">
+                    {{ leader.position }}@if (leader.teamAbbr) { · {{ leader.teamAbbr }} }
+                  </span>
                   <span class="ld-list__value">{{ leader.displayValue }}</span>
                 </li>
               }
