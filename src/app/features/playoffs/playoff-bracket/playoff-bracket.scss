@@ -19,21 +19,24 @@
 
 .page-title {
   margin: 0 0 6px;
-  color: #013369;
+  // Fallback: color sólido del tema por si el gradiente no aplica.
+  color: var(--color-text);
   font-size: clamp(1.8rem, 5vw, 2.4rem);
   font-family: var(--font-display);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 
+  // Gradiente vivo que contrasta en modo claro Y oscuro (termina en un
+  // azul brillante en lugar de #013369, que se perdía sobre fondo oscuro).
   background:
     linear-gradient(
       90deg,
-      #d50a0a 0%,
-      #d50a0a 35%,
-      #713654 50%,
-      #013369 65%,
-      #013369 100%
+      #ef4444 0%,
+      #ef4444 32%,
+      #a855f7 50%,
+      #3b82f6 68%,
+      #3b82f6 100%
     );
 
   background-clip: text;

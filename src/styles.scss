@@ -76,6 +76,33 @@ html {
   }
 }
 
+// ── Forzar fondo/texto según el tema ──────────────────────
+// Angular Material (theme-type: dark) genera variables de sistema con
+// fondo oscuro que pisaban nuestro fondo en modo claro, dejando los
+// títulos (color oscuro) invisibles sobre un fondo también oscuro.
+// Estas reglas garantizan que el fondo y el texto respeten data-theme.
+html[data-theme='light'],
+html[data-theme='light'] body {
+  background-color: var(--color-background) !important;
+  color: var(--color-text);
+  --mat-sys-background: var(--color-background);
+  --mat-sys-on-background: var(--color-text);
+  --mat-sys-surface: var(--color-surface);
+  --mat-sys-on-surface: var(--color-text);
+}
+
+html[data-theme='dark'],
+html[data-theme='dark'] body {
+  background-color: var(--color-background) !important;
+  color: var(--color-text);
+}
+
+// Los títulos de página heredan siempre el color de texto del tema,
+// para no quedar invisibles si algún estilo global los afecta.
+h1, h2, h3 {
+  color: var(--color-text);
+}
+
 // ── Snackbars ─────────────────────────────────────────────
 .success-snackbar {
   --mdc-snackbar-container-color: var(--color-success);

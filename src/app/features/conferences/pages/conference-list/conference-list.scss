@@ -39,7 +39,8 @@
 
 .title {
   margin: 0 0 10px;
-  color: #013369;
+  // Fallback: color sólido del tema por si el gradiente no aplica.
+  color: var(--color-text);
   font-size: clamp(2rem, 6vw, 3rem);
   font-family: var(--font-display);
   font-weight: 900;
@@ -47,14 +48,15 @@
   text-transform: uppercase;
   letter-spacing: 0.045em;
 
+  // Gradiente vivo que contrasta en ambos temas.
   background:
     linear-gradient(
       90deg,
-      #d50a0a 0%,
-      #d50a0a 38%,
-      #713654 50%,
-      #013369 62%,
-      #013369 100%
+      #ef4444 0%,
+      #ef4444 38%,
+      #a855f7 50%,
+      #3b82f6 62%,
+      #3b82f6 100%
     );
 
   background-clip: text;
