@@ -1,0 +1,117 @@
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0;
+  padding: 22px 24px;
+  border-radius: 16px;
+  color: #f8fafc; // fondo siempre oscuro → texto claro en ambos temas
+  box-shadow: 0 8px 24px rgb(1 51 105 / 20%);
+
+  &--guest {
+    background: linear-gradient(135deg, #013369 0%, #0a4a8f 100%);
+  }
+
+  &--upgrade {
+    background: linear-gradient(135deg, #6d28d9 0%, #013369 55%, #d50a0a 150%);
+  }
+
+  @media (max-width: 600px) {
+    margin: 16px 0;
+    padding: 18px 16px;
+  }
+}
+
+.cta__content {
+  flex: 1;
+  min-width: 240px;
+}
+
+.cta__badge {
+  display: inline-block;
+  background: rgb(255 255 255 / 18%);
+  border: 1px solid rgb(255 255 255 / 25%);
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+
+  &--pro {
+    background: rgb(245 197 24 / 25%);
+    border-color: rgb(245 197 24 / 40%);
+  }
+}
+
+.cta__title {
+  font-family: 'Barlow Condensed', 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+  line-height: 1.15;
+}
+
+.cta__text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.cta__actions {
+  flex-shrink: 0;
+}
+
+.cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &--primary {
+    background: #fff;
+    color: #013369;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgb(0 0 0 / 25%);
+    }
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cta__actions {
+    width: 100%;
+  }
+
+  .cta__btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cta__title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta__btn--primary:hover {
+    transform: none;
+  }
+}

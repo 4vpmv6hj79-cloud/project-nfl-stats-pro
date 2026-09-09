@@ -13,6 +13,7 @@ import { DashboardFavoritesComponent } from '../dashboard-favorites/dashboard-fa
 import { DashboardCountdownComponent } from '../dashboard-countdown/dashboard-countdown';
 import { DashboardGameOfWeekComponent } from '../dashboard-game-of-week/dashboard-game-of-week';
 import { DashboardSeasonCountdownComponent } from '../dashboard-season-countdown/dashboard-season-countdown';
+import { DashboardCtaComponent } from '../dashboard-cta/dashboard-cta';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,6 +21,7 @@ import { DashboardSeasonCountdownComponent } from '../dashboard-season-countdown
   imports: [
     CommonModule,
     DashboardHeader,
+    DashboardCtaComponent,
     DashboardSeasonCountdownComponent,
     DashboardScoreboardComponent,
     DashboardFavoritesComponent,

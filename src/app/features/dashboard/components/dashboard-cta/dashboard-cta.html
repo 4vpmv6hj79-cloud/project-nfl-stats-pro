@@ -1,0 +1,39 @@
+@switch (variant()) {
+  @case ('guest') {
+    <section class="cta cta--guest" aria-label="Crea tu cuenta gratis">
+      <div class="cta__content">
+        <span class="cta__badge">Gratis</span>
+        <h2 class="cta__title">Crea tu cuenta y sigue a tu equipo 🏈</h2>
+        <p class="cta__text">
+          Regístrate gratis para elegir tus equipos favoritos, sincronizarlos en
+          todos tus dispositivos y no perderte ningún partido.
+        </p>
+      </div>
+      <div class="cta__actions">
+        <a class="cta__btn cta__btn--primary" routerLink="/auth">
+          <mat-icon aria-hidden="true">person_add</mat-icon>
+          Crear cuenta gratis
+        </a>
+      </div>
+    </section>
+  }
+
+  @case ('upgrade') {
+    <section class="cta cta--upgrade" aria-label="Hazte Pro">
+      <div class="cta__content">
+        <span class="cta__badge cta__badge--pro">Pro</span>
+        <h2 class="cta__title">Desbloquea todo con Pro ⭐</h2>
+        <p class="cta__text">
+          Simulador de playoffs, comparador de jugadores, escenarios de tu equipo
+          y favoritos ilimitados. Desde $59.99 al mes.
+        </p>
+      </div>
+      <div class="cta__actions">
+        <a class="cta__btn cta__btn--primary" routerLink="/planes">
+          <mat-icon aria-hidden="true">star</mat-icon>
+          Ver planes Pro
+        </a>
+      </div>
+    </section>
+  }
+}
