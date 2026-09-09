@@ -69,7 +69,20 @@ export class GameAdapter {
       .replace(/^Halftime$/i, 'Medio Tiempo')
       .replace(/^Half$/i, 'Medio Tiempo')
       .replace(/^Final\/OT$/i, 'Final/TE')
-      .replace(/^End of (\d)/i, 'Fin del $1');
+      .replace(/^Final$/i, 'Finalizado')
+      .replace(/^End of (\d)/i, 'Fin del $1')
+      // Cuartos: "1st Quarter" / "1st" → "1er Cuarto", etc.
+      .replace(/^1st(\s+Quarter)?$/i, '1er Cuarto')
+      .replace(/^2nd(\s+Quarter)?$/i, '2do Cuarto')
+      .replace(/^3rd(\s+Quarter)?$/i, '3er Cuarto')
+      .replace(/^4th(\s+Quarter)?$/i, '4to Cuarto')
+      .replace(/\bOvertime\b/i, 'Tiempo Extra')
+      .replace(/\bOT\b/i, 'TE')
+      // "Scheduled" / "Postponed" / "Canceled" / "Delayed"
+      .replace(/^Scheduled$/i, 'Programado')
+      .replace(/^Postponed$/i, 'Pospuesto')
+      .replace(/^Cancell?ed$/i, 'Cancelado')
+      .replace(/^Delayed$/i, 'Retrasado');
   }
 
   private static possession(

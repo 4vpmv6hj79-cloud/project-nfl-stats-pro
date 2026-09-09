@@ -1,6 +1,6 @@
 <div class="page">
 
-  <h1 class="page-title">NFL Standings</h1>
+  <h1 class="page-title">Tabla de posiciones</h1>
 
   <div class="filters">
     <mat-button-toggle-group value="ALL" (change)="onConferenceChange($event.value)">
@@ -34,10 +34,10 @@
                     <thead>
                       <tr>
                         <th class="col-team">Equipo</th>
-                        <th class="col-stat">W</th>
-                        <th class="col-stat">L</th>
-                        <th class="col-stat">T</th>
-                        <th class="col-stat">PCT</th>
+                        <th class="col-stat" title="Ganados">G</th>
+                        <th class="col-stat" title="Perdidos">P</th>
+                        <th class="col-stat" title="Empatados">E</th>
+                        <th class="col-stat" title="Porcentaje de victorias">%</th>
                       </tr>
                     </thead>
                     <tbody>
