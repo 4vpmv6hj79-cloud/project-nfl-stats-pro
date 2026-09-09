@@ -49,12 +49,10 @@ h1, h2, h3 {
   --color-text-secondary: #475569;
 }
 
-// ── Tema Angular Material (modo oscuro) ───────────────────
-html {
-  background-color: var(--color-background);
-  color: var(--color-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
-
+// ── Tema Angular Material ─────────────────────────────────
+// Tema oscuro por defecto...
+html,
+html[data-theme='dark'] {
   @include mat.theme((
     color: (
       primary:   mat.$blue-palette,
@@ -64,6 +62,27 @@ html {
     typography: Roboto,
     density: 0,
   ));
+}
+
+// ...y tema claro cuando el usuario elige modo claro. Esto hace que los
+// componentes de Material (mat-card, mat-form-field, etc.) usen colores
+// claros, en vez de quedarse siempre oscuros.
+html[data-theme='light'] {
+  @include mat.theme((
+    color: (
+      primary:   mat.$blue-palette,
+      tertiary:  mat.$violet-palette,
+      theme-type: light,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+html {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   body {
     margin: 0;
