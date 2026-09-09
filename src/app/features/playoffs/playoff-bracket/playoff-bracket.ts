@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
 
 import { PlayoffService } from '../../../core/services/api/playoff.service';
 import { NotificationService } from '../../../core/services/api/notification.service';
@@ -32,6 +33,7 @@ type MobilePlayoffRound =
     CommonModule,
     RouterLink,
     MatButtonToggleModule,
+    MatIconModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './playoff-bracket.html',

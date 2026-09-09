@@ -10,6 +10,15 @@
     </p>
   </header>
 
+  <aside class="playoff-notice" role="note">
+    <mat-icon aria-hidden="true">info</mat-icon>
+    <p>
+      La proyección de playoffs se irá definiendo conforme avance la temporada.
+      Como apenas comienza, muchos cruces aparecen aún como
+      <strong>"Por definir"</strong>. Vuelve pronto para ver cómo se acomoda tu equipo.
+    </p>
+  </aside>
+
   <div class="view-toggle">
     <mat-button-toggle-group
       [value]="view()"
@@ -502,7 +511,7 @@
   } @else {
     <div class="team-slot team-slot--tbd">
       <span class="slot-abbr">
-        TBD
+        Por definir
       </span>
     </div>
   }
@@ -530,7 +539,7 @@
     </div>
   } @else {
     <div class="team-chip team-chip--tbd">
-      TBD
+      Por definir
     </div>
   }
 
