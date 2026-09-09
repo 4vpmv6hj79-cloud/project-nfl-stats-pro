@@ -3,7 +3,10 @@
   padding: 24px;
   overflow: hidden;
   border-radius: 16px;
-  color: var(--color-text);
+  // El fondo siempre es oscuro (gradiente azul/violeta) en ambos temas,
+  // por eso el texto es blanco fijo y NO usa var(--color-text), que en
+  // modo claro sería oscuro e ilegible sobre este fondo.
+  color: #f8fafc;
   background: linear-gradient(
     135deg,
     var(--color-primary) 0%,
@@ -222,7 +225,7 @@
     opacity: 1;
 
     .team__score {
-      color: var(--color-text);
+      color: #fff;
       font-weight: 800;
     }
   }
