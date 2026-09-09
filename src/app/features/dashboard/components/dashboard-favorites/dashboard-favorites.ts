@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
 import { FavoritesService, FavoriteTeam } from '../../../../core/services/favorites.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { NFLService } from '../../../../core/services/api/nfl.service';
 import { NotificationService } from '../../../../core/services/api/notification.service';
 import { Standing } from '../../../../shared/models/domain/standing.model';
@@ -31,6 +32,7 @@ export interface FavoriteTeamInfo {
 })
 export class DashboardFavoritesComponent implements OnInit {
   readonly favoritesService = inject(FavoritesService);
+  readonly authService = inject(AuthService);
   private readonly nflService = inject(NFLService);
   private readonly notification = inject(NotificationService);
 

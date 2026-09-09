@@ -73,7 +73,7 @@
       }
     </div>
   </section>
-} @else {
+} @else if (authService.isAuthenticated) {
   <section class="favorites-section favorites-section--empty">
     <p class="favorites-empty">
       <mat-icon>star_border</mat-icon>

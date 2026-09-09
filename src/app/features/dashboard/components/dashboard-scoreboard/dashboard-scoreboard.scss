@@ -1,5 +1,4 @@
 .scoreboard {
-  margin: 24px 0;
   padding: 24px;
   overflow: hidden;
   border-radius: 16px;
@@ -14,7 +13,6 @@
   );
 
   @media (max-width: 600px) {
-    margin: 16px 0;
     padding: 16px 14px;
     border-radius: 12px;
   }

@@ -1,5 +1,5 @@
 .dashboard-header {
-  margin-bottom: 32px;
+  // El espaciado con la siguiente sección lo maneja el gap de .page
 
   h1 {
     font-size: clamp(1.8rem, 6vw, 2.8rem);
@@ -15,8 +15,6 @@
     color: var(--color-text-secondary);
     font-size: clamp(0.85rem, 2.5vw, 1rem);
   }
-
-  @media (max-width: 600px) { margin-bottom: 20px; }
 }
 
 .last-update {

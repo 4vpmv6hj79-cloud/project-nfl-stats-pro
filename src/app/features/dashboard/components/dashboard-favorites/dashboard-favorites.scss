@@ -1,9 +1,5 @@
 .favorites-section {
-  margin-bottom: 24px;
-
-  @media (max-width: 600px) {
-    margin-bottom: 16px;
-  }
+  // El espaciado entre secciones lo maneja el gap del contenedor .page
 }
 
 .favorites-title {
@@ -192,7 +188,7 @@
 
 // ── Empty state ───────────────────────────────────────────
 .favorites-section--empty {
-  margin-bottom: 16px;
+  // Sin margen extra: el gap del contenedor .page da la separación
 }
 
 .favorites-empty {

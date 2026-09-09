@@ -1,8 +1,22 @@
 .page {
   padding: 24px;
+  // Layout vertical con separación uniforme entre secciones. Así, si una
+  // sección se oculta (p. ej. el countdown al arrancar la temporada o los
+  // favoritos sin sesión), las demás mantienen su espaciado sin amontonarse.
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 
-  @media (max-width: 900px) { padding: 16px; }
-  @media (max-width: 600px) { padding: 12px 10px; }
+  // Cada componente hijo usa display:contents para que solo su contenido
+  // real participe del layout. Así, si un componente no renderiza nada
+  // (p. ej. favoritos sin sesión o el countdown tras arrancar la
+  // temporada), NO deja un hueco vacío por el gap.
+  > * {
+    display: contents;
+  }
+
+  @media (max-width: 900px) { padding: 16px; gap: 20px; }
+  @media (max-width: 600px) { padding: 12px 10px; gap: 16px; }
 }
 
 .section-title {
