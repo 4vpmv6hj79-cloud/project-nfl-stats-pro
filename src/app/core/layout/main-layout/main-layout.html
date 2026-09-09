@@ -90,6 +90,15 @@
       <button
         mat-icon-button
         type="button"
+        matTooltip="Compartir Centro NFL"
+        aria-label="Compartir la aplicación"
+        (click)="share()">
+        <mat-icon aria-hidden="true">share</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        type="button"
         [matTooltip]="themeService.mode() === 'dark' ? 'Modo claro' : 'Modo oscuro'"
         [attr.aria-label]="themeService.mode() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
         (click)="themeService.toggle()">

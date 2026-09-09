@@ -14,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { SubscriptionService } from '../../services/subscription.service';
+import { ShareService } from '../../services/share.service';
 import { NotificationService } from '../../services/api/notification.service';
 import { OnboardingComponent } from '../../../shared/components/onboarding/onboarding';
 
@@ -41,6 +42,7 @@ export class MainLayout {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly router = inject(Router);
   private readonly notification = inject(NotificationService);
+  private readonly shareService = inject(ShareService);
   readonly themeService = inject(ThemeService);
   readonly authService = inject(AuthService);
   readonly subscription = inject(SubscriptionService);
@@ -81,5 +83,14 @@ export class MainLayout {
   async logout(): Promise<void> {
     await this.authService.logout();
     this.router.navigate(['/dashboard']);
+  }
+
+  /** Comparte la app (abre el menú nativo o copia el enlace) */
+  share(): void {
+    this.shareService.share({
+      title: 'Centro NFL',
+      text: '🏈 Sigue la NFL en español: marcadores en vivo, standings, simulador de playoffs y más.',
+      url: 'https://project-nfl-stats-pro.vercel.app/',
+    });
   }
 }
