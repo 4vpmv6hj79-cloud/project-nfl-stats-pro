@@ -1,4 +1,4 @@
-import { Injectable, signal, effect, PLATFORM_ID, inject } from '@angular/core';
+import { Injectable, signal, computed, effect, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import { FirebaseService } from './firebase.service';
@@ -24,7 +24,18 @@ export class FavoritesService {
   private readonly authService = inject(AuthService);
   private readonly analytics = inject(AnalyticsService);
 
-  readonly favorites = signal<FavoriteTeam[]>(this.loadLocal());
+  /** Favoritos almacenados (local + nube). Interno. */
+  private readonly _favorites = signal<FavoriteTeam[]>(this.loadLocal());
+
+  /**
+   * Favoritos visibles para la UI. Solo se exponen si hay un usuario
+   * autenticado; sin sesión devuelve una lista vacía, de modo que las
+   * secciones "Mis Equipos" y "Próximos Juegos" no muestran nada hasta
+   * que el usuario se registra e inicia sesión.
+   */
+  readonly favorites = computed<FavoriteTeam[]>(() =>
+    this.authService.user() ? this._favorites() : [],
+  );
 
   private syncing = false;
 
@@ -40,14 +51,14 @@ export class FavoritesService {
   }
 
   toggle(team: FavoriteTeam): void {
-    const current = this.favorites();
+    const current = this._favorites();
     const exists = current.some(t => t.id === team.id);
 
     if (exists) {
-      this.favorites.set(current.filter(t => t.id !== team.id));
+      this._favorites.set(current.filter(t => t.id !== team.id));
       this.analytics.logEvent('remove_favorite', { team: team.abbreviation });
     } else {
-      this.favorites.set([...current, team]);
+      this._favorites.set([...current, team]);
       this.analytics.logEvent('add_favorite', { team: team.abbreviation });
     }
 
@@ -70,7 +81,7 @@ export class FavoritesService {
 
   private saveLocal(): void {
     if (this.isBrowser) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.favorites()));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this._favorites()));
     }
   }
 
@@ -108,7 +119,7 @@ export class FavoritesService {
       // IMPORTANTE: releer el estado local AQUÍ, después del await del getDoc,
       // para no perder favoritos que el usuario haya agregado mientras la
       // lectura de red estaba en vuelo (p. ej. al terminar el onboarding).
-      const localNow = this.favorites();
+      const localNow = this._favorites();
       const cloudFavorites: FavoriteTeam[] = snapshot.exists()
         ? (snapshot.data()['favorites'] ?? [])
         : [];
@@ -120,7 +131,7 @@ export class FavoritesService {
       // Actualizar el signal solo si el resultado difiere del estado actual,
       // para evitar renders innecesarios.
       if (!this.sameFavorites(localNow, merged)) {
-        this.favorites.set(merged);
+        this._favorites.set(merged);
         this.saveLocal();
       }
 
@@ -142,7 +153,7 @@ export class FavoritesService {
     const user = this.authService.user();
     if (!user) return;
 
-    await this.saveToFirestoreInternal(user.uid, this.favorites());
+    await this.saveToFirestoreInternal(user.uid, this._favorites());
   }
 
   private async saveToFirestoreInternal(uid: string, favorites: FavoriteTeam[]): Promise<void> {
