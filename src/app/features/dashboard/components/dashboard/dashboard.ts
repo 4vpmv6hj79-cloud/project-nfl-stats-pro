@@ -12,7 +12,6 @@ import { DashboardNewsComponent } from '../dashboard-news/dashboard-news';
 import { DashboardFavoritesComponent } from '../dashboard-favorites/dashboard-favorites';
 import { DashboardCountdownComponent } from '../dashboard-countdown/dashboard-countdown';
 import { DashboardGameOfWeekComponent } from '../dashboard-game-of-week/dashboard-game-of-week';
-import { DashboardSeasonCountdownComponent } from '../dashboard-season-countdown/dashboard-season-countdown';
 import { DashboardCtaComponent } from '../dashboard-cta/dashboard-cta';
 
 @Component({
@@ -22,7 +21,6 @@ import { DashboardCtaComponent } from '../dashboard-cta/dashboard-cta';
     CommonModule,
     DashboardHeader,
     DashboardCtaComponent,
-    DashboardSeasonCountdownComponent,
     DashboardScoreboardComponent,
     DashboardFavoritesComponent,
     DashboardCountdownComponent,
