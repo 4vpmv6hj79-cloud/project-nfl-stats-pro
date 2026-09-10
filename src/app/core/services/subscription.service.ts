@@ -21,7 +21,10 @@ import { AuthService } from './auth.service';
  * Correos con acceso de administrador. Estos usuarios tienen acceso Pro
  * completo sin necesidad de pagar, y el webhook nunca se los revoca.
  */
-const ADMIN_EMAILS = ['erikgonzalopalomares@gmail.com'];
+const ADMIN_EMAILS = [
+  'erikgonzalopalomares@gmail.com',
+  'cvplascencia@gmail.com',
+];
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionService {

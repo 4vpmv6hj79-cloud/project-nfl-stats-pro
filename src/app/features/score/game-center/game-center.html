@@ -160,6 +160,29 @@
       </section>
     }
 
+    <!-- Castigos / Penalizaciones -->
+    @if (g.awayTeam.penalties != null || g.homeTeam.penalties != null) {
+      <section class="gc-penalties" aria-label="Castigos del partido">
+        <h3 class="gc-section-title">🚩 Castigos</h3>
+
+        <div class="gc-penalties__grid">
+          <div class="gc-penalty">
+            <span class="gc-penalty__team">{{ g.awayTeam.abbreviation }}</span>
+            <span class="gc-penalty__count">{{ g.awayTeam.penalties ?? 0 }}</span>
+            <span class="gc-penalty__label">castigos</span>
+            <span class="gc-penalty__yards">−{{ g.awayTeam.penaltyYards ?? 0 }} yardas</span>
+          </div>
+
+          <div class="gc-penalty">
+            <span class="gc-penalty__team">{{ g.homeTeam.abbreviation }}</span>
+            <span class="gc-penalty__count">{{ g.homeTeam.penalties ?? 0 }}</span>
+            <span class="gc-penalty__label">castigos</span>
+            <span class="gc-penalty__yards">−{{ g.homeTeam.penaltyYards ?? 0 }} yardas</span>
+          </div>
+        </div>
+      </section>
+    }
+
     <!-- Últimos Drives -->
     @if (g.drives.length > 0) {
       <section class="gc-drives">

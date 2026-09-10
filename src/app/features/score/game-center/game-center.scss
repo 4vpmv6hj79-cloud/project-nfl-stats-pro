@@ -307,6 +307,57 @@
   opacity: 0.6;
 }
 
+// ── Castigos / Penalizaciones ─────────────────────────────
+.gc-penalties {
+  margin-bottom: 24px;
+}
+
+.gc-penalties__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.gc-penalty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 14px 10px;
+  border-radius: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.gc-penalty__team {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.gc-penalty__count {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.gc-penalty__label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.gc-penalty__yards {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-error);
+}
+
 // ── Drives ────────────────────────────────────────────────
 .gc-drives {
   margin-bottom: 28px;

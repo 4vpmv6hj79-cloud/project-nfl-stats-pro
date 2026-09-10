@@ -16,8 +16,11 @@ export class GameDetailAdapter {
     const homeComp = competition.competitors?.find((c: any) => c.homeAway === 'home');
     const awayComp = competition.competitors?.find((c: any) => c.homeAway === 'away');
 
-    const homeTeam = this.buildTeam(homeComp, 'home');
-    const awayTeam = this.buildTeam(awayComp, 'away');
+    // Estadísticas de equipo del boxscore (incluye castigos)
+    const boxscoreTeams = response?.boxscore?.teams ?? [];
+
+    const homeTeam = this.buildTeam(homeComp, 'home', boxscoreTeams);
+    const awayTeam = this.buildTeam(awayComp, 'away', boxscoreTeams);
 
     const status = competition.status?.type?.shortDetail ?? '';
     const statusState = this.resolveState(competition.status?.type?.state);
@@ -76,19 +79,56 @@ export class GameDetailAdapter {
     };
   }
 
-  private static buildTeam(comp: any, side: string): GameDetailTeam {
+  private static buildTeam(comp: any, side: string, boxscoreTeams: any[] = []): GameDetailTeam {
     const team = comp?.team ?? {};
     const record = comp?.record?.[0]?.summary ?? comp?.record ?? '0-0';
 
+    const teamId = comp?.id ?? team?.id ?? '';
+    const penalties = this.extractPenalties(boxscoreTeams, teamId);
+
     return {
-      id: comp?.id ?? team?.id ?? '',
+      id: teamId,
       name: team?.displayName ?? team?.name ?? '',
       abbreviation: team?.abbreviation ?? '',
       logo: team?.logos?.[0]?.href ?? team?.logo ?? '',
       score: Number(comp?.score ?? 0),
       record: typeof record === 'string' ? record : '0-0',
       color: team?.color,
+      penalties: penalties?.count,
+      penaltyYards: penalties?.yards,
     };
+  }
+
+  /**
+   * Extrae castigos y yardas de castigo del boxscore para un equipo.
+   * ESPN los reporta como una estadística "totalPenaltiesYards" con
+   * displayValue en formato "5-45" (castigos-yardas).
+   */
+  private static extractPenalties(
+    boxscoreTeams: any[],
+    teamId: string,
+  ): { count: number; yards: number } | undefined {
+    const teamStats = boxscoreTeams.find(
+      (t: any) => String(t.team?.id) === String(teamId),
+    );
+    if (!teamStats?.statistics) return undefined;
+
+    const penaltyStat = teamStats.statistics.find(
+      (s: any) =>
+        s.name === 'totalPenaltiesYards' ||
+        s.name === 'totalPenalties' ||
+        /penalt/i.test(s.name ?? ''),
+    );
+    if (!penaltyStat) return undefined;
+
+    // displayValue típico: "5-45" (castigos-yardas)
+    const value = String(penaltyStat.displayValue ?? '');
+    const match = value.match(/(\d+)\s*-\s*(\d+)/);
+    if (match) {
+      return { count: Number(match[1]), yards: Number(match[2]) };
+    }
+
+    return undefined;
   }
 
   private static buildDrive(d: any): GameDrive {

@@ -11,6 +11,10 @@ export interface GameDetailTeam {
   score: number;
   record: string;
   color?: string;
+  /** Número de castigos cometidos por el equipo (ej. 5) */
+  penalties?: number;
+  /** Yardas perdidas por castigos (ej. 45) */
+  penaltyYards?: number;
 }
 
 export interface GameDrive {
