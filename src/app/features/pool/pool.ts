@@ -106,9 +106,15 @@ export class PoolComponent implements OnInit {
 
   async loadMyPools(): Promise<void> {
     this.loading.set(true);
-    const pools = await this.poolService.getMyPools();
-    this.myPools.set(pools);
-    this.loading.set(false);
+    try {
+      const pools = await this.poolService.getMyPools();
+      this.myPools.set(pools);
+    } catch {
+      this.myPools.set([]);
+      this.notification.error('No se pudieron cargar tus quinielas.');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   async createPool(): Promise<void> {

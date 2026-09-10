@@ -166,21 +166,42 @@ export class PoolService {
     const { collectionGroup, query, where, getDocs, doc, getDoc } =
       await import('firebase/firestore');
 
-    // Buscar todas las membresías del usuario (subcolección members)
-    const membershipsQ = query(
-      collectionGroup(firestore, 'members'),
-      where('uid', '==', user.uid),
-    );
-    const membershipsSnap = await getDocs(membershipsQ);
+    let membershipDocs: any[] = [];
+
+    try {
+      // Buscar las membresías del usuario con filtro (requiere índice de
+      // grupo de colecciones sobre 'members' con el campo 'uid').
+      const membershipsQ = query(
+        collectionGroup(firestore, 'members'),
+        where('uid', '==', user.uid),
+      );
+      const snap = await getDocs(membershipsQ);
+      membershipDocs = snap.docs;
+    } catch {
+      // Fallback si el índice aún no existe: leer todas las membresías
+      // (sin where, no requiere índice) y filtrar en el cliente por uid.
+      try {
+        const snap = await getDocs(collectionGroup(firestore, 'members'));
+        membershipDocs = snap.docs.filter(
+          (d: any) => d.data()?.uid === user.uid,
+        );
+      } catch {
+        // Si tampoco funciona, devolvemos vacío para no dejar la UI colgada.
+        return [];
+      }
+    }
 
     const pools: Pool[] = [];
-    for (const memberDoc of membershipsSnap.docs) {
-      // El padre del doc member es el pool
+    for (const memberDoc of membershipDocs) {
       const poolRef = memberDoc.ref.parent.parent;
       if (!poolRef) continue;
-      const poolSnap = await getDoc(poolRef);
-      if (poolSnap.exists()) {
-        pools.push(poolSnap.data() as Pool);
+      try {
+        const poolSnap = await getDoc(poolRef);
+        if (poolSnap.exists()) {
+          pools.push(poolSnap.data() as Pool);
+        }
+      } catch {
+        // ignorar grupos que no se puedan leer
       }
     }
 
