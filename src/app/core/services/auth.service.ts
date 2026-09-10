@@ -10,6 +10,8 @@ export interface AppUser {
   email: string | null;
   displayName: string | null;
   photoURL: string | null;
+  emailVerified: boolean;
+  providerId: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -62,11 +64,19 @@ export class AuthService {
     this.error.set(null);
 
     try {
-      const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
+      const { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } =
+        await import('firebase/auth');
       const credential = await createUserWithEmailAndPassword(auth, email, password);
 
       if (credential.user && displayName) {
         await updateProfile(credential.user, { displayName });
+      }
+
+      // Enviar correo de verificación (para descartar correos falsos)
+      try {
+        await sendEmailVerification(credential.user);
+      } catch {
+        // Si falla el envío, no bloqueamos el registro; se puede reenviar luego
       }
 
       this.user.set(this.mapUser(credential.user));
@@ -122,6 +132,40 @@ export class AuthService {
       return true;
     } catch (e: any) {
       this.error.set(this.translateError(e.code));
+      return false;
+    }
+  }
+
+  /**
+   * Reenvía el correo de verificación al usuario actual.
+   * Devuelve true si se envió.
+   */
+  async resendVerification(): Promise<boolean> {
+    const auth = this.firebase.auth;
+    if (!auth?.currentUser) return false;
+
+    try {
+      const { sendEmailVerification } = await import('firebase/auth');
+      await sendEmailVerification(auth.currentUser);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Recarga el estado del usuario desde Firebase (para detectar si ya
+   * verificó su correo tras hacer clic en el enlace del email).
+   */
+  async refreshVerificationStatus(): Promise<boolean> {
+    const auth = this.firebase.auth;
+    if (!auth?.currentUser) return false;
+
+    try {
+      await auth.currentUser.reload();
+      this.user.set(this.mapUser(auth.currentUser));
+      return auth.currentUser.emailVerified === true;
+    } catch {
       return false;
     }
   }
@@ -184,6 +228,8 @@ export class AuthService {
       email: u.email,
       displayName: u.displayName,
       photoURL: u.photoURL,
+      emailVerified: u.emailVerified ?? false,
+      providerId: u.providerData?.[0]?.providerId ?? 'password',
     };
   }
 

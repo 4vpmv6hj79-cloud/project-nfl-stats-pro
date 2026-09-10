@@ -149,6 +149,25 @@
     </mat-toolbar>
 
     <main id="main-content" class="content" role="main">
+
+      @if (showVerifyBanner()) {
+        <div class="verify-banner" role="alert">
+          <mat-icon aria-hidden="true">mark_email_unread</mat-icon>
+          <span class="verify-banner__text">
+            Verifica tu correo para confirmar tu cuenta. Te enviamos un enlace a
+            <strong>{{ authService.user()?.email }}</strong>.
+          </span>
+          <span class="verify-banner__actions">
+            <button type="button" class="verify-banner__btn" (click)="resendVerification()">
+              Reenviar correo
+            </button>
+            <button type="button" class="verify-banner__btn verify-banner__btn--ghost" (click)="checkVerification()">
+              Ya lo verifiqué
+            </button>
+          </span>
+        </div>
+      }
+
       <router-outlet></router-outlet>
     </main>
 

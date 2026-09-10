@@ -1,4 +1,4 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
@@ -81,9 +81,41 @@ export class MainLayout {
     { title: 'Planes',       icon: 'star',           route: '/planes',      pro: false },
   ];
 
+  /**
+   * Muestra el banner de verificación solo si el usuario inició sesión
+   * con correo/contraseña y aún no verificó su correo. Los usuarios de
+   * Google ya vienen verificados, así que no lo ven.
+   */
+  readonly showVerifyBanner = computed(() => {
+    const user = this.authService.user();
+    if (!user) return false;
+    if (user.providerId === 'google.com') return false;
+    return user.emailVerified === false;
+  });
+
   async logout(): Promise<void> {
     await this.authService.logout();
     this.router.navigate(['/dashboard']);
+  }
+
+  /** Reenvía el correo de verificación */
+  async resendVerification(): Promise<void> {
+    const ok = await this.authService.resendVerification();
+    if (ok) {
+      this.notification.success('Correo de verificación reenviado. Revisa tu bandeja.');
+    } else {
+      this.notification.error('No se pudo reenviar. Intenta más tarde.');
+    }
+  }
+
+  /** Revisa si el usuario ya verificó su correo */
+  async checkVerification(): Promise<void> {
+    const verified = await this.authService.refreshVerificationStatus();
+    if (verified) {
+      this.notification.success('¡Correo verificado! Gracias.');
+    } else {
+      this.notification.info('Aún no detectamos la verificación. Revisa tu correo y el enlace.');
+    }
   }
 
   /** Comparte la app (abre el menú nativo o copia el enlace) */

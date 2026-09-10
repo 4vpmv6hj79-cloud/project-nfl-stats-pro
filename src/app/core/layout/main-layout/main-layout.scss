@@ -117,6 +117,55 @@
   box-sizing: border-box;
 }
 
+// ── Banner de verificación de correo ──────────────────────
+.verify-banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: var(--color-text);
+
+  > mat-icon {
+    flex-shrink: 0;
+    color: var(--color-warning);
+  }
+}
+
+.verify-banner__text {
+  flex: 1;
+  min-width: 220px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.verify-banner__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.verify-banner__btn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-warning);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &--ghost {
+    background: transparent;
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning);
+  }
+}
+
 // ── Footer ────────────────────────────────────────────────
 .footer {
   background: var(--color-toolbar);
