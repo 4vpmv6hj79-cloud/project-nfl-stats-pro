@@ -120,17 +120,21 @@
       <!-- TAB: Pronósticos -->
       @if (tab() === 'picks') {
 
-        <!-- Selector de semana -->
+        <!-- Selector de ronda (semanas + playoffs + Super Bowl) -->
         <div class="pool-weeks">
-          @for (week of weeks; track week) {
+          @for (round of rounds; track round.id) {
             <button
               class="pool-week-btn"
-              [class.pool-week-btn--active]="selectedWeek() === week"
-              (click)="selectWeek(week)">
-              {{ week }}
+              [class.pool-week-btn--active]="selectedRoundId() === round.id"
+              [class.pool-week-btn--playoff]="round.seasonType === 3"
+              [title]="round.label"
+              (click)="selectRound(round.id)">
+              {{ round.short }}
             </button>
           }
         </div>
+
+        <p class="pool-round-label">{{ activeRound().label }}</p>
 
         @if (loadingGames()) {
           <p class="pool-muted">Cargando partidos...</p>

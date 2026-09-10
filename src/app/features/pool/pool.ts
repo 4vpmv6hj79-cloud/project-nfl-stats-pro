@@ -58,12 +58,41 @@ export class PoolComponent implements OnInit {
   readonly members = signal<PoolMember[]>([]);
   readonly myPredictions = signal<UserPredictions | null>(null);
 
-  // Predicciones (semana)
-  readonly selectedWeek = signal<number>(1);
+  // Predicciones (ronda seleccionada)
+  readonly selectedRoundId = signal<number>(1);
   readonly weekGames = signal<PoolGame[]>([]);
   readonly loadingGames = signal(false);
 
-  readonly weeks = Array.from({ length: 18 }, (_, i) => i + 1);
+  /**
+   * Rondas de la quiniela: 18 semanas de temporada regular + playoffs.
+   * - id: identificador único de la ronda para guardar la predicción
+   *       (regular = 1..18; playoffs usan 101..104 para no colisionar).
+   * - apiWeek + seasonType: parámetros para consultar la API de ESPN.
+   *   seasonType 2 = temporada regular, 3 = playoffs (incluye Super Bowl).
+   */
+  readonly rounds: {
+    id: number;
+    label: string;
+    short: string;
+    apiWeek: number;
+    seasonType: number;
+  }[] = [
+    ...Array.from({ length: 18 }, (_, i) => ({
+      id: i + 1,
+      label: `Semana ${i + 1}`,
+      short: `${i + 1}`,
+      apiWeek: i + 1,
+      seasonType: 2,
+    })),
+    { id: 101, label: 'Wild Card', short: 'WC', apiWeek: 1, seasonType: 3 },
+    { id: 102, label: 'Divisional', short: 'DIV', apiWeek: 2, seasonType: 3 },
+    { id: 103, label: 'Final de Conferencia', short: 'CONF', apiWeek: 3, seasonType: 3 },
+    { id: 104, label: 'Super Bowl', short: 'SB', apiWeek: 5, seasonType: 3 },
+  ];
+
+  readonly activeRound = computed(() =>
+    this.rounds.find((r) => r.id === this.selectedRoundId()) ?? this.rounds[0],
+  );
 
   ngOnInit(): void {
     if (this.isAuthenticated()) {
@@ -133,8 +162,8 @@ export class PoolComponent implements OnInit {
     this.myPredictions.set(preds);
     this.members.set(members);
 
-    // Cargar la semana actual (por defecto la 1; el usuario puede cambiar)
-    this.loadWeek(this.selectedWeek());
+    // Cargar la ronda actual (por defecto la 1; el usuario puede cambiar)
+    this.loadRound(this.selectedRoundId());
   }
 
   backToList(): void {
@@ -152,21 +181,22 @@ export class PoolComponent implements OnInit {
 
   // ── Predicciones ────────────────────────────────────────
 
-  selectWeek(week: number): void {
-    this.selectedWeek.set(week);
-    this.loadWeek(week);
+  selectRound(roundId: number): void {
+    this.selectedRoundId.set(roundId);
+    this.loadRound(roundId);
   }
 
-  private loadWeek(week: number): void {
+  private loadRound(roundId: number): void {
+    const round = this.rounds.find((r) => r.id === roundId) ?? this.rounds[0];
     this.loadingGames.set(true);
-    this.poolGames.getWeekGames(week).subscribe({
+    this.poolGames.getWeekGames(round.apiWeek, round.seasonType).subscribe({
       next: (games) => {
         this.weekGames.set(games);
         this.loadingGames.set(false);
       },
       error: () => {
         this.loadingGames.set(false);
-        this.notification.error('No se pudieron cargar los partidos de la semana.');
+        this.notification.error('No se pudieron cargar los partidos de la ronda.');
       },
     });
   }
@@ -181,10 +211,14 @@ export class PoolComponent implements OnInit {
     const pool = this.activePool();
     if (!pool || game.started) return;
 
+    // Guardamos el id de la RONDA (no el apiWeek), para distinguir
+    // temporada regular de playoffs y no mezclar resultados al calcular puntos.
+    const roundId = this.selectedRoundId();
+
     // Actualizar UI de inmediato (optimista)
     const current = this.myPredictions();
     const picks = { ...(current?.picks ?? {}) };
-    picks[game.id] = { gameId: game.id, pick: choice, week: game.week };
+    picks[game.id] = { gameId: game.id, pick: choice, week: roundId };
     this.myPredictions.set({
       uid: current?.uid ?? '',
       displayName: current?.displayName ?? '',
@@ -192,7 +226,7 @@ export class PoolComponent implements OnInit {
       updatedAt: Date.now(),
     });
 
-    await this.poolService.savePick(pool.id, game.id, choice, game.week);
+    await this.poolService.savePick(pool.id, game.id, choice, roundId);
   }
 
   /** ¿El pronóstico fue correcto? (solo para partidos finalizados) */
@@ -223,18 +257,21 @@ export class PoolComponent implements OnInit {
       this.poolService.getAllPredictions(pool.id),
     ]);
 
-    // Reunir todas las semanas que alguien predijo
-    const weeksSet = new Set<number>();
+    // Reunir todas las rondas que alguien predijo (el 'week' guardado es
+    // el id de ronda: 1..18 regular, 101..104 playoffs).
+    const roundIds = new Set<number>();
     for (const up of allPreds) {
       for (const gameId of Object.keys(up.picks ?? {})) {
-        weeksSet.add(up.picks[gameId].week);
+        roundIds.add(up.picks[gameId].week);
       }
     }
 
-    // Cargar los resultados reales de esas semanas
+    // Cargar los resultados reales de esas rondas (usando apiWeek+seasonType)
     const resultsByGame = new Map<string, 'home' | 'away' | null>();
-    for (const week of weeksSet) {
-      const games = await this.fetchWeek(week);
+    for (const roundId of roundIds) {
+      const round = this.rounds.find((r) => r.id === roundId);
+      if (!round) continue;
+      const games = await this.fetchRound(round.apiWeek, round.seasonType);
       for (const g of games) {
         if (g.isFinal) resultsByGame.set(g.id, g.winner);
       }
@@ -280,9 +317,9 @@ export class PoolComponent implements OnInit {
     this.loading.set(false);
   }
 
-  private fetchWeek(week: number): Promise<PoolGame[]> {
+  private fetchRound(apiWeek: number, seasonType: number): Promise<PoolGame[]> {
     return new Promise((resolve) => {
-      this.poolGames.getWeekGames(week).subscribe({
+      this.poolGames.getWeekGames(apiWeek, seasonType).subscribe({
         next: (games) => resolve(games),
         error: () => resolve([]),
       });
