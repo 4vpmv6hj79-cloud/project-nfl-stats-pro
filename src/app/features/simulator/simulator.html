@@ -7,6 +7,19 @@
     </p>
   </header>
 
+  <aside class="sim-howto" role="note">
+    <mat-icon aria-hidden="true">lightbulb</mat-icon>
+    <div class="sim-howto__text">
+      <strong>¿Cómo funciona?</strong>
+      <ol>
+        <li>Elige una semana con los botones numerados (1–18).</li>
+        <li>Haz clic en un partido para elegir al ganador. Cada clic alterna: local → visitante → sin elegir.</li>
+        <li>Abajo verás cómo cambian las posiciones de playoffs: <mat-icon class="sim-howto__up">arrow_upward</mat-icon> sube y <mat-icon class="sim-howto__down">arrow_downward</mat-icon> baja de puesto.</li>
+        <li>Los partidos ya jugados no se pueden cambiar. Usa "Reset" para reiniciar tus elecciones.</li>
+      </ol>
+    </div>
+  </aside>
+
   @if (loading()) {
     <div class="sim-loading">
       <div class="sim-loading__spinner"></div>

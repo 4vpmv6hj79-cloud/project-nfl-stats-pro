@@ -29,6 +29,53 @@
   color: var(--color-text-secondary);
 }
 
+// ── Indicación de uso ─────────────────────────────────────
+.sim-howto {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 16px 0 24px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.3);
+
+  > mat-icon {
+    flex-shrink: 0;
+    color: var(--color-primary);
+  }
+}
+
+.sim-howto__text {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-text);
+
+  strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--color-primary);
+  }
+
+  ol {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+  }
+}
+
+.sim-howto__up { color: var(--color-success); }
+.sim-howto__down { color: var(--color-error); }
+
 // ── Loading ───────────────────────────────────────────────
 .sim-loading {
   display: flex;
