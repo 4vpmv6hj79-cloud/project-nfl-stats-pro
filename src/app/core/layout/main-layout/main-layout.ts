@@ -66,6 +66,51 @@ export class MainLayout {
 
   readonly year = new Date().getFullYear();
 
+  /**
+   * Menú principal agrupado. Los items con `route` son enlaces directos;
+   * los que tienen `children` son menús desplegables. Así el menú de
+   * escritorio muestra pocos elementos y no requiere desplazamiento.
+   */
+  readonly menuGroups: {
+    title: string;
+    icon: string;
+    route?: string;
+    pro?: boolean;
+    children?: { title: string; icon: string; route: string; pro?: boolean }[];
+  }[] = [
+    { title: 'Inicio', icon: 'dashboard', route: '/dashboard' },
+    {
+      title: 'Partidos',
+      icon: 'sports_football',
+      children: [
+        { title: 'Esta Semana', icon: 'event', route: '/semana' },
+        { title: 'Marcadores', icon: 'sports_score', route: '/scores' },
+      ],
+    },
+    {
+      title: 'Liga',
+      icon: 'shield',
+      children: [
+        { title: 'Equipos', icon: 'shield', route: '/teams' },
+        { title: 'Líderes', icon: 'leaderboard', route: '/lideres' },
+        { title: 'Conferencias', icon: 'hub', route: '/conferences' },
+      ],
+    },
+    {
+      title: 'Herramientas',
+      icon: 'tune',
+      children: [
+        { title: 'Mi Equipo', icon: 'insights', route: '/mi-equipo', pro: true },
+        { title: 'Simulador', icon: 'tune', route: '/simulator', pro: true },
+        { title: 'Comparador', icon: 'compare_arrows', route: '/comparator', pro: true },
+        { title: 'Playoffs', icon: 'account_tree', route: '/playoffs', pro: true },
+      ],
+    },
+    { title: 'Quiniela', icon: 'emoji_events', route: '/quiniela' },
+    { title: 'Planes', icon: 'star', route: '/planes' },
+  ];
+
+  /** Lista plana de todos los items con ruta, para el menú móvil. */
   readonly menuItems = [
     { title: 'Inicio',       icon: 'dashboard',      route: '/dashboard',   pro: false },
     { title: 'Esta Semana',  icon: 'event',          route: '/semana',      pro: false },

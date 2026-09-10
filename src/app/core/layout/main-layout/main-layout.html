@@ -61,19 +61,35 @@
       </a>
 
       <nav class="desktop-navigation" aria-label="Navegación principal">
-        @for (item of menuItems; track item.route) {
-          <a
-            mat-button
-            [routerLink]="item.route"
-            routerLinkActive="active-link"
-            [attr.aria-current]="undefined">
-
-            <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
-            {{ item.title }}
-            @if (item.pro && !subscription.isPro()) {
-              <mat-icon class="pro-lock" aria-label="Requiere Pro">lock</mat-icon>
-            }
-          </a>
+        @for (group of menuGroups; track group.title) {
+          @if (group.route) {
+            <!-- Enlace directo -->
+            <a
+              mat-button
+              [routerLink]="group.route"
+              routerLinkActive="active-link">
+              <mat-icon aria-hidden="true">{{ group.icon }}</mat-icon>
+              {{ group.title }}
+            </a>
+          } @else {
+            <!-- Menú desplegable -->
+            <button mat-button [matMenuTriggerFor]="groupMenu">
+              <mat-icon aria-hidden="true">{{ group.icon }}</mat-icon>
+              {{ group.title }}
+              <mat-icon aria-hidden="true" class="nav-caret">arrow_drop_down</mat-icon>
+            </button>
+            <mat-menu #groupMenu="matMenu">
+              @for (child of group.children; track child.route) {
+                <a mat-menu-item [routerLink]="child.route" routerLinkActive="active-link">
+                  <mat-icon>{{ child.icon }}</mat-icon>
+                  <span>{{ child.title }}</span>
+                  @if (child.pro && !subscription.isPro()) {
+                    <mat-icon class="pro-lock" aria-label="Requiere Pro">lock</mat-icon>
+                  }
+                </a>
+              }
+            </mat-menu>
+          }
         }
       </nav>
 

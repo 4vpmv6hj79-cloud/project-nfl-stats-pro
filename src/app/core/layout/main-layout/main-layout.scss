@@ -82,6 +82,15 @@
   opacity: 0.7;
 }
 
+// Flecha de los menús desplegables del nav
+.nav-caret {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-left: -2px;
+  opacity: 0.8;
+}
+
 .toolbar-spacer {
   flex: 1 1 auto;
   min-width: 16px; // separación mínima entre la navegación y los íconos
