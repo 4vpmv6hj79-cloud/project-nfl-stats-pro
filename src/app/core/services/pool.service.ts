@@ -60,32 +60,44 @@ export class PoolService {
       serverTimestamp,
     } = await import('firebase/firestore');
 
-    // Generar un código único (reintentar si colisiona)
-    let code = this.generateCode();
-    for (let attempt = 0; attempt < 5; attempt++) {
-      const existing = await this.findPoolByCode(code);
-      if (!existing) break;
-      code = this.generateCode();
+    try {
+      // Generar un código único (reintentar si colisiona). Si la búsqueda
+      // por código falla (p. ej. por reglas/índice), seguimos con el código
+      // generado, que es suficientemente aleatorio.
+      let code = this.generateCode();
+      for (let attempt = 0; attempt < 5; attempt++) {
+        try {
+          const existing = await this.findPoolByCode(code);
+          if (!existing) break;
+          code = this.generateCode();
+        } catch {
+          break;
+        }
+      }
+
+      const poolRef = doc(collection(firestore, 'pools'));
+      const now = Date.now();
+
+      const pool: Pool = {
+        id: poolRef.id,
+        name: name.trim() || 'Mi quiniela',
+        code,
+        ownerUid: user.uid,
+        createdAt: now,
+        memberCount: 1,
+      };
+
+      await setDoc(poolRef, { ...pool, createdAtServer: serverTimestamp() });
+
+      // Agregar al creador como miembro
+      await this.addMember(poolRef.id, user.uid, user.displayName ?? 'Usuario');
+
+      return pool;
+    } catch (e) {
+      // Propagar el error para que la UI muestre un mensaje claro
+      console.error('Error al crear la quiniela:', e);
+      throw e;
     }
-
-    const poolRef = doc(collection(firestore, 'pools'));
-    const now = Date.now();
-
-    const pool: Pool = {
-      id: poolRef.id,
-      name: name.trim() || 'Mi quiniela',
-      code,
-      ownerUid: user.uid,
-      createdAt: now,
-      memberCount: 1,
-    };
-
-    await setDoc(poolRef, { ...pool, createdAtServer: serverTimestamp() });
-
-    // Agregar al creador como miembro
-    await this.addMember(poolRef.id, user.uid, user.displayName ?? 'Usuario');
-
-    return pool;
   }
 
   /** Busca un grupo por su código. Devuelve el grupo o null. */

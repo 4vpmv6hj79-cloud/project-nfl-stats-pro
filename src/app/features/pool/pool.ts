@@ -122,18 +122,30 @@ export class PoolComponent implements OnInit {
     if (!name || this.working()) return;
 
     this.working.set(true);
-    const pool = await this.poolService.createPool(name);
-    this.working.set(false);
-
-    if (pool) {
-      this.newPoolName.set('');
-      this.notification.success(
-        `¡Quiniela creada! Comparte el código ${pool.code} con tus amigos.`,
-      );
-      await this.loadMyPools();
-      this.openPool(pool);
-    } else {
-      this.notification.error('No se pudo crear la quiniela. Intenta de nuevo.');
+    try {
+      const pool = await this.poolService.createPool(name);
+      if (pool) {
+        this.newPoolName.set('');
+        this.notification.success(
+          `¡Quiniela creada! Comparte el código ${pool.code} con tus amigos.`,
+        );
+        await this.loadMyPools();
+        this.openPool(pool);
+      } else {
+        this.notification.error('No se pudo crear la quiniela. Intenta de nuevo.');
+      }
+    } catch (e: any) {
+      // Mensaje claro según el tipo de error (permisos de Firestore, etc.)
+      const msg = String(e?.code ?? e?.message ?? '');
+      if (msg.includes('permission') || msg.includes('insufficient')) {
+        this.notification.error(
+          'Permisos de Firestore insuficientes. Revisa las reglas de la colección "pools".',
+        );
+      } else {
+        this.notification.error('No se pudo crear la quiniela. Intenta de nuevo.');
+      }
+    } finally {
+      this.working.set(false);
     }
   }
 
