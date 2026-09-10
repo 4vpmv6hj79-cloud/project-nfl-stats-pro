@@ -84,12 +84,15 @@
         <!-- Unirse -->
         <div class="pool-card">
           <h2 class="pool-card__title"><mat-icon>group_add</mat-icon> Unirme a una quiniela</h2>
-          <p class="pool-card__hint">¿Tienes un código de invitación? Ingrésalo aquí.</p>
+          <p class="pool-card__hint">
+            Ingresa el <strong>código</strong> que te compartió tu amigo (tipo <strong>NFL-4X8K2</strong>).
+            No es el nombre de la quiniela.
+          </p>
           <input
             class="pool-input"
             type="text"
-            placeholder="Código (ej. NFL-4X8K2)"
-            maxlength="10"
+            placeholder="NFL-4X8K2"
+            maxlength="9"
             [value]="joinCode()"
             (input)="joinCode.set($any($event.target).value.toUpperCase())" />
           <button

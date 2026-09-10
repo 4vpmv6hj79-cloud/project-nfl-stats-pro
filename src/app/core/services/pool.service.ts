@@ -154,49 +154,41 @@ export class PoolService {
     // Incrementar el conteo de miembros del grupo
     const poolRef = doc(firestore, 'pools', poolId);
     await updateDoc(poolRef, { memberCount: increment(1) });
+
+    // Registrar el grupo en el documento del usuario (lectura simple, sin
+    // necesidad de índices ni collectionGroup para listar "Mis quinielas").
+    const { arrayUnion } = await import('firebase/firestore');
+    const userRef = doc(firestore, 'users', uid);
+    await setDoc(userRef, { pools: arrayUnion(poolId) }, { merge: true });
   }
 
-  /** Devuelve los grupos a los que pertenece el usuario actual. */
+  /**
+   * Devuelve los grupos a los que pertenece el usuario actual.
+   * Lee la lista de IDs guardada en users/{uid}.pools (lectura directa,
+   * sin collectionGroup ni índices), y trae cada grupo por su id.
+   */
   async getMyPools(): Promise<Pool[]> {
     if (!this.isBrowser) return [];
     const firestore = await this.db();
     const user = this.authService.user();
     if (!firestore || !user) return [];
 
-    const { collectionGroup, query, where, getDocs, doc, getDoc } =
-      await import('firebase/firestore');
+    const { doc, getDoc } = await import('firebase/firestore');
 
-    let membershipDocs: any[] = [];
-
+    // Leer los IDs de grupos del documento del usuario
+    let poolIds: string[] = [];
     try {
-      // Buscar las membresías del usuario con filtro (requiere índice de
-      // grupo de colecciones sobre 'members' con el campo 'uid').
-      const membershipsQ = query(
-        collectionGroup(firestore, 'members'),
-        where('uid', '==', user.uid),
-      );
-      const snap = await getDocs(membershipsQ);
-      membershipDocs = snap.docs;
+      const userSnap = await getDoc(doc(firestore, 'users', user.uid));
+      poolIds = (userSnap.data()?.['pools'] as string[]) ?? [];
     } catch {
-      // Fallback si el índice aún no existe: leer todas las membresías
-      // (sin where, no requiere índice) y filtrar en el cliente por uid.
-      try {
-        const snap = await getDocs(collectionGroup(firestore, 'members'));
-        membershipDocs = snap.docs.filter(
-          (d: any) => d.data()?.uid === user.uid,
-        );
-      } catch {
-        // Si tampoco funciona, devolvemos vacío para no dejar la UI colgada.
-        return [];
-      }
+      return [];
     }
 
+    // Traer cada grupo por su id (lecturas simples por documento)
     const pools: Pool[] = [];
-    for (const memberDoc of membershipDocs) {
-      const poolRef = memberDoc.ref.parent.parent;
-      if (!poolRef) continue;
+    for (const poolId of poolIds) {
       try {
-        const poolSnap = await getDoc(poolRef);
+        const poolSnap = await getDoc(doc(firestore, 'pools', poolId));
         if (poolSnap.exists()) {
           pools.push(poolSnap.data() as Pool);
         }

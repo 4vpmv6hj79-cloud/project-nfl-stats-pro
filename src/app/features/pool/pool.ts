@@ -127,7 +127,9 @@ export class PoolComponent implements OnInit {
 
     if (pool) {
       this.newPoolName.set('');
-      this.notification.success(`¡Quiniela "${pool.name}" creada!`);
+      this.notification.success(
+        `¡Quiniela creada! Comparte el código ${pool.code} con tus amigos.`,
+      );
       await this.loadMyPools();
       this.openPool(pool);
     } else {

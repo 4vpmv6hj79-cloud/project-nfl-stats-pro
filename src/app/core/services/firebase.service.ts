@@ -52,11 +52,21 @@ export class FirebaseService {
   private async doInitialize(): Promise<void> {
     try {
       const { initializeApp } = await import('firebase/app');
-      const { getAuth } = await import('firebase/auth');
+      const { getAuth, setPersistence, browserLocalPersistence } =
+        await import('firebase/auth');
       const { getFirestore } = await import('firebase/firestore');
 
       this._app = initializeApp(environment.firebase);
       this._auth = getAuth(this._app);
+
+      // Persistencia LOCAL: la sesión se mantiene aunque el usuario cierre
+      // el navegador y vuelva después (no tiene que volver a iniciar sesión).
+      try {
+        await setPersistence(this._auth, browserLocalPersistence);
+      } catch {
+        // Si el navegador no lo permite, se usa la persistencia por defecto.
+      }
+
       this._firestore = getFirestore(this._app);
       this._initialized = true;
 
