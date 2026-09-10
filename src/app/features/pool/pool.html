@@ -1,0 +1,221 @@
+<div class="pool-page">
+
+  <header class="pool-header">
+    <h1 class="pool-title">🎯 Quiniela NFL</h1>
+    <p class="pool-subtitle">
+      Crea una quiniela con tus amigos, predice a los ganadores y compite por el primer lugar.
+    </p>
+  </header>
+
+  <!-- Sin sesión -->
+  @if (!isAuthenticated()) {
+    <div class="pool-guest">
+      <mat-icon>lock</mat-icon>
+      <h2>Inicia sesión para jugar</h2>
+      <p>La quiniela es gratis. Regístrate para crear grupos con tus amigos y competir.</p>
+      <a class="pool-btn pool-btn--primary" routerLink="/auth" [queryParams]="{ redirect: '/quiniela' }">
+        Crear cuenta / Iniciar sesión
+      </a>
+    </div>
+  } @else {
+
+    <!-- ══ VISTA LISTA ══ -->
+    @if (view() === 'list') {
+
+      <section class="pool-actions-cards">
+        <!-- Crear -->
+        <div class="pool-card">
+          <h2 class="pool-card__title"><mat-icon>add_circle</mat-icon> Crear quiniela</h2>
+          <p class="pool-card__hint">Empieza un grupo nuevo y comparte el código con tus amigos.</p>
+          <input
+            class="pool-input"
+            type="text"
+            placeholder="Nombre de la quiniela"
+            maxlength="30"
+            [value]="newPoolName()"
+            (input)="newPoolName.set($any($event.target).value)" />
+          <button
+            class="pool-btn pool-btn--primary"
+            [disabled]="working() || !newPoolName().trim()"
+            (click)="createPool()">
+            Crear
+          </button>
+        </div>
+
+        <!-- Unirse -->
+        <div class="pool-card">
+          <h2 class="pool-card__title"><mat-icon>group_add</mat-icon> Unirme a una quiniela</h2>
+          <p class="pool-card__hint">¿Tienes un código de invitación? Ingrésalo aquí.</p>
+          <input
+            class="pool-input"
+            type="text"
+            placeholder="Código (ej. NFL-4X8K2)"
+            maxlength="10"
+            [value]="joinCode()"
+            (input)="joinCode.set($any($event.target).value.toUpperCase())" />
+          <button
+            class="pool-btn pool-btn--secondary"
+            [disabled]="working() || !joinCode().trim()"
+            (click)="joinPool()">
+            Unirme
+          </button>
+        </div>
+      </section>
+
+      <!-- Mis grupos -->
+      <section class="pool-list">
+        <h2 class="pool-list__title">Mis quinielas</h2>
+
+        @if (loading()) {
+          <p class="pool-muted">Cargando...</p>
+        } @else if (myPools().length === 0) {
+          <p class="pool-muted">Aún no perteneces a ninguna quiniela. ¡Crea una o únete con un código!</p>
+        } @else {
+          <div class="pool-groups">
+            @for (pool of myPools(); track pool.id) {
+              <button class="pool-group" (click)="openPool(pool)">
+                <div class="pool-group__info">
+                  <span class="pool-group__name">{{ pool.name }}</span>
+                  <span class="pool-group__meta">{{ pool.memberCount }} {{ pool.memberCount === 1 ? 'miembro' : 'miembros' }} · Código {{ pool.code }}</span>
+                </div>
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    <!-- ══ VISTA DETALLE ══ -->
+    @if (view() === 'detail' && activePool(); as pool) {
+
+      <div class="pool-detail-head">
+        <button class="pool-back" (click)="backToList()" aria-label="Volver">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="pool-detail-head__info">
+          <h2 class="pool-detail-head__name">{{ pool.name }}</h2>
+          <span class="pool-detail-head__code">Código: <strong>{{ pool.code }}</strong></span>
+        </div>
+        <div class="pool-detail-head__actions">
+          <button class="pool-icon-btn" (click)="copyCode()" aria-label="Copiar código">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button class="pool-icon-btn" (click)="sharePool()" aria-label="Compartir">
+            <mat-icon>share</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="pool-tabs">
+        <button class="pool-tab" [class.pool-tab--active]="tab() === 'picks'" (click)="setTab('picks')">
+          Mis pronósticos
+        </button>
+        <button class="pool-tab" [class.pool-tab--active]="tab() === 'ranking'" (click)="setTab('ranking')">
+          Posiciones
+        </button>
+      </div>
+
+      <!-- TAB: Pronósticos -->
+      @if (tab() === 'picks') {
+
+        <!-- Selector de semana -->
+        <div class="pool-weeks">
+          @for (week of weeks; track week) {
+            <button
+              class="pool-week-btn"
+              [class.pool-week-btn--active]="selectedWeek() === week"
+              (click)="selectWeek(week)">
+              {{ week }}
+            </button>
+          }
+        </div>
+
+        @if (loadingGames()) {
+          <p class="pool-muted">Cargando partidos...</p>
+        } @else if (weekGames().length === 0) {
+          <p class="pool-muted">No hay partidos para esta semana.</p>
+        } @else {
+          <div class="pool-games">
+            @for (game of weekGames(); track game.id) {
+              <div class="pool-game" [class.pool-game--locked]="game.started">
+                <!-- Visitante -->
+                <button
+                  class="pool-team"
+                  [class.pool-team--picked]="pickFor(game.id) === 'away'"
+                  [class.pool-team--correct]="pickResult(game) === 'correct' && pickFor(game.id) === 'away'"
+                  [class.pool-team--wrong]="pickResult(game) === 'wrong' && pickFor(game.id) === 'away'"
+                  [disabled]="game.started"
+                  (click)="pick(game, 'away')">
+                  <img [src]="game.awayLogo" [alt]="game.awayName" loading="lazy" />
+                  <span>{{ game.awayAbbr }}</span>
+                </button>
+
+                <span class="pool-game__vs">
+                  @if (game.isFinal) {
+                    <span class="pool-game__final">Final</span>
+                  } @else if (game.started) {
+                    <span class="pool-game__live">En juego</span>
+                  } @else {
+                    &#64;
+                  }
+                </span>
+
+                <!-- Local -->
+                <button
+                  class="pool-team"
+                  [class.pool-team--picked]="pickFor(game.id) === 'home'"
+                  [class.pool-team--correct]="pickResult(game) === 'correct' && pickFor(game.id) === 'home'"
+                  [class.pool-team--wrong]="pickResult(game) === 'wrong' && pickFor(game.id) === 'home'"
+                  [disabled]="game.started"
+                  (click)="pick(game, 'home')">
+                  <img [src]="game.homeLogo" [alt]="game.homeName" loading="lazy" />
+                  <span>{{ game.homeAbbr }}</span>
+                </button>
+              </div>
+            }
+          </div>
+
+          <p class="pool-hint-note">
+            <mat-icon>info</mat-icon>
+            Elige al ganador de cada partido. Una vez que el partido empieza, tu pronóstico queda bloqueado. Ganas 1 punto por cada acierto.
+          </p>
+        }
+      }
+
+      <!-- TAB: Posiciones -->
+      @if (tab() === 'ranking') {
+        @if (loading()) {
+          <p class="pool-muted">Calculando posiciones...</p>
+        } @else {
+          <table class="pool-ranking">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Jugador</th>
+                <th title="Aciertos">Pts</th>
+                <th title="Aciertos / Pronósticos">Aciertos</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (member of members(); track member.uid; let i = $index) {
+                <tr [class.pool-ranking__me]="member.uid === (myPredictions()?.uid)">
+                  <td class="pool-ranking__rank">{{ i + 1 }}</td>
+                  <td>{{ member.displayName }}</td>
+                  <td class="pool-ranking__pts">{{ member.points }}</td>
+                  <td class="pool-ranking__acc">{{ member.correctPicks }}/{{ member.totalPicks }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <p class="pool-hint-note">
+            <mat-icon>refresh</mat-icon>
+            Las posiciones se actualizan con los resultados reales de los partidos que ya terminaron.
+          </p>
+        }
+      }
+    }
+  }
+</div>

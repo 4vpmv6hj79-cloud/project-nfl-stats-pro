@@ -1,0 +1,348 @@
+.pool-page {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) { padding: 16px 12px; }
+}
+
+// ── Header ────────────────────────────────────────────────
+.pool-header { margin-bottom: 20px; }
+
+.pool-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pool-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.pool-muted {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+// ── Sin sesión ────────────────────────────────────────────
+.pool-guest {
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: var(--color-primary);
+  }
+
+  h2 { margin: 12px 0 6px; color: var(--color-text); }
+  p { margin: 0 0 18px; color: var(--color-text-secondary); }
+}
+
+// ── Botones ───────────────────────────────────────────────
+.pool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:not(:disabled):hover { transform: translateY(-1px); }
+
+  &--primary { background: var(--color-primary); color: #fff; }
+  &--secondary {
+    background: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+  }
+}
+
+// ── Tarjetas crear/unirse ─────────────────────────────────
+.pool-actions-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+.pool-card {
+  padding: 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+
+.pool-card__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--color-text);
+
+  mat-icon { color: var(--color-primary); }
+}
+
+.pool-card__hint {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.pool-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 0.9rem;
+
+  &:focus { outline: 2px solid var(--color-primary); border-color: transparent; }
+}
+
+// ── Lista de grupos ───────────────────────────────────────
+.pool-list__title {
+  font-size: 1.1rem;
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+
+.pool-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pool-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+
+  &:hover { border-color: var(--color-primary); transform: translateY(-1px); }
+
+  mat-icon { color: var(--color-text-secondary); }
+}
+
+.pool-group__info { display: flex; flex-direction: column; gap: 2px; }
+.pool-group__name { font-weight: 700; color: var(--color-text); }
+.pool-group__meta { font-size: 0.78rem; color: var(--color-text-secondary); }
+
+// ── Detalle: cabecera ─────────────────────────────────────
+.pool-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.pool-back, .pool-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+
+  &:hover { border-color: var(--color-primary); }
+}
+
+.pool-detail-head__info { flex: 1; min-width: 0; }
+.pool-detail-head__name { margin: 0; font-size: 1.2rem; color: var(--color-text); }
+.pool-detail-head__code { font-size: 0.8rem; color: var(--color-text-secondary); }
+.pool-detail-head__actions { display: flex; gap: 8px; }
+
+// ── Tabs ──────────────────────────────────────────────────
+.pool-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pool-tab {
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+
+  &--active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+}
+
+// ── Selector de semanas ───────────────────────────────────
+.pool-weeks {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  scrollbar-width: thin;
+}
+
+.pool-week-btn {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 700;
+  cursor: pointer;
+
+  &--active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+}
+
+// ── Partidos ──────────────────────────────────────────────
+.pool-games {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pool-game {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  &--locked { opacity: 0.85; }
+}
+
+.pool-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  img { width: 28px; height: 28px; object-fit: contain; }
+
+  &:disabled { cursor: not-allowed; }
+  &:not(:disabled):hover { border-color: var(--color-primary); }
+
+  // Elegido
+  &--picked {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.12);
+  }
+  // Acertó (partido finalizado)
+  &--correct {
+    border-color: var(--color-success);
+    background: rgba(34, 197, 94, 0.15);
+  }
+  // Falló
+  &--wrong {
+    border-color: var(--color-error);
+    background: rgba(239, 68, 68, 0.12);
+  }
+}
+
+.pool-game__vs {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-align: center;
+  min-width: 48px;
+}
+
+.pool-game__final { color: var(--color-text-secondary); }
+.pool-game__live { color: var(--color-error); font-weight: 800; }
+
+// ── Nota informativa ──────────────────────────────────────
+.pool-hint-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  font-size: 0.82rem;
+  color: var(--color-text);
+
+  mat-icon {
+    flex-shrink: 0;
+    color: var(--color-primary);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// ── Ranking ───────────────────────────────────────────────
+.pool-ranking {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  color: var(--color-text);
+
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+  }
+
+  &__rank { font-weight: 800; width: 40px; }
+  &__pts { font-weight: 800; color: var(--color-primary); }
+  &__acc { color: var(--color-text-secondary); }
+  &__me { background: rgba(37, 99, 235, 0.08); }
+}

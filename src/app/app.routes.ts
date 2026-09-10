@@ -122,6 +122,13 @@ export const routes: Routes = [
             .then(m => m.PlansComponent)
       },
 
+      {
+        path: 'quiniela',
+        loadComponent: () =>
+          import('./features/pool/pool')
+            .then(m => m.PoolComponent)
+      },
+
       // Siempre debe ser la última ruta
       {
         path: '**',

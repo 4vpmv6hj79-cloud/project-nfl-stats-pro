@@ -77,6 +77,7 @@ export class MainLayout {
     { title: 'Comparador',   icon: 'compare_arrows', route: '/comparator',  pro: true  },
     { title: 'Playoffs',     icon: 'account_tree',   route: '/playoffs',    pro: true  },
     { title: 'Conferencias', icon: 'hub',            route: '/conferences', pro: false },
+    { title: 'Quiniela',     icon: 'emoji_events',   route: '/quiniela',    pro: false },
     { title: 'Planes',       icon: 'star',           route: '/planes',      pro: false },
   ];
 
