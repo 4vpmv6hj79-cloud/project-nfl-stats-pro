@@ -154,6 +154,9 @@
         <button class="pool-tab" [class.pool-tab--active]="tab() === 'picks'" (click)="setTab('picks')">
           Mis pronósticos
         </button>
+        <button class="pool-tab" [class.pool-tab--active]="tab() === 'compare'" (click)="setTab('compare')">
+          Comparar
+        </button>
         <button class="pool-tab" [class.pool-tab--active]="tab() === 'ranking'" (click)="setTab('ranking')">
           Posiciones
         </button>
@@ -226,6 +229,72 @@
           <p class="pool-hint-note">
             <mat-icon>info</mat-icon>
             Elige al ganador de cada partido. Una vez que el partido empieza, tu pronóstico queda bloqueado. Ganas 1 punto por cada acierto.
+          </p>
+        }
+      }
+
+      <!-- TAB: Comparar -->
+      @if (tab() === 'compare') {
+
+        <!-- Selector de ronda (mismo que en pronósticos) -->
+        <div class="pool-weeks">
+          @for (round of rounds; track round.id) {
+            <button
+              class="pool-week-btn"
+              [class.pool-week-btn--active]="selectedRoundId() === round.id"
+              [class.pool-week-btn--playoff]="round.seasonType === 3"
+              [title]="round.label"
+              (click)="selectRound(round.id)">
+              {{ round.short }}
+            </button>
+          }
+        </div>
+
+        <p class="pool-round-label">{{ activeRound().label }}</p>
+
+        @if (loadingCompare() || loadingGames()) {
+          <p class="pool-muted">Cargando comparación...</p>
+        } @else if (weekGames().length === 0) {
+          <p class="pool-muted">No hay partidos para esta ronda.</p>
+        } @else {
+          <div class="pool-compare-wrap">
+            <table class="pool-compare">
+              <thead>
+                <tr>
+                  <th class="pool-compare__game">Partido</th>
+                  @for (member of members(); track member.uid) {
+                    <th class="pool-compare__member">{{ member.displayName }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (game of weekGames(); track game.id) {
+                  <tr>
+                    <td class="pool-compare__game">
+                      <span class="pool-compare__matchup">{{ game.awayAbbr }} &#64; {{ game.homeAbbr }}</span>
+                      @if (game.isFinal && game.winner) {
+                        <span class="pool-compare__winner">
+                          Ganó {{ game.winner === 'home' ? game.homeAbbr : game.awayAbbr }}
+                        </span>
+                      }
+                    </td>
+                    @for (member of members(); track member.uid) {
+                      <td
+                        class="pool-compare__pick"
+                        [class.pool-compare__pick--correct]="memberPickResult(member.uid, game) === 'correct'"
+                        [class.pool-compare__pick--wrong]="memberPickResult(member.uid, game) === 'wrong'">
+                        {{ memberPickLabel(member.uid, game) }}
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <p class="pool-hint-note">
+            <mat-icon>info</mat-icon>
+            Compara los pronósticos de cada miembro. En partidos terminados, verde = acertó y rojo = falló.
           </p>
         }
       }

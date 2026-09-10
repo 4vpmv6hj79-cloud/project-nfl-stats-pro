@@ -25,7 +25,7 @@ import {
 } from '../../shared/models/domain/pool.model';
 
 type View = 'list' | 'detail';
-type Tab = 'picks' | 'ranking';
+type Tab = 'picks' | 'compare' | 'ranking';
 
 @Component({
   selector: 'app-pool',
@@ -57,6 +57,10 @@ export class PoolComponent implements OnInit {
   readonly activePool = signal<Pool | null>(null);
   readonly members = signal<PoolMember[]>([]);
   readonly myPredictions = signal<UserPredictions | null>(null);
+
+  // Comparación: predicciones de TODOS los miembros
+  readonly allPredictions = signal<UserPredictions[]>([]);
+  readonly loadingCompare = signal(false);
 
   // Predicciones (ronda seleccionada)
   readonly selectedRoundId = signal<number>(1);
@@ -196,7 +200,53 @@ export class PoolComponent implements OnInit {
     this.tab.set(tab);
     if (tab === 'ranking') {
       this.refreshRanking();
+    } else if (tab === 'compare') {
+      this.loadComparison();
     }
+  }
+
+  /** Carga las predicciones de todos los miembros para comparar. */
+  async loadComparison(): Promise<void> {
+    const pool = this.activePool();
+    if (!pool) return;
+
+    this.loadingCompare.set(true);
+    try {
+      const [preds, members] = await Promise.all([
+        this.poolService.getAllPredictions(pool.id),
+        this.poolService.getMembers(pool.id),
+      ]);
+      this.allPredictions.set(preds);
+      this.members.set(members);
+      // Asegurar que los partidos de la ronda actual estén cargados
+      if (this.weekGames().length === 0) {
+        this.loadRound(this.selectedRoundId());
+      }
+    } finally {
+      this.loadingCompare.set(false);
+    }
+  }
+
+  /** Devuelve el pick de un miembro para un partido (o null). */
+  memberPick(uid: string, gameId: string): 'home' | 'away' | null {
+    const up = this.allPredictions().find((p) => p.uid === uid);
+    return up?.picks?.[gameId]?.pick ?? null;
+  }
+
+  /** Abreviatura a mostrar según el pick del miembro en un partido. */
+  memberPickLabel(uid: string, game: PoolGame): string {
+    const pick = this.memberPick(uid, game.id);
+    if (pick === 'home') return game.homeAbbr;
+    if (pick === 'away') return game.awayAbbr;
+    return '—';
+  }
+
+  /** ¿El pick de ese miembro fue correcto/incorrecto? (partido finalizado) */
+  memberPickResult(uid: string, game: PoolGame): 'correct' | 'wrong' | null {
+    if (!game.isFinal || game.winner === null) return null;
+    const pick = this.memberPick(uid, game.id);
+    if (!pick) return null;
+    return pick === game.winner ? 'correct' : 'wrong';
   }
 
   // ── Predicciones ────────────────────────────────────────
