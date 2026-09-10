@@ -22,6 +22,45 @@
     <!-- ══ VISTA LISTA ══ -->
     @if (view() === 'list') {
 
+      <!-- Instructivo paso a paso -->
+      <section class="pool-howto" aria-label="Cómo funciona la quiniela">
+        <h2 class="pool-howto__title">¿Cómo funciona?</h2>
+        <ol class="pool-howto__steps">
+          <li>
+            <span class="pool-howto__num">1</span>
+            <div>
+              <strong>Crea tu quiniela</strong>
+              Ponle un nombre y pulsa "Crear". Se generará un código único (ej. NFL-4X8K2).
+            </div>
+          </li>
+          <li>
+            <span class="pool-howto__num">2</span>
+            <div>
+              <strong>Invita a tus amigos</strong>
+              Comparte el código con el botón de compartir. Ellos entran a Quiniela → "Unirme" e ingresan el código.
+            </div>
+          </li>
+          <li>
+            <span class="pool-howto__num">3</span>
+            <div>
+              <strong>Haz tus pronósticos</strong>
+              Cada semana elige quién crees que gana cada partido. Se guarda solo; una vez que empieza el partido, queda bloqueado.
+            </div>
+          </li>
+          <li>
+            <span class="pool-howto__num">4</span>
+            <div>
+              <strong>Compite por el primer lugar</strong>
+              Ganas 1 punto por acierto. Mira la tabla de "Posiciones" para ver quién va ganando, toda la temporada hasta el Super Bowl.
+            </div>
+          </li>
+        </ol>
+        <p class="pool-howto__note">
+          <mat-icon>info</mat-icon>
+          Es una quiniela por diversión, sin dinero de por medio.
+        </p>
+      </section>
+
       <section class="pool-actions-cards">
         <!-- Crear -->
         <div class="pool-card">
