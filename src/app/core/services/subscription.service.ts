@@ -24,6 +24,7 @@ import { AuthService } from './auth.service';
 const ADMIN_EMAILS = [
   'erikgonzalopalomares@gmail.com',
   'cvplascencia@gmail.com',
+  'epalomaresvargas@gmail.com',
 ];
 
 @Injectable({ providedIn: 'root' })
