@@ -67,6 +67,9 @@ export class PoolComponent implements OnInit {
   readonly weekGames = signal<PoolGame[]>([]);
   readonly loadingGames = signal(false);
 
+  /** Caché en memoria de partidos por ronda (evita re-pedir al cambiar de tab). */
+  private readonly roundCache = new Map<number, PoolGame[]>();
+
   /**
    * Rondas de la quiniela: 18 semanas de temporada regular + playoffs.
    * - id: identificador único de la ronda para guardar la predicción
@@ -177,8 +180,9 @@ export class PoolComponent implements OnInit {
     this.activePool.set(pool);
     this.view.set('detail');
     this.tab.set('picks');
+    this.roundCache.clear();
 
-    // Cargar predicciones del usuario y miembros
+    // Cargar predicciones del usuario y miembros en paralelo
     const [preds, members] = await Promise.all([
       this.poolService.getMyPredictions(pool.id),
       this.poolService.getMembers(pool.id),
@@ -186,8 +190,30 @@ export class PoolComponent implements OnInit {
     this.myPredictions.set(preds);
     this.members.set(members);
 
-    // Cargar la ronda actual (por defecto la 1; el usuario puede cambiar)
-    this.loadRound(this.selectedRoundId());
+    // Detectar la semana/ronda vigente para no arrancar en la Semana 1
+    // (que ya pasó). Si falla, se queda en la ronda seleccionada actual.
+    this.poolGames.getCurrentWeek().subscribe({
+      next: ({ week, seasonType }) => {
+        const roundId = this.resolveRoundId(week, seasonType);
+        this.selectedRoundId.set(roundId);
+        this.loadRound(roundId);
+      },
+      error: () => this.loadRound(this.selectedRoundId()),
+    });
+  }
+
+  /** Traduce (week, seasonType) de ESPN al id de ronda de la quiniela. */
+  private resolveRoundId(week: number, seasonType: number): number {
+    if (seasonType === 3) {
+      // Playoffs: apiWeek 1..5 → rondas 101..104 (5 = Super Bowl → 104)
+      const match = this.rounds.find(
+        (r) => r.seasonType === 3 && r.apiWeek === week,
+      );
+      return match?.id ?? 101;
+    }
+    // Temporada regular: la ronda id coincide con el número de semana (1..18)
+    if (week >= 1 && week <= 18) return week;
+    return 1;
   }
 
   backToList(): void {
@@ -258,10 +284,23 @@ export class PoolComponent implements OnInit {
 
   private loadRound(roundId: number): void {
     const round = this.rounds.find((r) => r.id === roundId) ?? this.rounds[0];
+
+    // Si ya la tenemos en caché, mostrarla al instante (sin spinner ni red).
+    const cached = this.roundCache.get(roundId);
+    if (cached) {
+      this.weekGames.set(cached);
+      this.loadingGames.set(false);
+      return;
+    }
+
     this.loadingGames.set(true);
     this.poolGames.getWeekGames(round.apiWeek, round.seasonType).subscribe({
       next: (games) => {
-        this.weekGames.set(games);
+        this.roundCache.set(roundId, games);
+        // Solo aplicar si sigue siendo la ronda seleccionada (evita parpadeos)
+        if (this.selectedRoundId() === roundId) {
+          this.weekGames.set(games);
+        }
         this.loadingGames.set(false);
       },
       error: () => {

@@ -40,6 +40,19 @@ export class PoolGamesService {
       .pipe(map((response) => this.adapt(response, week)));
   }
 
+  /**
+   * Devuelve la semana y el tipo de temporada vigentes según ESPN.
+   * El scoreboard sin parámetros responde con la semana actual.
+   */
+  getCurrentWeek(): Observable<{ week: number; seasonType: number }> {
+    return this.http.get<any>(this.scoreboardEndpoint).pipe(
+      map((response) => ({
+        week: response?.week?.number ?? 1,
+        seasonType: response?.season?.type ?? 2,
+      })),
+    );
+  }
+
   private adapt(response: any, week: number): PoolGame[] {
     const events = response?.events ?? [];
 

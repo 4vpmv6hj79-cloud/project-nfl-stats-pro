@@ -103,10 +103,18 @@ export default async function handler(
       ) ?? 'application/json',
     );
 
-    response.setHeader(
-      'Cache-Control',
-      'no-store',
-    );
+    // Caché en el edge de Vercel para acelerar peticiones repetidas.
+    // Los datos de la NFL no cambian cada segundo; con una caché corta y
+    // "stale-while-revalidate" servimos respuestas casi instantáneas y
+    // refrescamos en segundo plano. Solo se cachean respuestas OK.
+    if (upstreamResponse.ok) {
+      response.setHeader(
+        'Cache-Control',
+        's-maxage=30, stale-while-revalidate=300',
+      );
+    } else {
+      response.setHeader('Cache-Control', 'no-store');
+    }
 
     response.end(body);
   } catch {
