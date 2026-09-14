@@ -136,6 +136,13 @@ export const routes: Routes = [
             .then(m => m.PrivacyComponent)
       },
 
+      {
+        path: 'terminos',
+        loadComponent: () =>
+          import('./features/legal/terms/terms')
+            .then(m => m.TermsComponent)
+      },
+
       // Siempre debe ser la última ruta
       {
         path: '**',
