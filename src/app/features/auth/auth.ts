@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -25,6 +25,7 @@ const BLOCKED_EMAILS = [
   selector: 'app-auth',
   standalone: true,
   imports: [
+    RouterLink,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

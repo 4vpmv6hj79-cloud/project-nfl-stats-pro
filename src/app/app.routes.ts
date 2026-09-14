@@ -129,6 +129,13 @@ export const routes: Routes = [
             .then(m => m.PoolComponent)
       },
 
+      {
+        path: 'privacidad',
+        loadComponent: () =>
+          import('./features/legal/privacy/privacy')
+            .then(m => m.PrivacyComponent)
+      },
+
       // Siempre debe ser la última ruta
       {
         path: '**',

@@ -1,0 +1,99 @@
+<div class="legal-page">
+  <h1 class="legal-title">Aviso de Privacidad</h1>
+  <p class="legal-updated">Última actualización: {{ lastUpdated }}</p>
+
+  <section class="legal-section">
+    <h2>1. Responsable del tratamiento de tus datos</h2>
+    <p>
+      Centro NFL ("la aplicación", "nosotros") es responsable del uso y
+      protección de tus datos personales. Para cualquier duda relacionada con
+      este aviso puedes escribirnos a
+      <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a>.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h2>2. Datos que recopilamos</h2>
+    <p>Recopilamos únicamente los datos necesarios para el funcionamiento de la aplicación:</p>
+    <ul>
+      <li><strong>Datos de cuenta:</strong> nombre, correo electrónico y, si inicias sesión con Google, la foto de perfil pública asociada.</li>
+      <li><strong>Preferencias:</strong> equipos favoritos y configuración dentro de la app.</li>
+      <li><strong>Quiniela:</strong> los grupos que creas o a los que te unes y tus pronósticos.</li>
+      <li><strong>Datos de pago:</strong> cuando adquieres un plan Pro, el pago se procesa a través de Stripe. Nosotros NO almacenamos los datos de tu tarjeta; son gestionados directamente por Stripe.</li>
+      <li><strong>Datos de uso:</strong> información técnica básica para mejorar el servicio (por ejemplo, eventos de navegación anónimos).</li>
+    </ul>
+  </section>
+
+  <section class="legal-section">
+    <h2>3. Para qué usamos tus datos</h2>
+    <ul>
+      <li>Crear y administrar tu cuenta e inicio de sesión.</li>
+      <li>Sincronizar tus equipos favoritos entre dispositivos.</li>
+      <li>Permitirte participar en quinielas con otros usuarios.</li>
+      <li>Procesar tu suscripción al plan Pro.</li>
+      <li>Enviar el correo de verificación de tu cuenta.</li>
+      <li>Mejorar el funcionamiento y la experiencia de la aplicación.</li>
+    </ul>
+    <p>No vendemos ni rentamos tus datos personales a terceros.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2>4. Servicios de terceros que utilizamos</h2>
+    <p>Para operar, la aplicación se apoya en proveedores que pueden tratar ciertos datos bajo sus propias políticas de privacidad:</p>
+    <ul>
+      <li><strong>Google Firebase:</strong> autenticación de cuentas y almacenamiento de datos (equipos favoritos, quinielas).</li>
+      <li><strong>Stripe:</strong> procesamiento de pagos de las suscripciones.</li>
+      <li><strong>ESPN:</strong> proveedor de las estadísticas y marcadores de la NFL que se muestran. Esta aplicación no está afiliada ni patrocinada por ESPN ni por la NFL.</li>
+      <li><strong>OpenAI:</strong> genera las explicaciones de la función "¿Qué está pasando?" a partir del contexto del partido.</li>
+    </ul>
+  </section>
+
+  <section class="legal-section">
+    <h2>5. Almacenamiento y seguridad</h2>
+    <p>
+      Tus datos se almacenan en la infraestructura de Google Firebase con
+      medidas de seguridad estándar de la industria. Aplicamos reglas de acceso
+      para que cada usuario solo pueda ver y modificar su propia información.
+      Ningún método de transmisión o almacenamiento es 100% infalible, pero
+      trabajamos para proteger tu información.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h2>6. Tus derechos (ARCO)</h2>
+    <p>
+      Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento
+      de tus datos personales. Puedes:
+    </p>
+    <ul>
+      <li>Editar tus equipos favoritos y datos de perfil dentro de la app.</li>
+      <li>Solicitar la eliminación de tu cuenta y datos escribiendo a <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a>.</li>
+    </ul>
+  </section>
+
+  <section class="legal-section">
+    <h2>7. Menores de edad</h2>
+    <p>
+      La aplicación está dirigida a un público general aficionado a la NFL. No
+      recopilamos de forma intencional datos de menores sin el consentimiento de
+      sus padres o tutores.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h2>8. Cambios a este aviso</h2>
+    <p>
+      Podemos actualizar este aviso de privacidad. Publicaremos cualquier cambio
+      en esta misma página, actualizando la fecha de "Última actualización".
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h2>9. Contacto</h2>
+    <p>
+      Si tienes preguntas sobre este aviso de privacidad o sobre el manejo de tus
+      datos, contáctanos en
+      <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a>.
+    </p>
+  </section>
+</div>

@@ -191,3 +191,18 @@
 @media (prefers-reduced-motion: reduce) {
   .auth-spinner { animation: none; }
 }
+
+// ── Nota legal (aviso de privacidad) ──────────────────────
+.auth-legal {
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+
+  a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
