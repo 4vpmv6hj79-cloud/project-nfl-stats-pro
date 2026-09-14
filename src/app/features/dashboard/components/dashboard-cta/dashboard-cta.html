@@ -1,18 +1,19 @@
 @switch (variant()) {
   @case ('guest') {
-    <section class="cta cta--guest" aria-label="Crea tu cuenta gratis">
+    <section class="cta cta--guest" aria-label="Juega la Quiniela gratis">
       <div class="cta__content">
-        <span class="cta__badge">Gratis</span>
-        <h2 class="cta__title">Crea tu cuenta y sigue a tu equipo 🏈</h2>
+        <span class="cta__badge">🎯 Quiniela gratis</span>
+        <h2 class="cta__title">Reta a tus amigos en la Quiniela NFL 🏈</h2>
         <p class="cta__text">
-          Regístrate gratis para elegir tus equipos favoritos, sincronizarlos en
-          todos tus dispositivos y no perderte ningún partido.
+          Predice a los ganadores cada semana y compite con tus amigos por el
+          primer lugar, toda la temporada hasta el Super Bowl. Regístrate gratis
+          y elige a tus equipos favoritos.
         </p>
       </div>
       <div class="cta__actions">
-        <a class="cta__btn cta__btn--primary" routerLink="/auth">
-          <mat-icon aria-hidden="true">person_add</mat-icon>
-          Crear cuenta gratis
+        <a class="cta__btn cta__btn--primary" routerLink="/auth" [queryParams]="{ redirect: '/quiniela' }">
+          <mat-icon aria-hidden="true">emoji_events</mat-icon>
+          Jugar gratis
         </a>
       </div>
     </section>

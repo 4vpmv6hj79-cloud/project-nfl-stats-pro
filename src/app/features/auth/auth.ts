@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -37,6 +37,7 @@ const BLOCKED_EMAILS = [
 export class AuthComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
 
   readonly mode = signal<'login' | 'register'>('login');
@@ -106,7 +107,7 @@ export class AuthComponent {
     this.loading.set(false);
 
     if (success) {
-      this.router.navigate(['/dashboard']);
+      this.goAfterAuth();
     }
   }
 
@@ -118,8 +119,18 @@ export class AuthComponent {
     this.loading.set(false);
 
     if (success) {
-      this.router.navigate(['/dashboard']);
+      this.goAfterAuth();
     }
+  }
+
+  /**
+   * Navega tras un login/registro exitoso. Respeta el parámetro `redirect`
+   * (p. ej. /quiniela desde el banner) y, si no hay, va al dashboard.
+   */
+  private goAfterAuth(): void {
+    const redirect = this.route.snapshot.queryParamMap.get('redirect');
+    const target = redirect && redirect.startsWith('/') ? redirect : '/dashboard';
+    this.router.navigateByUrl(target);
   }
 
   // ── Validators ────────────────────────────────────────────
