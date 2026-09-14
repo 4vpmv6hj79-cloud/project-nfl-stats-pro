@@ -51,20 +51,29 @@ export class FirebaseService {
 
   private async doInitialize(): Promise<void> {
     try {
+      const {
+        getAuth,
+        setPersistence,
+        indexedDBLocalPersistence,
+        browserLocalPersistence,
+      } = await import('firebase/auth');
       const { initializeApp } = await import('firebase/app');
-      const { getAuth, setPersistence, browserLocalPersistence } =
-        await import('firebase/auth');
       const { getFirestore } = await import('firebase/firestore');
 
       this._app = initializeApp(environment.firebase);
       this._auth = getAuth(this._app);
 
-      // Persistencia LOCAL: la sesión se mantiene aunque el usuario cierre
-      // el navegador y vuelva después (no tiene que volver a iniciar sesión).
+      // Persistencia de sesión lo más resistente posible. En Safari/iOS,
+      // IndexedDB suele sobrevivir mejor que localStorage, así que lo
+      // intentamos primero y caemos a localStorage si no está disponible.
       try {
-        await setPersistence(this._auth, browserLocalPersistence);
+        await setPersistence(this._auth, indexedDBLocalPersistence);
       } catch {
-        // Si el navegador no lo permite, se usa la persistencia por defecto.
+        try {
+          await setPersistence(this._auth, browserLocalPersistence);
+        } catch {
+          // Si el navegador no permite ninguna, se usa la por defecto.
+        }
       }
 
       this._firestore = getFirestore(this._app);
