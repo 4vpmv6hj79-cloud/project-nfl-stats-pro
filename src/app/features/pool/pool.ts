@@ -259,8 +259,20 @@ export class PoolComponent implements OnInit {
     return up?.picks?.[gameId]?.pick ?? null;
   }
 
+  /**
+   * Indica si el pick de un miembro puede revelarse en "Comparar".
+   * Regla: los pronósticos de los DEMÁS solo se muestran una vez que el
+   * partido ya comenzó, para que nadie copie picks antes del juego.
+   * El propio usuario siempre ve sus pronósticos.
+   */
+  canRevealPick(uid: string, game: PoolGame): boolean {
+    if (game.started) return true;
+    return uid === this.authService.user()?.uid;
+  }
+
   /** Abreviatura a mostrar según el pick del miembro en un partido. */
   memberPickLabel(uid: string, game: PoolGame): string {
+    if (!this.canRevealPick(uid, game)) return '🔒';
     const pick = this.memberPick(uid, game.id);
     if (pick === 'home') return game.homeAbbr;
     if (pick === 'away') return game.awayAbbr;
