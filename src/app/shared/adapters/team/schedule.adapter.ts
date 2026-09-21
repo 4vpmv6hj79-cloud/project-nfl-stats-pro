@@ -6,6 +6,20 @@ export class ScheduleAdapter {
     return team?.logos?.[0]?.href ?? team?.logo ?? '';
   }
 
+  private static score(raw: unknown): number | null {
+    let value = raw;
+    if (typeof raw === 'object' && raw !== null) {
+      const score = raw as { value?: unknown; displayValue?: unknown };
+      value = score.value ?? score.displayValue;
+    }
+
+    if (typeof value !== 'number' && typeof value !== 'string') return null;
+    if (typeof value === 'string' && value.trim() === '') return null;
+
+    const score = Number(value);
+    return Number.isFinite(score) ? score : null;
+  }
+
   static adapt(response: any, teamId: number): ScheduleGame[] {
 
     const events: any[] = response.events ?? [];
@@ -22,8 +36,8 @@ export class ScheduleAdapter {
         teamComp?.homeAway === 'home' ? 'home' : 'away';
 
       const completed: boolean = competition?.status?.type?.completed ?? false;
-      const teamScore          = completed ? Number(teamComp?.score)     ?? null : null;
-      const opponentScore      = completed ? Number(opponentComp?.score) ?? null : null;
+      const teamScore          = completed ? ScheduleAdapter.score(teamComp?.score) : null;
+      const opponentScore      = completed ? ScheduleAdapter.score(opponentComp?.score) : null;
 
       let result: ScheduleGame['result'] = null;
       if (completed && teamScore !== null && opponentScore !== null) {
