@@ -61,9 +61,7 @@
           <span class="result-badge" [ngClass]="resultClass(game.result)">
             {{ game.result === 'W' ? 'Ganado' : game.result === 'L' ? 'Perdido' : 'Empate' }}
           </span>
-          <span class="score">
-            {{ game.teamScore }} - {{ game.opponentScore }}
-          </span>
+          <span class="score">{{ game.teamScore }} - {{ game.opponentScore }}</span>
         } @else {
           <span class="pending">Por jugar</span>
         }
