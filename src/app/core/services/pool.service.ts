@@ -145,31 +145,29 @@ export class PoolService {
     const firestore = await this.db();
     if (!firestore) return;
 
-    const { doc, getDoc, setDoc, updateDoc, increment } = await import(
+    const { doc, getDoc, setDoc, updateDoc, increment, arrayUnion } = await import(
       'firebase/firestore'
     );
 
     const memberRef = doc(firestore, 'pools', poolId, 'members', uid);
     const existing = await getDoc(memberRef);
-    if (existing.exists()) return; // ya es miembro
+    if (!existing.exists()) {
+      const member: PoolMember = {
+        uid,
+        displayName,
+        points: 0,
+        correctPicks: 0,
+        totalPicks: 0,
+        joinedAt: Date.now(),
+      };
+      await setDoc(memberRef, member);
 
-    const member: PoolMember = {
-      uid,
-      displayName,
-      points: 0,
-      correctPicks: 0,
-      totalPicks: 0,
-      joinedAt: Date.now(),
-    };
-    await setDoc(memberRef, member);
-
-    // Incrementar el conteo de miembros del grupo
-    const poolRef = doc(firestore, 'pools', poolId);
-    await updateDoc(poolRef, { memberCount: increment(1) });
+      const poolRef = doc(firestore, 'pools', poolId);
+      await updateDoc(poolRef, { memberCount: increment(1) });
+    }
 
     // Registrar el grupo en el documento del usuario (lectura simple, sin
     // necesidad de índices ni collectionGroup para listar "Mis quinielas").
-    const { arrayUnion } = await import('firebase/firestore');
     const userRef = doc(firestore, 'users', uid);
     await setDoc(userRef, { pools: arrayUnion(poolId) }, { merge: true });
   }
@@ -179,37 +177,29 @@ export class PoolService {
    * Lee la lista de IDs guardada en users/{uid}.pools (lectura directa,
    * sin collectionGroup ni índices), y trae cada grupo por su id.
    */
-  async getMyPools(): Promise<Pool[]> {
+  async getMyPools(uid: string): Promise<Pool[]> {
     if (!this.isBrowser) return [];
     const firestore = await this.db();
-    const user = this.authService.user();
-    if (!firestore || !user) return [];
+    if (!firestore) throw new Error('Firestore no está disponible');
 
     const { doc, getDoc } = await import('firebase/firestore');
 
     // Leer los IDs de grupos del documento del usuario
-    let poolIds: string[] = [];
-    try {
-      const userSnap = await getDoc(doc(firestore, 'users', user.uid));
-      poolIds = (userSnap.data()?.['pools'] as string[]) ?? [];
-    } catch {
-      return [];
-    }
+    const userSnap = await getDoc(doc(firestore, 'users', uid));
+    const savedIds = userSnap.data()?.['pools'];
+    const poolIds: string[] = Array.isArray(savedIds)
+      ? savedIds.filter((id): id is string => typeof id === 'string')
+      : [];
 
-    // Traer cada grupo por su id (lecturas simples por documento)
-    const pools: Pool[] = [];
-    for (const poolId of poolIds) {
-      try {
-        const poolSnap = await getDoc(doc(firestore, 'pools', poolId));
-        if (poolSnap.exists()) {
-          pools.push(poolSnap.data() as Pool);
-        }
-      } catch {
-        // ignorar grupos que no se puedan leer
-      }
-    }
+    // Leer los grupos en paralelo; los errores se muestran en la vista.
+    const pools = await Promise.all(poolIds.map(async (poolId) => {
+      const poolSnap = await getDoc(doc(firestore, 'pools', poolId));
+      return poolSnap.exists() ? poolSnap.data() as Pool : null;
+    }));
 
-    return pools.sort((a, b) => b.createdAt - a.createdAt);
+    return pools
+      .filter((pool): pool is Pool => pool !== null)
+      .sort((a, b) => b.createdAt - a.createdAt);
   }
 
   /** Devuelve un grupo por su id. */

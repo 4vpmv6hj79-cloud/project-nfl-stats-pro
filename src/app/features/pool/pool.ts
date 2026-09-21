@@ -1,6 +1,6 @@
 import {
   Component,
-  OnInit,
+  effect,
   inject,
   signal,
   computed,
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { firstValueFrom } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
 import { PoolService } from '../../core/services/pool.service';
@@ -34,7 +35,7 @@ type Tab = 'picks' | 'compare' | 'ranking';
   templateUrl: './pool.html',
   styleUrl: './pool.scss',
 })
-export class PoolComponent implements OnInit {
+export class PoolComponent {
   private readonly authService = inject(AuthService);
   private readonly poolService = inject(PoolService);
   private readonly poolGames = inject(PoolGamesService);
@@ -42,10 +43,19 @@ export class PoolComponent implements OnInit {
   private readonly notification = inject(NotificationService);
 
   readonly isAuthenticated = computed(() => this.authService.isAuthenticated);
+  readonly authLoading = this.authService.loading;
+  private readonly currentUid = computed(() => this.authService.user()?.uid ?? null);
 
   readonly view = signal<View>('list');
   readonly tab = signal<Tab>('picks');
-  readonly loading = signal(true);
+  readonly loading = signal(false);
+  readonly listError = signal(false);
+  readonly detailError = signal(false);
+  readonly loadingDetail = signal(false);
+  readonly gamesError = signal(false);
+  readonly compareError = signal(false);
+  readonly rankingError = signal(false);
+  readonly loadingRanking = signal(false);
   readonly working = signal(false);
 
   // Lista de grupos
@@ -69,6 +79,9 @@ export class PoolComponent implements OnInit {
 
   /** Caché en memoria de partidos por ronda (evita re-pedir al cambiar de tab). */
   private readonly roundCache = new Map<number, PoolGame[]>();
+  private myPoolsRequestId = 0;
+  private detailRequestId = 0;
+  private roundRequestId = 0;
 
   /**
    * Rondas de la quiniela: 18 semanas de temporada regular + playoffs.
@@ -101,26 +114,43 @@ export class PoolComponent implements OnInit {
     this.rounds.find((r) => r.id === this.selectedRoundId()) ?? this.rounds[0],
   );
 
-  ngOnInit(): void {
-    if (this.isAuthenticated()) {
-      this.loadMyPools();
-    } else {
-      this.loading.set(false);
-    }
+  constructor() {
+    effect(() => {
+      if (this.authLoading()) return;
+      const uid = this.currentUid();
+      this.myPoolsRequestId++;
+      this.myPools.set([]);
+      this.backToList();
+      if (uid) {
+        void this.loadMyPools();
+      } else {
+        this.loading.set(false);
+        this.listError.set(false);
+      }
+    });
   }
 
   // ── Lista de grupos ─────────────────────────────────────
 
   async loadMyPools(): Promise<void> {
+    const uid = this.currentUid();
+    if (!uid) return;
+    const requestId = ++this.myPoolsRequestId;
     this.loading.set(true);
+    this.listError.set(false);
     try {
-      const pools = await this.poolService.getMyPools();
-      this.myPools.set(pools);
+      const pools = await this.poolService.getMyPools(uid);
+      if (requestId === this.myPoolsRequestId && this.currentUid() === uid) {
+        this.myPools.set(pools);
+      }
     } catch {
-      this.myPools.set([]);
-      this.notification.error('No se pudieron cargar tus quinielas.');
+      if (requestId === this.myPoolsRequestId && this.currentUid() === uid) {
+        this.listError.set(true);
+      }
     } finally {
-      this.loading.set(false);
+      if (requestId === this.myPoolsRequestId && this.currentUid() === uid) {
+        this.loading.set(false);
+      }
     }
   }
 
@@ -177,29 +207,39 @@ export class PoolComponent implements OnInit {
   // ── Grupo activo ────────────────────────────────────────
 
   async openPool(pool: Pool): Promise<void> {
+    const requestId = ++this.detailRequestId;
     this.activePool.set(pool);
     this.view.set('detail');
     this.tab.set('picks');
     this.roundCache.clear();
+    this.roundRequestId++;
+    this.weekGames.set([]);
+    this.members.set([]);
+    this.myPredictions.set(null);
+    this.loadingDetail.set(true);
+    this.detailError.set(false);
 
-    // Cargar predicciones del usuario y miembros en paralelo
-    const [preds, members] = await Promise.all([
-      this.poolService.getMyPredictions(pool.id),
-      this.poolService.getMembers(pool.id),
-    ]);
-    this.myPredictions.set(preds);
-    this.members.set(members);
+    try {
+      // Cargar predicciones, miembros y semana vigente a la vez.
+      const [preds, members, currentWeek] = await Promise.all([
+        this.poolService.getMyPredictions(pool.id),
+        this.poolService.getMembers(pool.id),
+        firstValueFrom(this.poolGames.getCurrentWeek()).catch(() => null),
+      ]);
+      if (requestId !== this.detailRequestId) return;
+      this.myPredictions.set(preds);
+      this.members.set(members);
 
-    // Detectar la semana/ronda vigente para no arrancar en la Semana 1
-    // (que ya pasó). Si falla, se queda en la ronda seleccionada actual.
-    this.poolGames.getCurrentWeek().subscribe({
-      next: ({ week, seasonType }) => {
-        const roundId = this.resolveRoundId(week, seasonType);
-        this.selectedRoundId.set(roundId);
-        this.loadRound(roundId);
-      },
-      error: () => this.loadRound(this.selectedRoundId()),
-    });
+      const roundId = currentWeek
+        ? this.resolveRoundId(currentWeek.week, currentWeek.seasonType)
+        : this.selectedRoundId();
+      this.selectedRoundId.set(roundId);
+      this.loadRound(roundId);
+    } catch {
+      if (requestId === this.detailRequestId) this.detailError.set(true);
+    } finally {
+      if (requestId === this.detailRequestId) this.loadingDetail.set(false);
+    }
   }
 
   /** Traduce (week, seasonType) de ESPN al id de ronda de la quiniela. */
@@ -217,6 +257,8 @@ export class PoolComponent implements OnInit {
   }
 
   backToList(): void {
+    this.detailRequestId++;
+    this.roundRequestId++;
     this.view.set('list');
     this.activePool.set(null);
     this.weekGames.set([]);
@@ -237,6 +279,7 @@ export class PoolComponent implements OnInit {
     if (!pool) return;
 
     this.loadingCompare.set(true);
+    this.compareError.set(false);
     try {
       const [preds, members] = await Promise.all([
         this.poolService.getAllPredictions(pool.id),
@@ -248,6 +291,8 @@ export class PoolComponent implements OnInit {
       if (this.weekGames().length === 0) {
         this.loadRound(this.selectedRoundId());
       }
+    } catch {
+      this.compareError.set(true);
     } finally {
       this.loadingCompare.set(false);
     }
@@ -296,6 +341,9 @@ export class PoolComponent implements OnInit {
 
   private loadRound(roundId: number): void {
     const round = this.rounds.find((r) => r.id === roundId) ?? this.rounds[0];
+    const requestId = ++this.roundRequestId;
+    this.gamesError.set(false);
+    this.weekGames.set([]);
 
     // Si ya la tenemos en caché, mostrarla al instante (sin spinner ni red).
     const cached = this.roundCache.get(roundId);
@@ -309,15 +357,17 @@ export class PoolComponent implements OnInit {
     this.poolGames.getWeekGames(round.apiWeek, round.seasonType).subscribe({
       next: (games) => {
         this.roundCache.set(roundId, games);
-        // Solo aplicar si sigue siendo la ronda seleccionada (evita parpadeos)
-        if (this.selectedRoundId() === roundId) {
+        // Solo aplicar el resultado de la última solicitud activa.
+        if (requestId === this.roundRequestId && this.selectedRoundId() === roundId) {
           this.weekGames.set(games);
+          this.loadingGames.set(false);
         }
-        this.loadingGames.set(false);
       },
       error: () => {
-        this.loadingGames.set(false);
-        this.notification.error('No se pudieron cargar los partidos de la ronda.');
+        if (requestId === this.roundRequestId) {
+          this.loadingGames.set(false);
+          this.gamesError.set(true);
+        }
       },
     });
   }
@@ -371,80 +421,86 @@ export class PoolComponent implements OnInit {
     const pool = this.activePool();
     if (!pool) return;
 
-    this.loading.set(true);
+    this.loadingRanking.set(true);
+    this.rankingError.set(false);
+    try {
+      const [members, allPreds] = await Promise.all([
+        this.poolService.getMembers(pool.id),
+        this.poolService.getAllPredictions(pool.id),
+      ]);
 
-    const [members, allPreds] = await Promise.all([
-      this.poolService.getMembers(pool.id),
-      this.poolService.getAllPredictions(pool.id),
-    ]);
-
-    // Reunir todas las rondas que alguien predijo (el 'week' guardado es
-    // el id de ronda: 1..18 regular, 101..104 playoffs).
-    const roundIds = new Set<number>();
-    for (const up of allPreds) {
-      for (const gameId of Object.keys(up.picks ?? {})) {
-        roundIds.add(up.picks[gameId].week);
-      }
-    }
-
-    // Cargar los resultados reales de esas rondas (usando apiWeek+seasonType)
-    const resultsByGame = new Map<string, 'home' | 'away' | null>();
-    for (const roundId of roundIds) {
-      const round = this.rounds.find((r) => r.id === roundId);
-      if (!round) continue;
-      const games = await this.fetchRound(round.apiWeek, round.seasonType);
-      for (const g of games) {
-        if (g.isFinal) resultsByGame.set(g.id, g.winner);
-      }
-    }
-
-    // Calcular puntaje de cada miembro
-    for (const member of members) {
-      const up = allPreds.find((p) => p.uid === member.uid);
-      let correct = 0;
-      let total = 0;
-      if (up) {
+      // Reunir rondas que alguien predijo (1..18 regular, 101..104 playoffs).
+      const roundIds = new Set<number>();
+      for (const up of allPreds) {
         for (const gameId of Object.keys(up.picks ?? {})) {
-          const realWinner = resultsByGame.get(gameId);
-          if (realWinner === undefined) continue; // partido no finalizado
-          if (realWinner === null) continue; // empate
-          total++;
-          if (up.picks[gameId].pick === realWinner) correct++;
+          roundIds.add(up.picks[gameId].week);
         }
       }
-      // Persistir solo si cambió
-      if (
-        member.points !== correct ||
-        member.correctPicks !== correct ||
-        member.totalPicks !== total
-      ) {
-        await this.poolService.updateMemberScore(
-          pool.id,
-          member.uid,
-          correct,
-          correct,
-          total,
-        );
+
+      // Cargar los resultados reales de esas rondas en paralelo.
+      const resultsByGame = new Map<string, 'home' | 'away' | null>();
+      const rounds = this.rounds.filter((r) => roundIds.has(r.id));
+      // Limitar a cuatro solicitudes simultáneas para evitar saturar la red móvil.
+      for (let i = 0; i < rounds.length; i += 4) {
+        const batch = await Promise.all(rounds.slice(i, i + 4).map(async (round) => {
+          const cached = this.roundCache.get(round.id);
+          if (cached) return cached;
+          const games = await firstValueFrom(
+            this.poolGames.getWeekGames(round.apiWeek, round.seasonType),
+          );
+          this.roundCache.set(round.id, games);
+          return games;
+        }));
+        for (const games of batch) {
+          for (const game of games) {
+            if (game.isFinal) resultsByGame.set(game.id, game.winner);
+          }
+        }
       }
-      member.points = correct;
-      member.correctPicks = correct;
-      member.totalPicks = total;
+
+      // Calcular puntaje de cada miembro.
+      const updates: Promise<void>[] = [];
+      for (const member of members) {
+        const up = allPreds.find((p) => p.uid === member.uid);
+        let correct = 0;
+        let total = 0;
+        if (up) {
+          for (const gameId of Object.keys(up.picks ?? {})) {
+            const realWinner = resultsByGame.get(gameId);
+            if (realWinner === undefined) continue; // partido no finalizado
+            if (realWinner === null) continue; // empate
+            total++;
+            if (up.picks[gameId].pick === realWinner) correct++;
+          }
+        }
+        if (
+          member.points !== correct ||
+          member.correctPicks !== correct ||
+          member.totalPicks !== total
+        ) {
+          updates.push(this.poolService.updateMemberScore(
+            pool.id,
+            member.uid,
+            correct,
+            correct,
+            total,
+          ));
+        }
+        member.points = correct;
+        member.correctPicks = correct;
+        member.totalPicks = total;
+      }
+      members.sort(
+        (a, b) => b.points - a.points || b.correctPicks - a.correctPicks,
+      );
+      if (this.activePool()?.id === pool.id) this.members.set([...members]);
+      // La tabla puede mostrarse antes de que terminen las escrituras remotas.
+      void Promise.allSettled(updates);
+    } catch {
+      if (this.activePool()?.id === pool.id) this.rankingError.set(true);
+    } finally {
+      this.loadingRanking.set(false);
     }
-
-    members.sort(
-      (a, b) => b.points - a.points || b.correctPicks - a.correctPicks,
-    );
-    this.members.set([...members]);
-    this.loading.set(false);
-  }
-
-  private fetchRound(apiWeek: number, seasonType: number): Promise<PoolGame[]> {
-    return new Promise((resolve) => {
-      this.poolGames.getWeekGames(apiWeek, seasonType).subscribe({
-        next: (games) => resolve(games),
-        error: () => resolve([]),
-      });
-    });
   }
 
   // ── Compartir ───────────────────────────────────────────

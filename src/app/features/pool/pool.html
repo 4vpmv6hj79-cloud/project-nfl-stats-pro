@@ -8,7 +8,9 @@
   </header>
 
   <!-- Sin sesión -->
-  @if (!isAuthenticated()) {
+  @if (authLoading()) {
+    <p class="pool-muted">Restaurando tu sesión...</p>
+  } @else if (!isAuthenticated()) {
     <div class="pool-guest">
       <mat-icon>lock</mat-icon>
       <h2>Inicia sesión para jugar</h2>
@@ -110,6 +112,9 @@
 
         @if (loading()) {
           <p class="pool-muted">Cargando...</p>
+        } @else if (listError()) {
+          <p class="pool-muted" role="alert">No se pudieron cargar tus quinielas. Revisa tu conexión e inténtalo de nuevo.</p>
+          <button class="pool-btn pool-btn--secondary" (click)="loadMyPools()">Reintentar</button>
         } @else if (myPools().length === 0) {
           <p class="pool-muted">Aún no perteneces a ninguna quiniela. ¡Crea una o únete con un código!</p>
         } @else {
@@ -149,6 +154,12 @@
         </div>
       </div>
 
+      @if (loadingDetail()) {
+        <p class="pool-muted">Cargando tu quiniela...</p>
+      } @else if (detailError()) {
+        <p class="pool-muted" role="alert">No se pudo abrir esta quiniela. Revisa tu conexión.</p>
+        <button class="pool-btn pool-btn--secondary" (click)="openPool(pool)">Reintentar</button>
+      } @else {
       <!-- Tabs -->
       <div class="pool-tabs">
         <button class="pool-tab" [class.pool-tab--active]="tab() === 'picks'" (click)="setTab('picks')">
@@ -183,6 +194,9 @@
 
         @if (loadingGames()) {
           <p class="pool-muted">Cargando partidos...</p>
+        } @else if (gamesError()) {
+          <p class="pool-muted" role="alert">No se pudieron cargar los partidos de esta ronda.</p>
+          <button class="pool-btn pool-btn--secondary" (click)="selectRound(selectedRoundId())">Reintentar</button>
         } @else if (weekGames().length === 0) {
           <p class="pool-muted">No hay partidos para esta semana.</p>
         } @else {
@@ -254,6 +268,9 @@
 
         @if (loadingCompare() || loadingGames()) {
           <p class="pool-muted">Cargando comparación...</p>
+        } @else if (compareError() || gamesError()) {
+          <p class="pool-muted" role="alert">No se pudo cargar la comparación.</p>
+          <button class="pool-btn pool-btn--secondary" (click)="loadComparison()">Reintentar</button>
         } @else if (weekGames().length === 0) {
           <p class="pool-muted">No hay partidos para esta ronda.</p>
         } @else {
@@ -301,8 +318,11 @@
 
       <!-- TAB: Posiciones -->
       @if (tab() === 'ranking') {
-        @if (loading()) {
+        @if (loadingRanking()) {
           <p class="pool-muted">Calculando posiciones...</p>
+        } @else if (rankingError()) {
+          <p class="pool-muted" role="alert">No se pudieron calcular las posiciones.</p>
+          <button class="pool-btn pool-btn--secondary" (click)="refreshRanking()">Reintentar</button>
         } @else {
           <table class="pool-ranking">
             <thead>
@@ -330,6 +350,7 @@
             Las posiciones se actualizan con los resultados reales de los partidos que ya terminaron.
           </p>
         }
+      }
       }
     }
   }
