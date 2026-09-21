@@ -57,7 +57,7 @@ export class NFLService {
   getStandings(): Observable<Standing[]> {
 
     return this.http
-      .get<any>(`${this.base}/standings?seasontype=2`)
+      .get<any>('/api/apis/v2/sports/football/nfl/standings?level=3&seasontype=2')
       .pipe(
         map(response => StandingAdapter.adapt(response))
       );

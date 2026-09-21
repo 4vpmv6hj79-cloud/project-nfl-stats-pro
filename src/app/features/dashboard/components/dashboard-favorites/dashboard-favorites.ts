@@ -23,10 +23,7 @@ export interface FavoriteTeamInfo {
 @Component({
   selector: 'app-dashboard-favorites',
   standalone: true,
-  imports: [
-    RouterLink,
-    MatIconModule,
-  ],
+  imports: [RouterLink, MatIconModule],
   templateUrl: './dashboard-favorites.html',
   styleUrl: './dashboard-favorites.scss',
 })
@@ -37,20 +34,20 @@ export class DashboardFavoritesComponent implements OnInit {
   private readonly notification = inject(NotificationService);
 
   readonly standings = signal<Standing[]>([]);
+  readonly standingsLoading = signal(true);
+  readonly standingsError = signal(false);
   readonly news = signal<NewsArticle[]>([]);
 
-  /**
-   * Verifica si la temporada ya comenzó.
-   * Si ningún equipo tiene partidos jugados (todos en 0-0-0),
-   * la temporada regular aún no arranca.
-   */
   readonly seasonStarted = computed<boolean>(() => {
     const standings = this.standings();
+
     if (standings.length === 0) return false;
-    return standings.some(s => s.wins > 0 || s.losses > 0 || s.ties > 0);
+
+    return standings.some(
+      team => team.wins > 0 || team.losses > 0 || team.ties > 0
+    );
   });
 
-  /** Información enriquecida de cada equipo favorito */
   readonly favoriteTeamsInfo = computed<FavoriteTeamInfo[]>(() => {
     const favorites = this.favoritesService.favorites();
     const allStandings = this.standings();
@@ -62,12 +59,12 @@ export class DashboardFavoritesComponent implements OnInit {
     }
 
     return favorites.map(fav => {
-      // Buscar standing del equipo
       const standing = allStandings.find(
-        s => s.abbreviation?.toUpperCase() === fav.abbreviation?.toUpperCase()
+        team =>
+          team.abbreviation?.toUpperCase() ===
+          fav.abbreviation?.toUpperCase()
       );
 
-      // Calcular ranking en conferencia
       let conferenceRank = 0;
       let divisionRank = 0;
       let conference = '';
@@ -78,28 +75,47 @@ export class DashboardFavoritesComponent implements OnInit {
         division = standing.division;
 
         const confTeams = allStandings
-          .filter(s => s.conference === standing.conference)
-          .sort((a, b) => b.percentage - a.percentage || b.wins - a.wins);
-        conferenceRank = confTeams.findIndex(
-          s => s.abbreviation === standing.abbreviation
-        ) + 1;
+          .filter(team => team.conference === standing.conference)
+          .sort(
+            (a, b) =>
+              b.percentage - a.percentage ||
+              b.wins - a.wins
+          );
+
+        conferenceRank =
+          confTeams.findIndex(
+            team => team.abbreviation === standing.abbreviation
+          ) + 1;
 
         const divTeams = allStandings
-          .filter(s => s.conference === standing.conference && s.division === standing.division)
-          .sort((a, b) => b.percentage - a.percentage || b.wins - a.wins);
-        divisionRank = divTeams.findIndex(
-          s => s.abbreviation === standing.abbreviation
-        ) + 1;
+          .filter(
+            team =>
+              team.conference === standing.conference &&
+              team.division === standing.division
+          )
+          .sort(
+            (a, b) =>
+              b.percentage - a.percentage ||
+              b.wins - a.wins
+          );
+
+        divisionRank =
+          divTeams.findIndex(
+            team => team.abbreviation === standing.abbreviation
+          ) + 1;
       }
 
       const record = standing
-        ? `${standing.wins}-${standing.losses}${standing.ties > 0 ? '-' + standing.ties : ''}`
+        ? `${standing.wins}-${standing.losses}${
+            standing.ties > 0 ? '-' + standing.ties : ''
+          }`
         : '';
 
-      // Filtrar noticias del equipo (últimas 2)
       const teamNews = allNews
-        .filter(n =>
-          n.teamAbbr?.toUpperCase() === fav.abbreviation?.toUpperCase()
+        .filter(
+          article =>
+            article.teamAbbr?.toUpperCase() ===
+            fav.abbreviation?.toUpperCase()
         )
         .slice(0, 2);
 
@@ -118,15 +134,24 @@ export class DashboardFavoritesComponent implements OnInit {
 
   ngOnInit(): void {
     this.nflService.getStandings().subscribe({
-      next: (standings) => this.standings.set(standings),
-      error: () =>
-        this.notification.error('No fue posible cargar la información de tus equipos.'),
+      next: standings => {
+        this.standings.set(standings);
+        this.standingsError.set(standings.length === 0);
+        this.standingsLoading.set(false);
+      },
+      error: () => {
+        this.standingsError.set(true);
+        this.standingsLoading.set(false);
+        this.notification.error(
+          'No fue posible cargar la información de tus equipos.'
+        );
+      },
     });
 
     this.nflService.getNews(50).subscribe({
-      next: (news) => this.news.set(news),
+      next: news => this.news.set(news),
       error: () => {
-        // Las noticias son secundarias; fallar en silencio no rompe la sección
+        // Las noticias son secundarias.
       },
     });
   }

@@ -42,11 +42,25 @@
             </div>
           }
 
-          <!-- Mensaje temporada no iniciada -->
-          @if (!info.seasonStarted) {
+          @if (standingsLoading()) {
+            <div class="fav-card__preseason">
+              <mat-icon>hourglass_empty</mat-icon>
+              <span>Cargando récord de temporada regular...</span>
+            </div>
+          } @else if (standingsError()) {
+            <div class="fav-card__preseason">
+              <mat-icon>error_outline</mat-icon>
+              <span>No se pudo cargar el récord del equipo.</span>
+            </div>
+          } @else if (!info.seasonStarted) {
             <div class="fav-card__preseason">
               <mat-icon>schedule</mat-icon>
               <span>La temporada aún no comienza</span>
+            </div>
+          } @else if (!info.record) {
+            <div class="fav-card__preseason">
+              <mat-icon>info_outline</mat-icon>
+              <span>Sin datos de clasificación para este equipo.</span>
             </div>
           }
 
