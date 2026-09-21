@@ -1,9 +1,5 @@
 .countdown-section {
-  margin-bottom: 24px;
-
-  @media (max-width: 600px) {
-    margin-bottom: 16px;
-  }
+  min-width: 0;
 }
 
 .countdown-title {
@@ -22,21 +18,10 @@
 }
 
 .countdown-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 12px;
-  overflow-x: auto;
-  padding: 4px 0 8px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-
-  &::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 2px;
-    background: rgba(255, 255, 255, 0.15);
-  }
+  padding: 4px 0;
 
   @media (max-width: 600px) {
     gap: 10px;
@@ -44,8 +29,7 @@
 }
 
 .countdown-card {
-  flex-shrink: 0;
-  min-width: 240px;
+  min-width: 0;
   padding: 16px;
   background: linear-gradient(135deg, var(--color-surface) 0%, rgba(37, 99, 235, 0.08) 100%);
   border: 1px solid var(--color-border);
@@ -58,7 +42,6 @@
   }
 
   @media (max-width: 600px) {
-    min-width: 220px;
     padding: 12px;
     border-radius: 12px;
   }
