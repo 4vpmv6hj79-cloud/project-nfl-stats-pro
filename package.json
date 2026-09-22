@@ -7,7 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:nfl-stats-pro": "node dist/nfl-stats-pro/server/server.mjs"
+    "serve:ssr:nfl-stats-pro": "node dist/nfl-stats-pro/server/server.mjs",
+    "cf:dev": "npm run build && wrangler dev",
+    "cf:deploy": "npm run build && wrangler deploy"
   },
   "private": true,
   "packageManager": "npm@10.8.2",
@@ -40,6 +42,7 @@
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "wrangler": "^4.136.3"
   }
 }
