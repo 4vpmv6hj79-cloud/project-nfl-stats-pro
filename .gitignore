@@ -50,3 +50,6 @@ Thumbs.db
 *serviceAccount*.json
 *-adminsdk-*.json
 *firebase-adminsdk*.json
+
+# Cloudflare/wrangler (no se usa, estado local)
+.wrangler
