@@ -12,6 +12,7 @@ import {
   map,
   of,
   switchMap,
+  catchError,
 } from 'rxjs';
 
 import { GameAdapter } from '../../../shared/adapters/team/game.adapter';
@@ -37,8 +38,8 @@ export class ScoreService {
   }
 
   getScoreboardWindow(
-    pastDays = 7,
-    futureDays = 28,
+    pastDays = 0,
+    futureDays = 14,
   ): Observable<Game[]> {
     const startDate = new Date();
 
@@ -57,7 +58,14 @@ export class ScoreService {
     return this.http
       .get<any>(this.endpoint)
       .pipe(
+        // Si el scoreboard base falla, devolvemos lista vacía en vez de
+        // romper toda la pantalla.
+        catchError(() => of(null)),
         switchMap((scoreboard) => {
+          if (!scoreboard) {
+            return of([] as unknown[]);
+          }
+
           const requests = this.weekRequests(
             scoreboard,
             startDate,
@@ -174,10 +182,13 @@ export class ScoreService {
               )
               .set('limit', 100);
 
-            return this.http.get<unknown>(
-              this.endpoint,
-              { params },
-            );
+            return this.http
+              .get<unknown>(this.endpoint, { params })
+              .pipe(
+                // Si una semana falla, no tumbamos todo el forkJoin:
+                // devolvemos un objeto vacío y seguimos con las demás.
+                catchError(() => of({ events: [] })),
+              );
           });
       },
     );
