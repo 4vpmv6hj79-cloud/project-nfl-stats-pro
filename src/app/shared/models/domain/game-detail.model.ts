@@ -83,4 +83,12 @@ export interface GameDetail {
   possession?: 'home' | 'away';
   downDistanceText?: string;
   isRedZone?: boolean;
+
+  // Última jugada (minuto a minuto en vivo)
+  lastPlayText?: string;
+
+  // Castigo / bandera en la última jugada
+  hasPenalty?: boolean;      // true si la última jugada fue un castigo
+  penaltyText?: string;      // descripción del castigo
+  penaltyYardsLast?: number; // yardas del castigo (si se pueden extraer)
 }

@@ -55,6 +55,11 @@ export class GameDetailAdapter {
     const situation = response?.situation ?? competition?.situation;
     const possession = this.resolvePossession(situation, homeComp?.id, awayComp?.id);
 
+    // Última jugada y detección de castigo (bandera amarilla)
+    const lastPlay = situation?.lastPlay;
+    const lastPlayText = lastPlay?.text ?? undefined;
+    const penalty = this.detectPenalty(lastPlay);
+
     // Venue
     const venue = response?.gameInfo?.venue?.fullName ?? '';
 
@@ -76,7 +81,37 @@ export class GameDetailAdapter {
       possession,
       downDistanceText: situation?.downDistanceText?.replace(' at ', ' en ') ?? undefined,
       isRedZone: situation?.isRedZone ?? undefined,
+      lastPlayText,
+      hasPenalty: penalty.has,
+      penaltyText: penalty.text,
+      penaltyYardsLast: penalty.yards,
     };
+  }
+
+  /**
+   * Detecta si la última jugada fue un castigo (bandera amarilla) y extrae
+   * su descripción y las yardas. ESPN marca el tipo de jugada o incluye la
+   * palabra "PENALTY"/"Penalty" en el texto de la jugada.
+   */
+  private static detectPenalty(lastPlay: any): {
+    has: boolean;
+    text?: string;
+    yards?: number;
+  } {
+    if (!lastPlay) return { has: false };
+
+    const typeText = String(lastPlay.type?.text ?? '').toLowerCase();
+    const playText = String(lastPlay.text ?? '');
+    const isPenalty =
+      typeText.includes('penalty') || /penalty/i.test(playText);
+
+    if (!isPenalty) return { has: false };
+
+    // Intentar extraer las yardas del texto, ej. "...penalty 10 yards..."
+    const match = playText.match(/(\d+)\s*yard/i);
+    const yards = match ? Number(match[1]) : undefined;
+
+    return { has: true, text: playText || 'Castigo', yards };
   }
 
   private static buildTeam(comp: any, side: string, boxscoreTeams: any[] = []): GameDetailTeam {

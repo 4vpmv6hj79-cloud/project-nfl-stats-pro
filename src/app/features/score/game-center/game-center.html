@@ -62,6 +62,24 @@
         }
       </div>
 
+      <!-- Bandera / castigo en vivo -->
+      @if (g.statusState === 'in' && g.hasPenalty) {
+        <div class="gc-flag" role="status" aria-label="Castigo marcado">
+          <span class="gc-flag__icon" aria-hidden="true">🟨</span>
+          <div class="gc-flag__info">
+            <span class="gc-flag__title">
+              ¡Castigo!
+              @if (g.penaltyYardsLast) {
+                <span class="gc-flag__yards">−{{ g.penaltyYardsLast }} yardas</span>
+              }
+            </span>
+            @if (g.penaltyText) {
+              <span class="gc-flag__text">{{ g.penaltyText }}</span>
+            }
+          </div>
+        </div>
+      }
+
       @if (g.venue) {
         <span class="gc-venue">{{ g.venue }}</span>
       }
