@@ -89,9 +89,56 @@ export class GameDetailAdapter {
   }
 
   /**
+   * Traducciones de los castigos más comunes de la NFL al español.
+   * La clave es el término en inglés (en minúsculas) y el valor su
+   * equivalente en español.
+   */
+  private static readonly PENALTY_TRANSLATIONS: [RegExp, string][] = [
+    [/false start/i, 'Salida en falso'],
+    [/offside/i, 'Fuera de lugar (offside)'],
+    [/neutral zone infraction/i, 'Infracción en zona neutral'],
+    [/encroachment/i, 'Invasión (encroachment)'],
+    [/delay of game/i, 'Demora de juego'],
+    [/offensive holding/i, 'Sujeción ofensiva'],
+    [/defensive holding/i, 'Sujeción defensiva'],
+    [/holding/i, 'Sujeción (holding)'],
+    [/defensive pass interference/i, 'Interferencia de pase defensiva'],
+    [/offensive pass interference/i, 'Interferencia de pase ofensiva'],
+    [/pass interference/i, 'Interferencia de pase'],
+    [/illegal (block|use of hands)/i, 'Bloqueo ilegal'],
+    [/illegal (formation|shift|motion)/i, 'Formación/movimiento ilegal'],
+    [/illegal contact/i, 'Contacto ilegal'],
+    [/face ?mask/i, 'Máscara (face mask)'],
+    [/roughing the passer/i, 'Rudeza contra el pasador'],
+    [/roughing the kicker/i, 'Rudeza contra el pateador'],
+    [/unnecessary roughness/i, 'Rudeza innecesaria'],
+    [/unsportsmanlike conduct/i, 'Conducta antideportiva'],
+    [/personal foul/i, 'Falta personal'],
+    [/intentional grounding/i, 'Lanzamiento intencional al vacío'],
+    [/too many men|12 men/i, 'Demasiados jugadores en el campo'],
+    [/illegal formation/i, 'Formación ilegal'],
+    [/taunting/i, 'Provocación (taunting)'],
+    [/horse ?collar/i, 'Tackle por el cuello (horse collar)'],
+    [/tripping/i, 'Zancadilla'],
+    [/clipping/i, 'Bloqueo por la espalda'],
+    [/chop block/i, 'Bloqueo bajo (chop block)'],
+    [/ineligible (receiver|downfield)/i, 'Receptor no elegible'],
+  ];
+
+  /** Traduce el nombre del castigo detectado dentro del texto al español. */
+  private static translatePenalty(text: string): string {
+    for (const [pattern, es] of GameDetailAdapter.PENALTY_TRANSLATIONS) {
+      if (pattern.test(text)) {
+        return es;
+      }
+    }
+    return 'Castigo';
+  }
+
+  /**
    * Detecta si la última jugada fue un castigo (bandera amarilla) y extrae
-   * su descripción y las yardas. ESPN marca el tipo de jugada o incluye la
-   * palabra "PENALTY"/"Penalty" en el texto de la jugada.
+   * su descripción (traducida) y las yardas. ESPN marca el tipo de jugada o
+   * incluye la palabra "PENALTY"/"Penalty" en el texto de la jugada.
    */
   private static detectPenalty(lastPlay: any): {
     has: boolean;
@@ -111,7 +158,10 @@ export class GameDetailAdapter {
     const match = playText.match(/(\d+)\s*yard/i);
     const yards = match ? Number(match[1]) : undefined;
 
-    return { has: true, text: playText || 'Castigo', yards };
+    // Traducir el nombre del castigo al español
+    const text = GameDetailAdapter.translatePenalty(playText);
+
+    return { has: true, text, yards };
   }
 
   private static buildTeam(comp: any, side: string, boxscoreTeams: any[] = []): GameDetailTeam {
