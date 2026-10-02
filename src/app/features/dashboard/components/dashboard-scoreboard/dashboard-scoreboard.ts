@@ -115,10 +115,18 @@ export class DashboardScoreboardComponent
       return [];
     }
 
-    return this.finalGames().slice(
-      0,
-      FINAL_GAME_LIMIT,
-    );
+    // Solo mostrar resultados RECIENTES (partidos iniciados en las últimas
+    // ~36 horas). Así aparece el juego de anoche, pero no los de días
+    // anteriores que ya no son "recientes".
+    const now = Date.now();
+    const RECENT_WINDOW_MS = 36 * 60 * 60 * 1000;
+
+    return this.finalGames()
+      .filter((game) => {
+        const start = this.gameTimestamp(game);
+        return start > 0 && now - start <= RECENT_WINDOW_MS;
+      })
+      .slice(0, FINAL_GAME_LIMIT);
   });
 
   readonly hasVisibleGames = computed(
@@ -133,7 +141,7 @@ export class DashboardScoreboardComponent
       .pipe(
         startWith(0),
         switchMap(() =>
-          this.scoreService.getScoreboardWindow(7, 7),
+          this.scoreService.getScoreboardWindow(2, 7),
         ),
       )
       .subscribe({
